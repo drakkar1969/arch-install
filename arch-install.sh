@@ -122,7 +122,7 @@ set_keyboard()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Setting keyboard layout"
-		## loadkeys $KBCODE
+		loadkeys $KBCODE
 
 		MAINCHECKLIST[0]=1
 
@@ -158,7 +158,7 @@ enable_wifi()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Connecting to wifi network"
-		## station $ADAPTERID connect $WIFISSID
+		station $ADAPTERID connect $WIFISSID
 
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com
@@ -178,7 +178,7 @@ system_clock()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Enabling clock synchronization over network"
-		## timedatectl set-ntp true
+		timedatectl set-ntp true
 
 		print_progress_text "Checking time and date status"
 		timedatectl
@@ -207,7 +207,7 @@ sub_format_boot()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Formatting boot partition"
-		## mkfs.fat -F32 $FMTESPID
+		mkfs.fat -F32 $FMTESPID
 
 		FMTCHECKLIST[0]=1
 
@@ -233,7 +233,7 @@ sub_format_root()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Formatting root partition"
-		## mkfs.ext4 $FMTROOTID
+		mkfs.ext4 $FMTROOTID
 
 		FMTCHECKLIST[1]=1
 
@@ -259,7 +259,7 @@ sub_format_home()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Formatting home partition"
-		## mkfs.ext4 $FMTHOMEID
+		mkfs.ext4 $FMTHOMEID
 
 		FMTCHECKLIST[2]=1
 
@@ -285,8 +285,8 @@ sub_make_swap()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Activating SWAP partition"
-		## mkswap $FMTSWAPID
-		## swapon $FMTSWAPID
+		mkswap $FMTSWAPID
+		swapon $FMTSWAPID
 
 		FMTCHECKLIST[3]=1
 
@@ -361,13 +361,13 @@ mount_partitions()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Mounting partitions"
-		## mount $MNTROOTID /mnt
+		mount $MNTROOTID /mnt
 
-		## mkdir /mnt/home
-		## mount $MNTHOMEID /mnt/home
+		mkdir /mnt/home
+		mount $MNTHOMEID /mnt/home
 
-		## mkdir /mnt/boot
-		## smount $MNTBOOTID /mnt/boot
+		mkdir /mnt/boot
+		smount $MNTBOOTID /mnt/boot
 
 		print_progress_text "Verifying partition structure"
 		print_partition_structure
@@ -387,7 +387,7 @@ install_base()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Installing base packages"
-		## pacstrap /mnt base base-devel linux linux-firmware
+		pacstrap /mnt base base-devel linux linux-firmware
 
 		MAINCHECKLIST[6]=1
 
@@ -404,7 +404,7 @@ generate_fstab()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Generating fstab file"
-		## genfstab -U /mnt >> /mnt/etc/fstab
+		genfstab -U /mnt >> /mnt/etc/fstab
 
 		print_file_contents "/mnt/etc/fstab"
 		print_warning "In case of errors, do not run the command a second time, edit the fstab file manually"

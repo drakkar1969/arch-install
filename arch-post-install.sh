@@ -122,7 +122,7 @@ set_kbpermanent()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Setting keyboard layout"
-		## echo KEYMAP=$KBCODE > /etc/vconsole.conf
+		echo KEYMAP=$KBCODE > /etc/vconsole.conf
 
 		MAINCHECKLIST[0]=1
 
@@ -141,7 +141,7 @@ set_timezone()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Creating symlink for timezone $TIMEZONE"
-		## ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+		ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
 		MAINCHECKLIST[1]=1
 
@@ -158,7 +158,7 @@ sync_hwclock()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Setting hardware clock to UTC"
-		## hwclock --systohc --utc
+		hwclock --systohc --utc
 
 		MAINCHECKLIST[2]=1
 
@@ -178,29 +178,29 @@ set_locale()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Setting language to $LOCALE_US and formats to $LOCALE_DK"
-		## LOCALE_US_UTF="$LOCALE_US.UTF-8"
-		## LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
+		LOCALE_US_UTF="$LOCALE_US.UTF-8"
+		LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
 
-		## sed -i "/#$LOCALE_US_UTF/ s/^#//" /etc/locale.gen
-		## sed -i "/#$LOCALE_DK_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$LOCALE_US_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$LOCALE_DK_UTF/ s/^#//" /etc/locale.gen
 
-		## locale-gen
+		locale-gen
 
-		## cat > /etc/locale.conf <<-LOCALECONF
-		## 	LANG=$LOCALE_US_UTF
-		## 	LC_MEASUREMENT=$LOCALE_DK_UTF
-		## 	LC_MONETARY=$LOCALE_US_UTF
-		## 	LC_NUMERIC=$LOCALE_US_UTF
-		## 	LC_PAPER=$LOCALE_DK_UTF
-		## 	LC_TIME=$LOCALE_DK_UTF
-		## LOCALECONF
+		cat > /etc/locale.conf <<-LOCALECONF
+			LANG=$LOCALE_US_UTF
+			LC_MEASUREMENT=$LOCALE_DK_UTF
+			LC_MONETARY=$LOCALE_US_UTF
+			LC_NUMERIC=$LOCALE_US_UTF
+			LC_PAPER=$LOCALE_DK_UTF
+			LC_TIME=$LOCALE_DK_UTF
+		LOCALECONF
 
-		## export LANG=$LOCALE_US_UTF
-		## export LC_MEASUREMENT=$LOCALE_DK_UTF
-		## export LC_MONETARY=$LOCALE_US_UTF
-		## export LC_NUMERIC=$LOCALE_US_UTF
-		## export LC_PAPER=$LOCALE_DK_UTF
-		## export LC_TIME=$LOCALE_DK_UTF
+		export LANG=$LOCALE_US_UTF
+		export LC_MEASUREMENT=$LOCALE_DK_UTF
+		export LC_MONETARY=$LOCALE_US_UTF
+		export LC_NUMERIC=$LOCALE_US_UTF
+		export LC_PAPER=$LOCALE_DK_UTF
+		export LC_TIME=$LOCALE_DK_UTF
 
 		print_file_contents "/etc/locale.conf"
 
@@ -221,13 +221,13 @@ set_hostname()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Setting hostname to $PCNAME"
-		## echo $PCNAME > /etc/hostname
+		echo $PCNAME > /etc/hostname
 
-		## cat > /etc/hosts <<-HOSTSFILE
-		## 	127.0.0.1       localhost
-		## 	::1             localhost
-		## 	127.0.1.1       ${PCNAME}.localdomain      ${PCNAME}
-		## HOSTSFILE
+		cat > /etc/hosts <<-HOSTSFILE
+			127.0.0.1       localhost
+			::1             localhost
+			127.0.1.1       ${PCNAME}.localdomain      ${PCNAME}
+		HOSTSFILE
 
 		print_file_contents "/etc/hostname"
 		print_file_contents "/etc/hosts"
@@ -247,12 +247,12 @@ enable_multilib()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Enabling multilib repository in /etc/pacman.conf"
-		## sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
+		sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 
 		print_file_contents "/etc/pacman.conf"
 
 		print_progress_text "Refreshing package databases"
-		## pacman -Syy
+		pacman -Syy
 
 		MAINCHECKLIST[5]=1
 
@@ -268,7 +268,7 @@ root_password()
 	get_yn_confirmation _USERCONFIRM
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
-		## passwd
+		passwd
 
 		MAINCHECKLIST[6]=1
 
@@ -288,13 +288,13 @@ add_sudouser()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Creating new user $NEWUSER"
-		## useradd -m -G wheel -c $USERDESC -s /bin/bash $NEWUSER
+		useradd -m -G wheel -c $USERDESC -s /bin/bash $NEWUSER
 
 		print_progress_text "Setting password for user $NEWUSER"
-		## passwd $NEWUSER
+		passwd $NEWUSER
 
 		print_progress_text "Enabling sudo privileges for user $NEWUSER"
-		## bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
+		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
 
 		print_progress_text "Verifying user $NEWUSER identity"
 		id $NEWUSER
@@ -314,18 +314,18 @@ install_bootloader()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Installing grub bootloader"
-		## pacman -S grub efibootmgr os-prober
-		## grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+		pacman -S grub efibootmgr os-prober
+		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 
 		print_progress_text "Installing microcode package"
-		## pacman -S intel-ucode
+		pacman -S intel-ucode
 
 		print_progress_text "Copying .efi stub to ensure boot in UEFI mode"
-		## mkdir /boot/EFI/boot/
-		## cp /boot/EFI/grub/grubx64.efi /boot/EFI/boot/bootx64.efi
+		mkdir /boot/EFI/boot/
+		cp /boot/EFI/grub/grubx64.efi /boot/EFI/boot/bootx64.efi
 
 		print_progress_text "Generating grub.cfg file"
-		## grub-mkconfig -o /boot/grub/grub.cfg
+		grub-mkconfig -o /boot/grub/grub.cfg
 
 		MAINCHECKLIST[8]=1
 
@@ -344,10 +344,10 @@ install_xorg()
 		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
- 		## pacman -S xorg-server
+ 		pacman -S xorg-server
 
 		print_progress_text "Installing X widgets for testing"
-		## pacman -S xorg-xinit xorg-twm xterm
+		pacman -S xorg-xinit xorg-twm xterm
 
 		MAINCHECKLIST[9]=1
 
@@ -366,7 +366,7 @@ display_drivers()
 		print_progress_text "Installing nVidia video drivers"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
-		## pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
+		pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
 
 		MAINCHECKLIST[10]=1
 
@@ -388,20 +388,20 @@ install_gnome()
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		## if [[ "$GNOMEIGNORE" != "" ]]; then
-			## pacman -S gnome --ignore $GNOMEIGNORE
-		## else
-			## pacman -S gnome
-		## fi
+		if [[ "$GNOMEIGNORE" != "" ]]; then
+			pacman -S gnome --ignore $GNOMEIGNORE
+		else
+			pacman -S gnome
+		fi
 
 		print_progress_text "Installing additional GNOME packages"
-		## pacman -S dconf-editor ghex gnome-nettool gnome-tweaks
+		pacman -S dconf-editor ghex gnome-nettool gnome-tweaks
 
 		print_progress_text "Enabling GDM service"
-		## systemctl enable gdm.service
+		systemctl enable gdm.service
 
 		print_progress_text "Enabling Network Manager service"
-		## systemctl enable NetworkManager.service
+		systemctl enable NetworkManager.service
 
 		MAINCHECKLIST[11]=1
 
