@@ -348,20 +348,20 @@ mount_partitions()
 
 	print_partition_structure
 
-	get_user_variable MNTBOOTID "ESP boot partition ID" "/dev/nvme0n1p1"
-	get_user_variable MNTROOTID "root partition ID" "/dev/nvme0n1p2"
-	get_user_variable MNTHOMEID "home partition ID" "/dev/nvme0n1p4"
+	get_user_variable MNTBOOTID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
+	get_user_variable MNTROOTID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
+	get_user_variable MNTHOMEID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
 	if [[ "$MNTBOOTID" != "" ]]; then
-		echo -e "+ ESP (boot) partition $(get_partition_info $MNTBOOTID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+		echo -e "   + ESP (boot) partition $(get_partition_info $MNTBOOTID) will be mounted to ${GREEN}/mnt/boot${RESET}"
 	fi
 	if [[ "$MNTROOTID" != "" ]]; then
-		echo -e "+ Root partition $(get_partition_info $MNTROOTID) will be mounted to ${GREEN}/mnt${RESET}"
+		echo -e "   + Root partition $(get_partition_info $MNTROOTID) will be mounted to ${GREEN}/mnt${RESET}"
 	fi
 	if [[ "$MNTHOMEID" != "" ]]; then
-		echo -e "+ Home partition $(get_partition_info $MNTHOMEID) will be mounted to ${GREEN}/mnt/home${RESET}"
+		echo -e "   + Home partition $(get_partition_info $MNTHOMEID) will be mounted to ${GREEN}/mnt/home${RESET}"
 	fi
 	echo ""
 
