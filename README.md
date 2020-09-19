@@ -16,3 +16,23 @@ Download and execute the post-installation script `arch-post-install.sh`:
 curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh
 bash arch-post-install.sh
 ```
+
+Exit the `chroot` environment:
+
+```shell
+exit
+```
+
+Unmount partitions:
+
+```shell
+umount -R /mnt/boot
+umount -R /mnt/home
+umount -R /mnt
+```
+
+Restart to boot into GNOME:
+
+```shell
+reboot
+```
