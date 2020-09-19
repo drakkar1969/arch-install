@@ -207,9 +207,7 @@ sub_format_boot()
 
 	get_user_variable FMTESPID "boot (ESP) partition ID" "/dev/nvme0n1p1"
 
-	local _PARTITIONINFO=$(get_partition_info $FMTESPID)
-
-	echo -e "Partition $_PARTITIONINFO will be formated with file system ${GREEN}FAT32${RESET}."
+	echo -e "Partition $(get_partition_info $FMTESPID) will be formated with file system ${GREEN}FAT32${RESET}."
 
 	get_yn_confirmation _USERCONFIRM
 
@@ -233,9 +231,7 @@ sub_format_root()
 
 	get_user_variable FMTROOTID "root partition ID" "/dev/nvme0n1p2"
 
-	local _PARTITIONINFO=$(get_partition_info $FMTROOTID)
-
-	echo -e "Partition $_PARTITIONINFO will be formated with file system ${GREEN}EXT4${RESET}."
+	echo -e "Partition $(get_partition_info $FMTROOTID) will be formated with file system ${GREEN}EXT4${RESET}."
 
 	get_yn_confirmation _USERCONFIRM
 
@@ -259,9 +255,7 @@ sub_format_home()
 
 	get_user_variable FMTHOMEID "home partition ID" "/dev/nvme0n1p4"
 
-	local _PARTITIONINFO=$(get_partition_info $FMTHOMEID)
-
-	echo -e "Partition $_PARTITIONINFO will be formated with file system ${GREEN}EXT4${RESET}."
+	echo -e "Partition $(get_partition_info $FMTHOMEID) will be formated with file system ${GREEN}EXT4${RESET}."
 
 	get_yn_confirmation _USERCONFIRM
 
@@ -285,9 +279,7 @@ sub_make_swap()
 
 	get_user_variable FMTSWAPID "SWAP partition ID" "/dev/nvme0n1p3"
 
-	local _PARTITIONINFO=$(get_partition_info $FMTSWAPID)
-
-	echo -e "Partition $_PARTITIONINFO will be activated as ${GREEN}SWAP${RESET} partition."
+	echo -e "Partition $(get_partition_info $FMTSWAPID) will be activated as ${GREEN}SWAP${RESET} partition."
 
 	get_yn_confirmation _USERCONFIRM
 
