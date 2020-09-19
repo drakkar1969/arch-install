@@ -348,28 +348,40 @@ mount_partitions()
 
 	print_partition_structure
 
+	get_user_variable MNTBOOTID "ESP boot partition ID" "/dev/nvme0n1p1"
 	get_user_variable MNTROOTID "root partition ID" "/dev/nvme0n1p2"
 	get_user_variable MNTHOMEID "home partition ID" "/dev/nvme0n1p4"
-	get_user_variable MNTBOOTID "ESP boot partition ID" "/dev/nvme0n1p1"
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
-	echo -e "+ Root partition $(get_partition_info $MNTROOTID) will be mounted to ${GREEN}/mnt${RESET}"
-	echo -e "+ Home partition $(get_partition_info $MNTHOMEID) will be mounted to ${GREEN}/mnt/home${RESET}"
-	echo -e "+ ESP (boot) partition $(get_partition_info $MNTBOOTID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	if [[ "$MNTBOOTID" != "" ]]; then
+		echo -e "+ ESP (boot) partition $(get_partition_info $MNTBOOTID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	fi
+	if [[ "$MNTROOTID" != "" ]]; then
+		echo -e "+ Root partition $(get_partition_info $MNTROOTID) will be mounted to ${GREEN}/mnt${RESET}"
+	fi
+	if [[ "$MNTHOMEID" != "" ]]; then
+		echo -e "+ Home partition $(get_partition_info $MNTHOMEID) will be mounted to ${GREEN}/mnt/home${RESET}"
+	fi
 	echo ""
 
 	get_yn_confirmation _USERCONFIRM
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Mounting partitions"
-		mount $MNTROOTID /mnt
+		if [[ "$MNTROOTID" != "" ]]; then
+			mount $MNTROOTID /mnt
+		fi
 
-		mkdir /mnt/home
-		mount $MNTHOMEID /mnt/home
+		if [[ "$MNTHOMEID" != "" ]]; then
+			mkdir /mnt/home
+			mount $MNTHOMEID /mnt/home
+		fi
 
-		mkdir /mnt/boot
-		smount $MNTBOOTID /mnt/boot
+		if [[ "$MNTBOOTID" != "" ]]; then
+			mkdir /mnt/boot
+			mount $MNTBOOTID /mnt/boot
+		fi
 
 		print_progress_text "Verifying partition structure"
 		print_partition_structure
