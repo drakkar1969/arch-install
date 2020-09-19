@@ -70,7 +70,7 @@ get_yn_confirmation()
 	local _RESULTVAR=$1
 	local _YNCHOICE="n"
 
-	read -s -e -n 1 -p "Are you sure you want to continue [y/n]: " _YNCHOICE
+	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " _YNCHOICE
 	echo ""
 
 	eval $_RESULTVAR="'$_YNCHOICE'"
