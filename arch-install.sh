@@ -113,6 +113,8 @@ get_partition_info()
 #===========================================================================================================
 set_keyboard()
 {
+	print_submenu_heading "SET KEYBOARD LAYOUT"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable KBCODE "keyboard layout" "it"
@@ -132,6 +134,8 @@ set_keyboard()
 
 check_uefimode()
 {
+	print_submenu_heading "CHECK UEFI MODE"
+
 	print_progress_text "Listing EFI variables"
 	ls /sys/firmware/efi/efivars
 
@@ -142,6 +146,8 @@ check_uefimode()
 
 enable_wifi()
 {
+	print_submenu_heading "ENABLE WIFI CONNECTION"
+
 	local _USERCONFIRM="n"
 
 	iwctl device list
@@ -171,6 +177,8 @@ enable_wifi()
 
 system_clock()
 {
+	print_submenu_heading "UPDATE SYSTEM CLOCK"
+
 	local _USERCONFIRM="y"
 
 	echo -e "Enable clock synchronization over network."
@@ -191,9 +199,9 @@ system_clock()
 
 sub_format_boot()
 {
-	local _USERCONFIRM="n"
-
 	print_submenu_heading "FORMAT BOOT (ESP) PARTITION (FAT32)"
+
+	local _USERCONFIRM="n"
 
 	print_partition_structure
 
@@ -217,9 +225,9 @@ sub_format_boot()
 
 sub_format_root()
 {
-	local _USERCONFIRM="n"
-
 	print_submenu_heading "FORMAT ROOT PARTITION"
+
+	local _USERCONFIRM="n"
 
 	print_partition_structure
 
@@ -243,9 +251,9 @@ sub_format_root()
 
 sub_format_home()
 {
-	local _USERCONFIRM="n"
-
 	print_submenu_heading "FORMAT HOME PARTITION"
+
+	local _USERCONFIRM="n"
 
 	print_partition_structure
 
@@ -269,9 +277,9 @@ sub_format_home()
 
 sub_make_swap()
 {
-	local _USERCONFIRM="n"
-
 	print_submenu_heading "MAKE SWAP PARTITION"
+
+	local _USERCONFIRM="n"
 
 	print_partition_structure
 
@@ -342,6 +350,8 @@ format_partitions()
 
 mount_partitions()
 {
+	print_submenu_heading "MOUNT PARTITIONS"
+
 	local _USERCONFIRM="n"
 
 	print_partition_structure
@@ -380,6 +390,8 @@ mount_partitions()
 
 install_base()
 {
+	print_submenu_heading "INSTALL BASE PACKAGES"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Install base packages."
@@ -397,6 +409,8 @@ install_base()
 
 generate_fstab()
 {
+	print_submenu_heading "GENERATE FSTAB FILE"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Generate new fstab file."
@@ -440,34 +454,27 @@ main_menu()
 
 	case $_MAINCHOICE in
 		[aA])
-			print_submenu_heading "SET KEYBOARD LAYOUT"
 			set_keyboard
 			;;
 		[bB])
-			print_submenu_heading "CHECK UEFI MODE"
 			check_uefimode
 			;;
 		[cC])
-			print_submenu_heading "ENABLE WIFI CONNECTION"
 			enable_wifi
 			;;
 		[dD])
-			print_submenu_heading "UPDATE SYSTEM CLOCK"
 			system_clock
 			;;
 		[eE])
 			format_partitions
 			;;
 		[fF])
-			print_submenu_heading "MOUNT PARTITIONS"
 			mount_partitions
 			;;
 		[gG])
-			print_submenu_heading "INSTALL BASE PACKAGES"
 			install_base
 			;;
 		[hH])
-			print_submenu_heading "GENERATE FSTAB FILE"
 			generate_fstab
 			;;
 		[qQ])

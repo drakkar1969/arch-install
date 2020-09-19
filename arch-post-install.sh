@@ -113,6 +113,8 @@ get_partition_info()
 #===========================================================================================================
 set_kbpermanent()
 {
+	print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable KBCODE "keyboard layout" "it"
@@ -132,6 +134,8 @@ set_kbpermanent()
 
 set_timezone()
 {
+	print_submenu_heading "CONFIGURE TIMEZONE"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable TIMEZONE "timezone" "Europe/Warsaw"
@@ -151,6 +155,8 @@ set_timezone()
 
 sync_hwclock()
 {
+	print_submenu_heading "SYNC HARDWARE CLOCK"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Sync hardware clock."
@@ -168,6 +174,8 @@ sync_hwclock()
 
 set_locale()
 {
+	print_submenu_heading "CONFIGURE LOCALE"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable LOCALE_US "language locale" "en_US"
@@ -212,6 +220,8 @@ set_locale()
 
 set_hostname()
 {
+	print_submenu_heading "CONFIGURE HOSTNAME"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable PCNAME "hostname" "ProBook450"
@@ -240,6 +250,8 @@ set_hostname()
 
 enable_multilib()
 {
+	print_submenu_heading "ENABLE MULTILIB REPOSITORY"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Enable the multilib repository in ${GREEN}/etc/pacman.conf${RESET}."
@@ -262,6 +274,8 @@ enable_multilib()
 
 root_password()
 {
+	print_submenu_heading "CONFIGURE ROOT PASSWORD"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Set the password for the root user."
@@ -278,6 +292,8 @@ root_password()
 
 add_sudouser()
 {
+	print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable NEWUSER "user name" "drakkar"
@@ -307,6 +323,8 @@ add_sudouser()
 
 install_bootloader()
 {
+	print_submenu_heading "INSTALL BOOT LOADER"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Install the grub bootloader."
@@ -335,6 +353,8 @@ install_bootloader()
 
 install_xorg()
 {
+	print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Install Xorg graphical environment."
@@ -357,6 +377,8 @@ install_xorg()
 
 display_drivers()
 {
+	print_submenu_heading "INSTALL DISPLAY DRIVERS"
+
 	local _USERCONFIRM="n"
 
 	echo -e "Install display drivers."
@@ -376,6 +398,8 @@ display_drivers()
 
 install_gnome()
 {
+	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
+
 	local _USERCONFIRM="n"
 
 	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
@@ -438,51 +462,39 @@ main_menu()
 
 	case $_MAINCHOICE in
 		[aA])
-			print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
 			set_kbpermanent
 			;;
 		[bB])
-			print_submenu_heading "CONFIGURE TIMEZONE"
 			set_timezone
 			;;
 		[cC])
-			print_submenu_heading "SYNC HARDWARE CLOCK"
 			sync_hwclock
 			;;
 		[dD])
-			print_submenu_heading "CONFIGURE LOCALE"
 			set_locale
 			;;
 		[eE])
-			print_submenu_heading "CONFIGURE HOSTNAME"
 			set_hostname
 			;;
 		[fF])
-			print_submenu_heading "ENABLE MULTILIB REPOSITORY"
 			enable_multilib
 			;;
 		[gG])
-			print_submenu_heading "CONFIGURE ROOT PASSWORD"
 			root_password
 			;;
 		[hH])
-			print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
 			add_sudouser
 			;;
 		[iI])
-			print_submenu_heading "INSTALL BOOT LOADER"
 			install_bootloader
 			;;
 		[jJ])
-			print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
 			install_xorg
 			;;
 		[kK])
-			print_submenu_heading "INSTALL DISPLAY DRIVERS"
 			display_drivers
 			;;
 		[lL])
-			print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
 			install_gnome
 			;;
 		[qQ])
