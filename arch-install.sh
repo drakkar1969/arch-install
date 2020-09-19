@@ -476,7 +476,7 @@ main_menu()
 			echo ""
 			echo -e "   > ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
 			echo ""
-			echo -e "Then download and execute the script ${GREEN}arch-post-install.sh${RESET}."
+			echo -e "Download and execute the script ${GREEN}arch-post-install.sh${RESET}."
 			echo ""
 			exit 0
 			;;
