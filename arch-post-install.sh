@@ -3,7 +3,7 @@
 #===========================================================================================================
 # GLOBAL VARIABLES
 #===========================================================================================================
-MAINCHECKLIST=(0 0 0 0 0 0 0 0 0 0 0 0 0)
+MAINCHECKLIST=(0 0 0 0 0 0 0 0 0 0 0 0)
 FMTCHECKLIST=(0 0 0 0)
 
 RED='\033[1;31m'
@@ -347,26 +347,6 @@ install_bootloader()
 	fi
 }
 
-vbox_boot()
-{
-	print_submenu_heading "VIRTUALBOX ONLY: ENSURE UEFI BOOT"
-
-	local _USERCONFIRM="n"
-
-	echo -e "Copy the EFI stub to ensure boot in UEFI mode."
-	get_yn_confirmation _USERCONFIRM
-
-	if [[ "$_USERCONFIRM" = "y" ]]; then
-		print_progress_text "Copying .efi stub to ensure boot in UEFI mode"
-		mkdir /boot/EFI/boot/
-		cp /boot/EFI/grub/grubx64.efi /boot/EFI/boot/bootx64.efi
-
-		MAINCHECKLIST[9]=1
-
-		get_any_key
-	fi
-}
-
 install_xorg()
 {
 	print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
@@ -385,7 +365,7 @@ install_xorg()
 		print_progress_text "Installing X widgets for testing"
 		pacman -S xorg-xinit xorg-twm xterm
 
-		MAINCHECKLIST[10]=1
+		MAINCHECKLIST[9]=1
 
 		get_any_key
 	fi
@@ -406,7 +386,7 @@ display_drivers()
 		echo ""
 		pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
 
-		MAINCHECKLIST[11]=1
+		MAINCHECKLIST[10]=1
 
 		get_any_key
 	fi
@@ -448,7 +428,7 @@ install_gnome()
 		print_progress_text "Enabling Network Manager service"
 		systemctl enable NetworkManager.service
 
-		MAINCHECKLIST[12]=1
+		MAINCHECKLIST[11]=1
 
 		get_any_key
 	fi
@@ -471,10 +451,9 @@ main_menu()
 	print_menu_item G ${MAINCHECKLIST[6]} 'Configure root password'
 	print_menu_item H ${MAINCHECKLIST[7]} 'Add new user with sudo privileges'
 	print_menu_item I ${MAINCHECKLIST[8]} 'Install boot loader'
-	print_menu_item J ${MAINCHECKLIST[9]} 'VirtualBox only: Ensure UEFI boot'
-	print_menu_item K ${MAINCHECKLIST[10]} 'Install Xorg graphical environment'
-	print_menu_item L ${MAINCHECKLIST[11]} 'Install display drivers'
-	print_menu_item M ${MAINCHECKLIST[12]} 'Install GNOME desktop environment'
+	print_menu_item J ${MAINCHECKLIST[9]} 'Install Xorg graphical environment'
+	print_menu_item K ${MAINCHECKLIST[10]} 'Install display drivers'
+	print_menu_item L ${MAINCHECKLIST[11]} 'Install GNOME desktop environment'
 
 	echo ""
 	echo -e "-------------------------------------------------------------------------------"
@@ -511,15 +490,12 @@ main_menu()
 			install_bootloader
 			;;
 		[jJ])
-			vbox_boot
-			;;
-		[kK])
 			install_xorg
 			;;
-		[lL])
+		[kK])
 			display_drivers
 			;;
-		[mM])
+		[lL])
 			install_gnome
 			;;
 		[qQ])
