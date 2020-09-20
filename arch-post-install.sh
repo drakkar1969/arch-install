@@ -420,6 +420,9 @@ install_gnome()
 
 	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
 
+	get_user_variable GNOMEADDITIONAL "additional GNOME packages to install" "dconf-editor,ghex,gnome-nettool,gnome-tweaks"
+	GNOMEADDITIONAL=${GNOMEADDITIONAL//,/ }
+
 	echo -e "Install the GNOME desktop environment."
 	get_yn_confirmation _USERCONFIRM
 
@@ -434,8 +437,10 @@ install_gnome()
 			pacman -S gnome
 		fi
 
-		print_progress_text "Installing additional GNOME packages"
-		pacman -S dconf-editor ghex gnome-nettool gnome-tweaks
+		if [[ "$GNOMEADDITIONAL" != "" ]]; then
+			print_progress_text "Installing additional GNOME packages"
+			pacman -S $GNOMEADDITIONAL
+		fi
 
 		print_progress_text "Enabling GDM service"
 		systemctl enable gdm.service
