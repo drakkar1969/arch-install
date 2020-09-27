@@ -400,7 +400,7 @@ install_gnome()
 
 	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
 
-	get_user_variable GNOMEADDITIONAL "additional GNOME packages to install" "dconf-editor,ghex,gnome-nettool,gnome-tweaks"
+	get_user_variable GNOMEADDITIONAL "additional GNOME packages to install" "dconf-editor,ghex,gnome-tweaks"
 	GNOMEADDITIONAL=${GNOMEADDITIONAL//,/ }
 
 	echo -e "Install the GNOME desktop environment."

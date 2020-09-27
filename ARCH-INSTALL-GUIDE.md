@@ -437,7 +437,7 @@ If prompted to select provider(s), select default options.
 Install additional GNOME packages:
 
 ```bash
-pacman -S dconf-editor ghex gnome-nettool gnome-tweaks
+pacman -S dconf-editor ghex gnome-tweaks
 ```
 
 #### Reboot
