@@ -31,6 +31,21 @@ umount -R /mnt/home
 umount -R /mnt
 ```
 
+Restart:
+
+```shell
+reboot
+```
+
+Login with username and password.
+
+Download and execute the desktop environment script `arch-DE.sh`:
+
+```shell
+curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-DE.sh
+bash arch-post-install.sh
+```
+
 Restart to boot into GNOME:
 
 ```shell

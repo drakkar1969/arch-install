@@ -3,7 +3,7 @@
 #===========================================================================================================
 # GLOBAL VARIABLES
 #===========================================================================================================
-MAINCHECKLIST=(0 0 0 0 0 0 0 0 0 0 0 0)
+MAINCHECKLIST=(0 0 0 0 0 0 0 0 0 0)
 FMTCHECKLIST=(0 0 0 0)
 
 RED='\033[1;31m'
@@ -347,88 +347,23 @@ install_bootloader()
 	fi
 }
 
-install_xorg()
+enable_wifi()
 {
-	print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
+	print_submenu_heading "ENABLE WIFI ON REBOOT"
 
 	local _USERCONFIRM="n"
 
-	echo -e "Install Xorg graphical environment."
+	echo -e "Enable Wifi."
 	get_yn_confirmation _USERCONFIRM
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
-		print_progress_text "Installing Xorg"
-		echo -e "If prompted to select provider(s), select default options"
-		echo ""
- 		pacman -S xorg-server
-
-		print_progress_text "Installing X widgets for testing"
-		pacman -S xorg-xinit xorg-twm xterm
-
-		MAINCHECKLIST[9]=1
-
-		get_any_key
-	fi
-}
-
-display_drivers()
-{
-	print_submenu_heading "INSTALL DISPLAY DRIVERS"
-
-	local _USERCONFIRM="n"
-
-	echo -e "Install display drivers."
-	get_yn_confirmation _USERCONFIRM
-
-	if [[ "$_USERCONFIRM" = "y" ]]; then
-		print_progress_text "Installing nVidia video drivers"
-		echo -e "If prompted to select provider(s), select default options"
-		echo ""
-		pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
-
-		MAINCHECKLIST[10]=1
-
-		get_any_key
-	fi
-}
-
-install_gnome()
-{
-	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
-
-	local _USERCONFIRM="n"
-
-	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
-
-	get_user_variable GNOMEADDITIONAL "additional GNOME packages to install" "dconf-editor,ghex,gnome-tweaks"
-	GNOMEADDITIONAL=${GNOMEADDITIONAL//,/ }
-
-	echo -e "Install the GNOME desktop environment."
-	get_yn_confirmation _USERCONFIRM
-
-	if [[ "$_USERCONFIRM" = "y" ]]; then
-		print_progress_text "Installing GNOME"
-		echo -e "If prompted to select provider(s), select default options"
-		echo ""
-
-		if [[ "$GNOMEIGNORE" != "" ]]; then
-			pacman -S gnome --ignore $GNOMEIGNORE
-		else
-			pacman -S gnome
-		fi
-
-		if [[ "$GNOMEADDITIONAL" != "" ]]; then
-			print_progress_text "Installing additional GNOME packages"
-			pacman -S $GNOMEADDITIONAL
-		fi
-
-		print_progress_text "Enabling GDM service"
-		systemctl enable gdm.service
+		print_progress_text "Installing Network Manager"
+ 		pacman -S networkmanager
 
 		print_progress_text "Enabling Network Manager service"
 		systemctl enable NetworkManager.service
 
-		MAINCHECKLIST[11]=1
+		MAINCHECKLIST[9]=1
 
 		get_any_key
 	fi
@@ -451,9 +386,7 @@ main_menu()
 	print_menu_item G ${MAINCHECKLIST[6]} 'Configure root password'
 	print_menu_item H ${MAINCHECKLIST[7]} 'Add new user with sudo privileges'
 	print_menu_item I ${MAINCHECKLIST[8]} 'Install boot loader'
-	print_menu_item J ${MAINCHECKLIST[9]} 'Install Xorg graphical environment'
-	print_menu_item K ${MAINCHECKLIST[10]} 'Install display drivers'
-	print_menu_item L ${MAINCHECKLIST[11]} 'Install GNOME desktop environment'
+	print_menu_item J ${MAINCHECKLIST[9]} 'Enable wifi on reboot'
 
 	echo ""
 	echo -e "-------------------------------------------------------------------------------"
@@ -490,13 +423,7 @@ main_menu()
 			install_bootloader
 			;;
 		[jJ])
-			install_xorg
-			;;
-		[kK])
-			display_drivers
-			;;
-		[lL])
-			install_gnome
+			enable_wifi
 			;;
 		[qQ])
 			clear
@@ -510,7 +437,7 @@ main_menu()
 			echo -e "   > ${GREEN}umount -R /mnt/home${RESET}"
 			echo -e "   > ${GREEN}umount -R /mnt${RESET}"
 			echo ""
-			echo -e "Restart to boot into GNOME:"
+			echo -e "Restart:"
 			echo ""
 			echo -e "   > ${GREEN}reboot${RESET}"
 			echo ""
