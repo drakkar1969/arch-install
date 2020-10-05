@@ -1,3 +1,7 @@
+# Arch Linux Installation
+
+## Installation
+
 Download and execute the `arch-install.sh` script:
 
 ```shell
@@ -9,6 +13,8 @@ After completing installation, change root into the new system:
 ```shell
 arch-chroot /mnt /bin/bash
 ```
+
+## Post-Installation
 
 Download and execute the post-installation script `arch-post-install.sh`:
 
@@ -36,6 +42,8 @@ Restart:
 ```shell
 reboot
 ```
+
+## Desktop Environment
 
 Login with username and password.
 
