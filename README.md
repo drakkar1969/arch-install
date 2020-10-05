@@ -39,7 +39,7 @@ reboot
 
 Login with username and password.
 
-Download and execute the desktop environment script `arch-DE.sh`:
+Download and execute the desktop environment script `arch-DE.sh` to install the GNOME desktop environment:
 
 ```shell
 curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-DE.sh
