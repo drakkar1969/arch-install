@@ -150,10 +150,10 @@ install_xorg()
 		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
- 		pacman -S xorg-server
+ 		sudo pacman -S xorg-server
 
 		print_progress_text "Installing X widgets for testing"
-		pacman -S xorg-xinit xorg-twm xterm
+		sudo pacman -S xorg-xinit xorg-twm xterm
 
 		MAINCHECKLIST[1]=1
 
@@ -174,7 +174,7 @@ display_drivers()
 		print_progress_text "Installing nVidia video drivers"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
-		pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
+		sudo pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
 
 		MAINCHECKLIST[2]=1
 
@@ -202,14 +202,14 @@ install_gnome()
 		echo ""
 
 		if [[ "$GNOMEIGNORE" != "" ]]; then
-			pacman -S gnome --ignore $GNOMEIGNORE
+			sudo pacman -S gnome --ignore $GNOMEIGNORE
 		else
-			pacman -S gnome
+			sudo pacman -S gnome
 		fi
 
 		if [[ "$GNOMEADDITIONAL" != "" ]]; then
 			print_progress_text "Installing additional GNOME packages"
-			pacman -S $GNOMEADDITIONAL
+			sudo pacman -S $GNOMEADDITIONAL
 		fi
 
 		print_progress_text "Enabling GDM service"
