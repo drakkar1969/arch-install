@@ -390,54 +390,18 @@ grub-mkconfig -o /boot/grub/grub.cfg
 > cp /boot/EFI/grub/grubx64.efi /boot/EFI/boot/bootx64.efi
 > ```
 
-#### Install Xorg Graphical Environment
+#### Enable Wifi after Reboot
 
-Install Xorg:
+Install Network Manager:
 
 ```bash
-pacman -S xorg-server
+pacman -S networkmanager
 ```
 
-Install X widgets for testing:
+Enable the Network Manager service:
 
 ```bash
-pacman -S xorg-xinit xorg-twm xterm
-```
-
-Test that the Xorg environment is working with the command `startx`. To exit the graphical environment type `exit`.
-
-#### Install Video Drivers
-
-Install the nVidia video drivers (`nvidia-libgl` is not required, as `xorg-server` provides OpenGL support through the `mesa` package):
-
-```bash
-pacman -S nvidia
-```
-
-For 32-bit support on 64-bit machines:
-
-```bash
-pacman -S lib32-virtualgl lib32-nvidia-utils
-```
-
-If prompted to select provider(s), select default options.
-
-Make sure that the `lib32-nvidia-libgl` package is not installed.
-
-#### Install GNOME
-
-Install GNOME package group (press `ENTER` to select all packages when prompted):
-
-```bash
-pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
-```
-
-If prompted to select provider(s), select default options.
-
-Install additional GNOME packages:
-
-```bash
-pacman -S dconf-editor ghex gnome-tweaks
+systemctl enable NetworkManager.service
 ```
 
 #### Reboot
@@ -462,23 +426,79 @@ Restart the machine:
 reboot
 ```
 
----
-## Post-Installation
+## Desktop Environment
 
+#### Enable Internet Connection
+
+```bash
+nmcli device wifi "SSID" password "PASSWD"
+```
+
+Replace `SSID` and `PASSWD` with your wifi network and password.
+
+To test the internet connection:
+
+```bash
+ping -c 3 www.google.com
+```
+
+#### Install Xorg Graphical Environment
+
+Install Xorg:
+
+```bash
+sudo pacman -S xorg-server
+```
+
+Install X widgets for testing:
+
+```bash
+sudo pacman -S xorg-xinit xorg-twm xterm
+```
+
+Test that the Xorg environment is working with the command `startx`. To exit the graphical environment type `exit`.
+
+#### Install Video Drivers
+
+Install the nVidia video drivers (`nvidia-libgl` is not required, as `xorg-server` provides OpenGL support through the `mesa` package):
+
+```bash
+sudo pacman -S nvidia
+```
+
+For 32-bit support on 64-bit machines:
+
+```bash
+sudo pacman -S lib32-virtualgl lib32-nvidia-utils
+```
+
+If prompted to select provider(s), select default options.
+
+Make sure that the `lib32-nvidia-libgl` package is not installed.
+
+#### Install GNOME
+
+Install GNOME package group (press `ENTER` to select all packages when prompted):
+
+```bash
+sudo pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
+```
+
+If prompted to select provider(s), select default options.
+
+Install additional GNOME packages:
+
+```bash
+sudo pacman -S dconf-editor ghex gnome-tweaks
+```
+
+---
 #### Enable GDM Display Manager
 
 Enable the `gdm` (GNOME Display Manager) login screen:
 
 ```bash
 sudo systemctl enable gdm.service
-```
-
-#### Enable Wireless Support
-
-Enable Network Manager:
-
-```bash
-sudo systemctl enable NetworkManager.service
 ```
 
 #### Reboot
