@@ -164,10 +164,15 @@ mkswap /dev/nvme0n1p3
 swapon /dev/nvme0n1p3
 ```
 
-Format the `root` and `home` partitions:
+Format the `root` partition:
 
 ```bash
 mkfs.ext4 /dev/nvme0n1p2
+```
+
+Format the `home` partition (**do this only if the `home` partition is not empty**):
+
+```bash
 mkfs.ext4 /dev/nvme0n1p4
 ```
 
