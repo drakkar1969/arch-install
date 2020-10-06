@@ -125,7 +125,7 @@ enable_wifi()
 
 	if [[ "$_USERCONFIRM" = "y" ]]; then
 		print_progress_text "Connecting to wifi network"
-		nmcli device wifi "$WIFISSID" password "$WIFIPASSWD"
+		nmcli device wifi connect "$WIFISSID" password "$WIFIPASSWD"
 
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com
