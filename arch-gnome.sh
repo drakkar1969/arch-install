@@ -213,7 +213,7 @@ install_gnome()
 		fi
 
 		print_progress_text "Enabling GDM service"
-		systemctl enable gdm.service
+		sudo systemctl enable gdm.service
 
 		MAINCHECKLIST[3]=1
 
