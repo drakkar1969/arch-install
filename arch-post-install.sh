@@ -138,7 +138,7 @@ set_timezone()
 
 	local _USERCONFIRM="n"
 
-	get_user_variable TIMEZONE "timezone" "Europe/Warsaw"
+	get_user_variable TIMEZONE "timezone" "Europe/Sarajevo"
 
 	echo -e "Set the timezone to ${GREEN}${TIMEZONE}${RESET}."
 	get_yn_confirmation _USERCONFIRM
