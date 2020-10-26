@@ -491,13 +491,6 @@ sudo pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gn
 
 If prompted to select provider(s), select default options.
 
-Install additional GNOME packages:
-
-```bash
-sudo pacman -S dconf-editor ghex gnome-tweaks
-```
-
----
 #### Enable GDM Display Manager
 
 Enable the `gdm` (GNOME Display Manager) login screen:
