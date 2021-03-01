@@ -481,6 +481,12 @@ If prompted to select provider(s), select default options.
 
 Make sure that the `lib32-nvidia-libgl` package is not installed.
 
+Install the Intel VA-API driver for hardware video acceleration
+
+```bash
+sudo pacman -S intel-media-driver
+```
+
 #### Install GNOME
 
 Install GNOME package group (press `ENTER` to select all packages when prompted):

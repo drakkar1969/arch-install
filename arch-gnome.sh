@@ -176,6 +176,9 @@ display_drivers()
 		echo ""
 		sudo pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
 
+		print_progress_text "Installing Intel VA-API (hardware acccel) drivers"
+		sudo pacman -S intel-media-driver
+
 		MAINCHECKLIST[2]=1
 
 		get_any_key
