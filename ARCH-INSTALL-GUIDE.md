@@ -492,7 +492,7 @@ sudo pacman -S intel-media-driver
 Install GNOME package group (press `ENTER` to select all packages when prompted):
 
 ```bash
-sudo pacman -S gnome --ignore epiphany,gnome-books,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
+sudo pacman -S gnome --ignore epiphany,gnome-books,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
 ```
 
 If prompted to select provider(s), select default options.

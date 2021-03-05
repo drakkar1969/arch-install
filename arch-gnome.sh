@@ -191,7 +191,7 @@ install_gnome()
 
 	local _USERCONFIRM="n"
 
-	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-calendar,gnome-clocks,gnome-contacts,gnome-dictionary,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
+	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
 
 	echo -e "Install the GNOME desktop environment."
 	get_yn_confirmation _USERCONFIRM
