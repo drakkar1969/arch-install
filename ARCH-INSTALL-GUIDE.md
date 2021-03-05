@@ -386,15 +386,6 @@ Generate the `grub.cfg` file (this will also enable automatic `microcode` update
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-> **For installation in VirtualBox only**:
->
-> Copy the bootable `.efi` stub to ensure system will boot in UEFI mode:
->
-> ```bash
-> mkdir /boot/EFI/boot/
-> cp /boot/EFI/grub/grubx64.efi /boot/EFI/boot/bootx64.efi
-> ```
-
 #### Enable Wifi after Reboot
 
 Install Network Manager:
