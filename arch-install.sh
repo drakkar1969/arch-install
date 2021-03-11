@@ -15,17 +15,17 @@ RESET='\033[0m'
 #===========================================================================================================
 print_menu_item()
 {
-	local _INDEX=$1
-	local _STATUS=$2
-	local _ITEMNAME=$3
+	local index=$1
+	local status=$2
+	local itemname=$3
 
-	local _CHECKMARK="${GREEN}OK${RESET}"
+	local checkmark="${GREEN}OK${RESET}"
 
-	if [[ $_STATUS -eq 0 ]]; then
-		_CHECKMARK="  "
+	if [[ $status -eq 0 ]]; then
+		checkmark="  "
 	fi
 
-	echo -e "\n $_INDEX. [ $_CHECKMARK ] $_ITEMNAME"
+	echo -e "\n $index. [ $checkmark ] $itemname"
 }
 
 print_submenu_heading()
@@ -67,23 +67,23 @@ get_any_key()
 
 get_yn_confirmation()
 {
-	local _RESULTVAR=$1
-	local _YNCHOICE="n"
+	local output=$1
+	local yn_choice="n"
 
-	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " _YNCHOICE
+	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 	echo ""
 
-	eval $_RESULTVAR="'$_YNCHOICE'"
+	eval $output="'$yn_choice'"
 }
 
 get_user_variable()
 {
-	local _RESULTVAR=$1
+	local output=$1
 
-	read -e -p "Enter $2: " -i "$3" _USERINPUT
+	read -e -p "Enter $2: " -i "$3" user_input
 	echo ""
 
-	eval $_RESULTVAR="'$_USERINPUT'"
+	eval $output="'$user_input'"
 }
 
 print_partition_structure()
@@ -100,12 +100,12 @@ print_partition_structure()
 
 get_partition_info()
 {
-	local _BLKPARTINFO=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
-	local _BLKPARTID=$(echo $_BLKPARTINFO | awk '{print $1}')
-	local _BLKPARTSIZE=$(echo $_BLKPARTINFO | awk '{print $2}')
-	local _BLKPARTFS=$(echo $_BLKPARTINFO | awk '{print $3}')
+	local blk_part_info=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
+	local blk_part_id=$(echo $blk_part_info | awk '{print $1}')
+	local blk_part_size=$(echo $blk_part_info | awk '{print $2}')
+	local blk_part_fs=$(echo $blk_part_info | awk '{print $3}')
 
-	echo -e "${GREEN}$_BLKPARTID${RESET} [type: ${GREEN}$_BLKPARTFS${RESET}; size: ${GREEN}$_BLKPARTSIZE${RESET}]"
+	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
 }
 
 #===========================================================================================================
@@ -115,14 +115,14 @@ set_keyboard()
 {
 	print_submenu_heading "SET KEYBOARD LAYOUT"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable KBCODE "keyboard layout" "it"
 
 	echo -e "Set keyboard layout to ${GREEN}${KBCODE}${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting keyboard layout"
 		loadkeys $KBCODE
 
@@ -148,7 +148,7 @@ enable_wifi()
 {
 	print_submenu_heading "ENABLE WIFI CONNECTION"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	iwctl device list
 	get_user_variable ADAPTERID "wireless adapter name" "wlp3s0"
@@ -160,9 +160,9 @@ enable_wifi()
 	get_user_variable WIFISSID "wireless network name" ""
 
 	echo -e "Connect to wifi network ${GREEN}${WIFISSID}${RESET} on adapter ${GREEN}${ADAPTERID}${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Connecting to wifi network"
 		station $ADAPTERID connect $WIFISSID
 
@@ -179,12 +179,12 @@ system_clock()
 {
 	print_submenu_heading "UPDATE SYSTEM CLOCK"
 
-	local _USERCONFIRM="y"
+	local user_confirm="y"
 
 	echo -e "Enable clock synchronization over network."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Enabling clock synchronization over network"
 		timedatectl set-ntp true
 
@@ -201,7 +201,7 @@ sub_format_boot()
 {
 	print_submenu_heading "FORMAT BOOT (ESP) PARTITION (FAT32)"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	print_partition_structure
 
@@ -209,9 +209,9 @@ sub_format_boot()
 
 	echo -e "Partition $(get_partition_info $FMTESPID) will be formated with file system ${GREEN}FAT32${RESET}."
 
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Formatting boot partition"
 		mkfs.fat -F32 $FMTESPID
 
@@ -225,7 +225,7 @@ sub_format_root()
 {
 	print_submenu_heading "FORMAT ROOT PARTITION"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	print_partition_structure
 
@@ -233,9 +233,9 @@ sub_format_root()
 
 	echo -e "Partition $(get_partition_info $FMTROOTID) will be formated with file system ${GREEN}EXT4${RESET}."
 
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Formatting root partition"
 		mkfs.ext4 $FMTROOTID
 
@@ -249,7 +249,7 @@ sub_format_home()
 {
 	print_submenu_heading "FORMAT HOME PARTITION"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	print_partition_structure
 
@@ -257,9 +257,9 @@ sub_format_home()
 
 	echo -e "Partition $(get_partition_info $FMTHOMEID) will be formated with file system ${GREEN}EXT4${RESET}."
 
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Formatting home partition"
 		mkfs.ext4 $FMTHOMEID
 
@@ -273,7 +273,7 @@ sub_make_swap()
 {
 	print_submenu_heading "MAKE SWAP PARTITION"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	print_partition_structure
 
@@ -281,9 +281,9 @@ sub_make_swap()
 
 	echo -e "Partition $(get_partition_info $FMTSWAPID) will be activated as ${GREEN}SWAP${RESET} partition."
 
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Activating SWAP partition"
 		mkswap $FMTSWAPID
 		swapon $FMTSWAPID
@@ -296,9 +296,9 @@ sub_make_swap()
 
 format_partitions()
 {
-	local _FORMATLOOPINPUT=""
+	local loop_input=""
 
-	while [[ "$_FORMATLOOPINPUT" != "b" ]]
+	while [[ "$loop_input" != "b" ]]
 	do
 		clear
 
@@ -314,10 +314,10 @@ format_partitions()
 		echo ""
 		echo -e "-------------------------------------------------------------------------------"
 		echo ""
-		read -s -e -n 1 -p " Select option or (b)ack: " _FORMATLOOPINPUT
+		read -s -e -n 1 -p " Select option or (b)ack: " loop_input
 		echo ""
 
-		case $_FORMATLOOPINPUT in
+		case $loop_input in
 			1)
 				sub_format_boot
 				;;
@@ -333,9 +333,11 @@ format_partitions()
 		esac
 	done
 
-	((FMTARRAYSUM = ${FMTCHECKLIST[@]/%/+}0))
+	local fmt_array_sum
 
-	if [[ $FMTARRAYSUM -eq ${#FMTCHECKLIST[@]} ]]; then
+	((fmt_array_sum = ${FMTCHECKLIST[@]/%/+}0))
+
+	if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
 		MAINCHECKLIST[4]=1
 	fi
 }
@@ -344,7 +346,7 @@ mount_partitions()
 {
 	print_submenu_heading "MOUNT PARTITIONS"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	print_partition_structure
 
@@ -365,9 +367,9 @@ mount_partitions()
 	fi
 	echo ""
 
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Mounting partitions"
 		if [[ "$MNTROOTID" != "" ]]; then
 			mount $MNTROOTID /mnt
@@ -396,12 +398,12 @@ install_base()
 {
 	print_submenu_heading "INSTALL BASE PACKAGES"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Install base packages."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Installing base packages"
 		pacstrap /mnt base base-devel linux linux-firmware
 
@@ -415,12 +417,12 @@ generate_fstab()
 {
 	print_submenu_heading "GENERATE FSTAB FILE"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Generate new fstab file."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Generating fstab file"
 		genfstab -U /mnt >> /mnt/etc/fstab
 
@@ -453,10 +455,10 @@ main_menu()
 	echo ""
 	echo -e "-------------------------------------------------------------------------------"
 	echo ""
-	read -s -e -n 1 -p " => Select option or (q)uit: " _MAINCHOICE
+	read -s -e -n 1 -p " => Select option or (q)uit: " main_choice
 	echo ""
 
-	case $_MAINCHOICE in
+	case $main_choice in
 		[aA])
 			set_keyboard
 			;;

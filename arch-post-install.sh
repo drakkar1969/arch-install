@@ -15,17 +15,17 @@ RESET='\033[0m'
 #===========================================================================================================
 print_menu_item()
 {
-	local _INDEX=$1
-	local _STATUS=$2
-	local _ITEMNAME=$3
+	local index=$1
+	local status=$2
+	local itemname=$3
 
-	local _CHECKMARK="${GREEN}OK${RESET}"
+	local checkmark="${GREEN}OK${RESET}"
 
-	if [[ $_STATUS -eq 0 ]]; then
-		_CHECKMARK="  "
+	if [[ $status -eq 0 ]]; then
+		checkmark="  "
 	fi
 
-	echo -e "\n $_INDEX. [ $_CHECKMARK ] $_ITEMNAME"
+	echo -e "\n $index. [ $checkmark ] $itemname"
 }
 
 print_submenu_heading()
@@ -67,23 +67,23 @@ get_any_key()
 
 get_yn_confirmation()
 {
-	local _RESULTVAR=$1
-	local _YNCHOICE="n"
+	local output=$1
+	local yn_choice="n"
 
-	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " _YNCHOICE
+	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 	echo ""
 
-	eval $_RESULTVAR="'$_YNCHOICE'"
+	eval $output="'$yn_choice'"
 }
 
 get_user_variable()
 {
-	local _RESULTVAR=$1
+	local output=$1
 
-	read -e -p "Enter $2: " -i "$3" _USERINPUT
+	read -e -p "Enter $2: " -i "$3" user_input
 	echo ""
 
-	eval $_RESULTVAR="'$_USERINPUT'"
+	eval $output="'$user_input'"
 }
 
 print_partition_structure()
@@ -100,12 +100,12 @@ print_partition_structure()
 
 get_partition_info()
 {
-	local _BLKPARTINFO=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
-	local _BLKPARTID=$(echo $_BLKPARTINFO | awk '{print $1}')
-	local _BLKPARTSIZE=$(echo $_BLKPARTINFO | awk '{print $2}')
-	local _BLKPARTFS=$(echo $_BLKPARTINFO | awk '{print $3}')
+	local blk_part_info=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
+	local blk_part_id=$(echo $blk_part_info | awk '{print $1}')
+	local blk_part_size=$(echo $blk_part_info | awk '{print $2}')
+	local blk_part_fs=$(echo $blk_part_info | awk '{print $3}')
 
-	echo -e "${GREEN}$_BLKPARTID${RESET} [type: ${GREEN}$_BLKPARTFS${RESET}; size: ${GREEN}$_BLKPARTSIZE${RESET}]"
+	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
 }
 
 #===========================================================================================================
@@ -115,14 +115,14 @@ set_kbpermanent()
 {
 	print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable KBCODE "keyboard layout" "it"
 
 	echo -e "Make keyboard layout ${GREEN}${KBCODE}${RESET} permanent."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting keyboard layout"
 		echo KEYMAP=$KBCODE > /etc/vconsole.conf
 
@@ -136,14 +136,14 @@ set_timezone()
 {
 	print_submenu_heading "CONFIGURE TIMEZONE"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable TIMEZONE "timezone" "Europe/Sarajevo"
 
 	echo -e "Set the timezone to ${GREEN}${TIMEZONE}${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Creating symlink for timezone $TIMEZONE"
 		ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
@@ -157,12 +157,12 @@ sync_hwclock()
 {
 	print_submenu_heading "SYNC HARDWARE CLOCK"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Sync hardware clock."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting hardware clock to UTC"
 		hwclock --systohc --utc
 
@@ -176,15 +176,15 @@ set_locale()
 {
 	print_submenu_heading "CONFIGURE LOCALE"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable LOCALE_US "language locale" "en_US"
 	get_user_variable LOCALE_DK "format locale" "en_DK"
 
 	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_DK}${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting language to $LOCALE_US and formats to $LOCALE_DK"
 		LOCALE_US_UTF="$LOCALE_US.UTF-8"
 		LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
@@ -222,14 +222,14 @@ set_hostname()
 {
 	print_submenu_heading "CONFIGURE HOSTNAME"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable PCNAME "hostname" "ProBook450"
 
 	echo -e "Set the hostname to ${GREEN}${PCNAME}${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting hostname to $PCNAME"
 		echo $PCNAME > /etc/hostname
 
@@ -252,12 +252,12 @@ enable_multilib()
 {
 	print_submenu_heading "ENABLE MULTILIB REPOSITORY"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Enable the multilib repository in ${GREEN}/etc/pacman.conf${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Enabling multilib repository in /etc/pacman.conf"
 		sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 
@@ -276,12 +276,12 @@ root_password()
 {
 	print_submenu_heading "CONFIGURE ROOT PASSWORD"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Set the password for the root user."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		passwd
 
 		MAINCHECKLIST[6]=1
@@ -294,15 +294,15 @@ add_sudouser()
 {
 	print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable NEWUSER "user name" "drakkar"
 	get_user_variable USERDESC "user description" "draKKar"
 
 	echo -e "Create new user ${GREEN}${NEWUSER}${RESET} with sudo privileges."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Creating new user $NEWUSER"
 		useradd -m -G wheel -c $USERDESC -s /bin/bash $NEWUSER
 
@@ -325,12 +325,12 @@ install_bootloader()
 {
 	print_submenu_heading "INSTALL BOOT LOADER"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Install the grub bootloader."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Installing grub bootloader"
 		pacman -S grub efibootmgr os-prober
 		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
@@ -351,12 +351,12 @@ enable_wifi()
 {
 	print_submenu_heading "ENABLE WIFI ON REBOOT"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Enable Wifi."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Installing Network Manager"
  		pacman -S networkmanager
 
@@ -391,10 +391,10 @@ main_menu()
 	echo ""
 	echo -e "-------------------------------------------------------------------------------"
 	echo ""
-	read -s -e -n 1 -p " => Select option or (q)uit: " _MAINCHOICE
+	read -s -e -n 1 -p " => Select option or (q)uit: " main_choice
 	echo ""
 
-	case $_MAINCHOICE in
+	case $main_choice in
 		[aA])
 			set_kbpermanent
 			;;

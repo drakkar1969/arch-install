@@ -15,17 +15,17 @@ RESET='\033[0m'
 #===========================================================================================================
 print_menu_item()
 {
-	local _INDEX=$1
-	local _STATUS=$2
-	local _ITEMNAME=$3
+	local index=$1
+	local status=$2
+	local itemname=$3
 
-	local _CHECKMARK="${GREEN}OK${RESET}"
+	local checkmark="${GREEN}OK${RESET}"
 
-	if [[ $_STATUS -eq 0 ]]; then
-		_CHECKMARK="  "
+	if [[ $status -eq 0 ]]; then
+		checkmark="  "
 	fi
 
-	echo -e "\n $_INDEX. [ $_CHECKMARK ] $_ITEMNAME"
+	echo -e "\n $index. [ $checkmark ] $itemname"
 }
 
 print_submenu_heading()
@@ -67,23 +67,23 @@ get_any_key()
 
 get_yn_confirmation()
 {
-	local _RESULTVAR=$1
-	local _YNCHOICE="n"
+	local output=$1
+	local yn_choice="n"
 
-	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " _YNCHOICE
+	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 	echo ""
 
-	eval $_RESULTVAR="'$_YNCHOICE'"
+	eval $output="'$yn_choice'"
 }
 
 get_user_variable()
 {
-	local _RESULTVAR=$1
+	local output=$1
 
-	read -e -p "Enter $2: " -i "$3" _USERINPUT
+	read -e -p "Enter $2: " -i "$3" user_input
 	echo ""
 
-	eval $_RESULTVAR="'$_USERINPUT'"
+	eval $output="'$user_input'"
 }
 
 print_partition_structure()
@@ -100,12 +100,12 @@ print_partition_structure()
 
 get_partition_info()
 {
-	local _BLKPARTINFO=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
-	local _BLKPARTID=$(echo $_BLKPARTINFO | awk '{print $1}')
-	local _BLKPARTSIZE=$(echo $_BLKPARTINFO | awk '{print $2}')
-	local _BLKPARTFS=$(echo $_BLKPARTINFO | awk '{print $3}')
+	local blk_part_info=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
+	local blk_part_id=$(echo $blk_part_info | awk '{print $1}')
+	local blk_part_size=$(echo $blk_part_info | awk '{print $2}')
+	local blk_part_fs=$(echo $blk_part_info | awk '{print $3}')
 
-	echo -e "${GREEN}$_BLKPARTID${RESET} [type: ${GREEN}$_BLKPARTFS${RESET}; size: ${GREEN}$_BLKPARTSIZE${RESET}]"
+	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
 }
 
 #===========================================================================================================
@@ -115,15 +115,15 @@ enable_wifi()
 {
 	print_submenu_heading "ENABLE WIFI CONNECTION"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable WIFISSID "wireless network name" ""
 	get_user_variable WIFIPASSWD "wireless password" ""
 
 	echo -e "Connect to wifi network ${GREEN}${WIFISSID}${RESET}."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Connecting to wifi network"
 		nmcli device wifi connect "$WIFISSID" password "$WIFIPASSWD"
 
@@ -141,12 +141,12 @@ install_xorg()
 {
 	print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Install Xorg graphical environment."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
@@ -165,12 +165,12 @@ display_drivers()
 {
 	print_submenu_heading "INSTALL DISPLAY DRIVERS"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	echo -e "Install display drivers."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Installing nVidia video drivers"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
@@ -189,14 +189,14 @@ install_gnome()
 {
 	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
 
-	local _USERCONFIRM="n"
+	local user_confirm="n"
 
 	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
 
 	echo -e "Install the GNOME desktop environment."
-	get_yn_confirmation _USERCONFIRM
+	get_yn_confirmation user_confirm
 
-	if [[ "$_USERCONFIRM" = "y" ]]; then
+	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Installing GNOME"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
@@ -232,10 +232,10 @@ main_menu()
 	echo ""
 	echo -e "-------------------------------------------------------------------------------"
 	echo ""
-	read -s -e -n 1 -p " => Select option or (q)uit: " _MAINCHOICE
+	read -s -e -n 1 -p " => Select option or (q)uit: " main_choice
 	echo ""
 
-	case $_MAINCHOICE in
+	case $main_choice in
 		[aA])
 			enable_wifi
 			;;
