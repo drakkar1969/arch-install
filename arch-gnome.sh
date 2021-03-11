@@ -150,7 +150,7 @@ install_xorg()
 		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
- 		sudo pacman -S xorg-server
+ 		sudo pacman -S xorg
 
 		print_progress_text "Installing X widgets for testing"
 		sudo pacman -S xorg-xinit xorg-twm xterm
@@ -174,7 +174,7 @@ display_drivers()
 		print_progress_text "Installing nVidia video drivers"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
-		sudo pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
+		sudo pacman -S nvidia lib32-virtualgl nvidia-utils mesa nvidia-settings
 
 		print_progress_text "Installing Intel VA-API (hardware acccel) drivers"
 		sudo pacman -S intel-media-driver
