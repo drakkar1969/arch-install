@@ -344,9 +344,7 @@ format_partitions()
 		esac
 	done
 
-	local fmt_array_sum
-
-	((fmt_array_sum = ${FMTCHECKLIST[@]/%/+}0))
+	local fmt_array_sum=$((${FMTCHECKLIST[@]/%/+}0))
 
 	if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
 		MAINCHECKLIST[4]=1
