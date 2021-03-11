@@ -102,7 +102,6 @@ enable_wifi()
 
 		get_any_key
 	fi
-
 }
 
 install_xorg()
