@@ -456,26 +456,24 @@ Test that the Xorg environment is working with the command `startx`. To exit the
 
 #### Install Video Drivers
 
-Install the nVidia video drivers (`nvidia-libgl` is not required, as `xorg-server` provides OpenGL support through the `mesa` package):
+Install the Intel video drivers:
 
 ```bash
-sudo pacman -S nvidia
+sudo pacman -S mesa
 ```
 
-For 32-bit support on 64-bit machines:
-
-```bash
-sudo pacman -S lib32-virtualgl lib32-nvidia-utils
-```
-
-If prompted to select provider(s), select default options.
-
-Make sure that the `lib32-nvidia-libgl` package is not installed.
+> Note: the `xf86-video-intel` package can optionally be installed (often not recommended).
 
 Install the Intel VA-API driver for hardware video acceleration
 
 ```bash
 sudo pacman -S intel-media-driver
+```
+
+Install the nVidia video drivers (`nvidia-libgl` is not required, as `xorg-server` provides OpenGL support through the `mesa` package):
+
+```bash
+sudo pacman -S nvidia
 ```
 
 #### Install GNOME
