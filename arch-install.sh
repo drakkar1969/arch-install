@@ -116,15 +116,16 @@ set_keyboard()
 	print_submenu_heading "SET KEYBOARD LAYOUT"
 
 	local user_confirm="n"
+	local kb_code
 
-	get_user_variable KBCODE "keyboard layout" "it"
+	get_user_variable kb_code "keyboard layout" "it"
 
-	echo -e "Set keyboard layout to ${GREEN}${KBCODE}${RESET}."
+	echo -e "Set keyboard layout to ${GREEN}${kb_code}${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting keyboard layout"
-		loadkeys $KBCODE
+		loadkeys $kb_code
 
 		MAINCHECKLIST[0]=1
 
@@ -149,22 +150,24 @@ enable_wifi()
 	print_submenu_heading "ENABLE WIFI CONNECTION"
 
 	local user_confirm="n"
+	local adapter_id
+	local wifi_ssid
 
 	iwctl device list
-	get_user_variable ADAPTERID "wireless adapter name" "wlp3s0"
+	get_user_variable adapter_id "wireless adapter name" "wlp3s0"
 
 	print_progress_text "Scanning for wifi networks ..."
 
-	iwctl station $ADAPTERID scan
-	iwctl station $ADAPTERID get-networks
-	get_user_variable WIFISSID "wireless network name" ""
+	iwctl station $adapter_id scan
+	iwctl station $adapter_id get-networks
+	get_user_variable wifi_ssid "wireless network name" ""
 
-	echo -e "Connect to wifi network ${GREEN}${WIFISSID}${RESET} on adapter ${GREEN}${ADAPTERID}${RESET}."
+	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET} on adapter ${GREEN}${adapter_id}${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Connecting to wifi network"
-		station $ADAPTERID connect $WIFISSID
+		station $adapter_id connect $wifi_ssid
 
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com
@@ -205,15 +208,17 @@ sub_format_boot()
 
 	print_partition_structure
 
-	get_user_variable FMTESPID "boot (ESP) partition ID" "/dev/nvme0n1p1"
+	local fmt_esp_id
 
-	echo -e "Partition $(get_partition_info $FMTESPID) will be formated with file system ${GREEN}FAT32${RESET}."
+	get_user_variable fmt_esp_id "boot (ESP) partition ID" "/dev/nvme0n1p1"
+
+	echo -e "Partition $(get_partition_info $fmt_esp_id) will be formated with file system ${GREEN}FAT32${RESET}."
 
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Formatting boot partition"
-		mkfs.fat -F32 $FMTESPID
+		mkfs.fat -F32 $fmt_esp_id
 
 		FMTCHECKLIST[0]=1
 
@@ -229,15 +234,17 @@ sub_format_root()
 
 	print_partition_structure
 
-	get_user_variable FMTROOTID "root partition ID" "/dev/nvme0n1p2"
+	local fmt_root_id
 
-	echo -e "Partition $(get_partition_info $FMTROOTID) will be formated with file system ${GREEN}EXT4${RESET}."
+	get_user_variable fmt_root_id "root partition ID" "/dev/nvme0n1p2"
+
+	echo -e "Partition $(get_partition_info $fmt_root_id) will be formated with file system ${GREEN}EXT4${RESET}."
 
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Formatting root partition"
-		mkfs.ext4 $FMTROOTID
+		mkfs.ext4 $fmt_root_id
 
 		FMTCHECKLIST[1]=1
 
@@ -253,15 +260,17 @@ sub_format_home()
 
 	print_partition_structure
 
-	get_user_variable FMTHOMEID "home partition ID" "/dev/nvme0n1p4"
+	local fmt_home_id
 
-	echo -e "Partition $(get_partition_info $FMTHOMEID) will be formated with file system ${GREEN}EXT4${RESET}."
+	get_user_variable fmt_home_id "home partition ID" "/dev/nvme0n1p4"
+
+	echo -e "Partition $(get_partition_info $fmt_home_id) will be formated with file system ${GREEN}EXT4${RESET}."
 
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Formatting home partition"
-		mkfs.ext4 $FMTHOMEID
+		mkfs.ext4 $fmt_home_id
 
 		FMTCHECKLIST[2]=1
 
@@ -277,16 +286,18 @@ sub_make_swap()
 
 	print_partition_structure
 
-	get_user_variable FMTSWAPID "SWAP partition ID" "/dev/nvme0n1p3"
+	local fmt_swap_id
 
-	echo -e "Partition $(get_partition_info $FMTSWAPID) will be activated as ${GREEN}SWAP${RESET} partition."
+	get_user_variable fmt_swap_id "SWAP partition ID" "/dev/nvme0n1p3"
+
+	echo -e "Partition $(get_partition_info $fmt_swap_id) will be activated as ${GREEN}SWAP${RESET} partition."
 
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Activating SWAP partition"
-		mkswap $FMTSWAPID
-		swapon $FMTSWAPID
+		mkswap $fmt_swap_id
+		swapon $fmt_swap_id
 
 		FMTCHECKLIST[3]=1
 
@@ -350,20 +361,24 @@ mount_partitions()
 
 	print_partition_structure
 
-	get_user_variable MNTBOOTID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_user_variable MNTROOTID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_user_variable MNTHOMEID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
+	local mnt_boot_id
+	local mnt_root_id
+	local mnt_home_id
+
+	get_user_variable mnt_boot_id "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
+	get_user_variable mnt_root_id "root partition ID (blank to skip)" "/dev/nvme0n1p2"
+	get_user_variable mnt_home_id "home partition ID (blank to skip)" "/dev/nvme0n1p4"
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
-	if [[ "$MNTBOOTID" != "" ]]; then
-		echo -e "   + ESP (boot) partition $(get_partition_info $MNTBOOTID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	if [[ "$mnt_boot_id" != "" ]]; then
+		echo -e "   + ESP (boot) partition $(get_partition_info $mnt_boot_id) will be mounted to ${GREEN}/mnt/boot${RESET}"
 	fi
-	if [[ "$MNTROOTID" != "" ]]; then
-		echo -e "   + Root partition $(get_partition_info $MNTROOTID) will be mounted to ${GREEN}/mnt${RESET}"
+	if [[ "$mnt_root_id" != "" ]]; then
+		echo -e "   + Root partition $(get_partition_info $mnt_root_id) will be mounted to ${GREEN}/mnt${RESET}"
 	fi
-	if [[ "$MNTHOMEID" != "" ]]; then
-		echo -e "   + Home partition $(get_partition_info $MNTHOMEID) will be mounted to ${GREEN}/mnt/home${RESET}"
+	if [[ "$mnt_home_id" != "" ]]; then
+		echo -e "   + Home partition $(get_partition_info $mnt_home_id) will be mounted to ${GREEN}/mnt/home${RESET}"
 	fi
 	echo ""
 
@@ -371,18 +386,18 @@ mount_partitions()
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Mounting partitions"
-		if [[ "$MNTROOTID" != "" ]]; then
-			mount $MNTROOTID /mnt
+		if [[ "$mnt_root_id" != "" ]]; then
+			mount $mnt_root_id /mnt
 		fi
 
-		if [[ "$MNTHOMEID" != "" ]]; then
+		if [[ "$mnt_home_id" != "" ]]; then
 			mkdir /mnt/home
-			mount $MNTHOMEID /mnt/home
+			mount $mnt_home_id /mnt/home
 		fi
 
-		if [[ "$MNTBOOTID" != "" ]]; then
+		if [[ "$mnt_boot_id" != "" ]]; then
 			mkdir /mnt/boot
-			mount $MNTBOOTID /mnt/boot
+			mount $mnt_boot_id /mnt/boot
 		fi
 
 		print_progress_text "Verifying partition structure"

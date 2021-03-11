@@ -117,15 +117,18 @@ enable_wifi()
 
 	local user_confirm="n"
 
-	get_user_variable WIFISSID "wireless network name" ""
-	get_user_variable WIFIPASSWD "wireless password" ""
+	local wifi_ssid
+	local wifi_passwd
 
-	echo -e "Connect to wifi network ${GREEN}${WIFISSID}${RESET}."
+	get_user_variable wifi_ssid "wireless network name" ""
+	get_user_variable wifi_passwd "wireless password" ""
+
+	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Connecting to wifi network"
-		nmcli device wifi connect "$WIFISSID" password "$WIFIPASSWD"
+		nmcli device wifi connect "$wifi_ssid" password "$wifi_passwd"
 
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com
@@ -191,7 +194,7 @@ install_gnome()
 
 	local user_confirm="n"
 
-	get_user_variable GNOMEIGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
+	get_user_variable gnome_ignore "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca"
 
 	echo -e "Install the GNOME desktop environment."
 	get_yn_confirmation user_confirm
@@ -201,8 +204,8 @@ install_gnome()
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		if [[ "$GNOMEIGNORE" != "" ]]; then
-			sudo pacman -S gnome --ignore $GNOMEIGNORE
+		if [[ "$gnome_ignore" != "" ]]; then
+			sudo pacman -S gnome --ignore $gnome_ignore
 		else
 			sudo pacman -S gnome
 		fi

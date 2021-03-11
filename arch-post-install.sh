@@ -117,14 +117,16 @@ set_kbpermanent()
 
 	local user_confirm="n"
 
-	get_user_variable KBCODE "keyboard layout" "it"
+	local kb_code
 
-	echo -e "Make keyboard layout ${GREEN}${KBCODE}${RESET} permanent."
+	get_user_variable kb_code "keyboard layout" "it"
+
+	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
 		print_progress_text "Setting keyboard layout"
-		echo KEYMAP=$KBCODE > /etc/vconsole.conf
+		echo KEYMAP=$kb_code > /etc/vconsole.conf
 
 		MAINCHECKLIST[0]=1
 
@@ -137,15 +139,16 @@ set_timezone()
 	print_submenu_heading "CONFIGURE TIMEZONE"
 
 	local user_confirm="n"
+	local timezone
 
-	get_user_variable TIMEZONE "timezone" "Europe/Sarajevo"
+	get_user_variable timezone "timezone" "Europe/Sarajevo"
 
-	echo -e "Set the timezone to ${GREEN}${TIMEZONE}${RESET}."
+	echo -e "Set the timezone to ${GREEN}${timezone}${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
-		print_progress_text "Creating symlink for timezone $TIMEZONE"
-		ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+		print_progress_text "Creating symlink for timezone $timezone"
+		ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 
 		MAINCHECKLIST[1]=1
 
@@ -178,37 +181,40 @@ set_locale()
 
 	local user_confirm="n"
 
-	get_user_variable LOCALE_US "language locale" "en_US"
-	get_user_variable LOCALE_DK "format locale" "en_DK"
+	local locale_US
+	local locale_DK
 
-	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_DK}${RESET}."
+	get_user_variable locale_US "language locale" "en_US"
+	get_user_variable locale_DK "format locale" "en_DK"
+
+	echo -e "Set the language to ${GREEN}${locale_US}${RESET} and the format locale to ${GREEN}${locale_DK}${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
-		print_progress_text "Setting language to $LOCALE_US and formats to $LOCALE_DK"
-		LOCALE_US_UTF="$LOCALE_US.UTF-8"
-		LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
+		print_progress_text "Setting language to $locale_US and formats to $locale_DK"
+		locale_US_UTF="$locale_US.UTF-8"
+		locale_DK_UTF="$locale_DK.UTF-8"
 
-		sed -i "/#$LOCALE_US_UTF/ s/^#//" /etc/locale.gen
-		sed -i "/#$LOCALE_DK_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_US_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_DK_UTF/ s/^#//" /etc/locale.gen
 
 		locale-gen
 
 		cat > /etc/locale.conf <<-LOCALECONF
-			LANG=$LOCALE_US_UTF
-			LC_MEASUREMENT=$LOCALE_DK_UTF
-			LC_MONETARY=$LOCALE_US_UTF
-			LC_NUMERIC=$LOCALE_US_UTF
-			LC_PAPER=$LOCALE_DK_UTF
-			LC_TIME=$LOCALE_DK_UTF
+			LANG=$locale_US_UTF
+			LC_MEASUREMENT=$locale_DK_UTF
+			LC_MONETARY=$locale_US_UTF
+			LC_NUMERIC=$locale_US_UTF
+			LC_PAPER=$locale_DK_UTF
+			LC_TIME=$locale_DK_UTF
 		LOCALECONF
 
-		export LANG=$LOCALE_US_UTF
-		export LC_MEASUREMENT=$LOCALE_DK_UTF
-		export LC_MONETARY=$LOCALE_US_UTF
-		export LC_NUMERIC=$LOCALE_US_UTF
-		export LC_PAPER=$LOCALE_DK_UTF
-		export LC_TIME=$LOCALE_DK_UTF
+		export LANG=$locale_US_UTF
+		export LC_MEASUREMENT=$locale_DK_UTF
+		export LC_MONETARY=$locale_US_UTF
+		export LC_NUMERIC=$locale_US_UTF
+		export LC_PAPER=$locale_DK_UTF
+		export LC_TIME=$locale_DK_UTF
 
 		print_file_contents "/etc/locale.conf"
 
@@ -223,20 +229,21 @@ set_hostname()
 	print_submenu_heading "CONFIGURE HOSTNAME"
 
 	local user_confirm="n"
+	local pc_name
 
-	get_user_variable PCNAME "hostname" "ProBook450"
+	get_user_variable pc_name "hostname" "ProBook450"
 
-	echo -e "Set the hostname to ${GREEN}${PCNAME}${RESET}."
+	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
-		print_progress_text "Setting hostname to $PCNAME"
-		echo $PCNAME > /etc/hostname
+		print_progress_text "Setting hostname to $pc_name"
+		echo $pc_name > /etc/hostname
 
 		cat > /etc/hosts <<-HOSTSFILE
 			127.0.0.1       localhost
 			::1             localhost
-			127.0.1.1       ${PCNAME}.localdomain      ${PCNAME}
+			127.0.1.1       ${pc_name}.localdomain      ${pc_name}
 		HOSTSFILE
 
 		print_file_contents "/etc/hostname"
@@ -296,24 +303,27 @@ add_sudouser()
 
 	local user_confirm="n"
 
-	get_user_variable NEWUSER "user name" "drakkar"
-	get_user_variable USERDESC "user description" "draKKar"
+	local new_user
+	local user_desc
 
-	echo -e "Create new user ${GREEN}${NEWUSER}${RESET} with sudo privileges."
+	get_user_variable new_user "user name" "drakkar"
+	get_user_variable user_desc "user description" "draKKar"
+
+	echo -e "Create new user ${GREEN}${new_user}${RESET} with sudo privileges."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" = "y" ]]; then
-		print_progress_text "Creating new user $NEWUSER"
-		useradd -m -G wheel -c $USERDESC -s /bin/bash $NEWUSER
+		print_progress_text "Creating new user $new_user"
+		useradd -m -G wheel -c $user_desc -s /bin/bash $new_user
 
-		print_progress_text "Setting password for user $NEWUSER"
-		passwd $NEWUSER
+		print_progress_text "Setting password for user $new_user"
+		passwd $new_user
 
-		print_progress_text "Enabling sudo privileges for user $NEWUSER"
+		print_progress_text "Enabling sudo privileges for user $new_user"
 		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
 
-		print_progress_text "Verifying user $NEWUSER identity"
-		id $NEWUSER
+		print_progress_text "Verifying user $new_user identity"
+		id $new_user
 
 		MAINCHECKLIST[7]=1
 
