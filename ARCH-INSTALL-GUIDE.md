@@ -470,7 +470,7 @@ Install the Intel VA-API driver for hardware video acceleration
 sudo pacman -S intel-media-driver
 ```
 
-Install the nVidia video drivers (`nvidia-libgl` is not required, as `xorg-server` provides OpenGL support through the `mesa` package):
+Install the nVidia video drivers:
 
 ```bash
 sudo pacman -S nvidia
