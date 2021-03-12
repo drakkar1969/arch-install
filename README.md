@@ -16,10 +16,9 @@ arch-chroot /mnt /bin/bash
 
 ## Post-Installation
 
-Download and execute the post-installation script `arch-post-install.sh`:
+Execute the post-installation script `arch-post-install.sh`:
 
 ```shell
-curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh
 bash arch-post-install.sh
 ```
 

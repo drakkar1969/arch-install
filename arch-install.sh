@@ -3,7 +3,7 @@
 #===========================================================================================================
 # GLOBAL VARIABLES
 #===========================================================================================================
-MAINCHECKLIST=(0 0 0 0 0 0 0 0)
+MAINCHECKLIST=(0 0 0 0 0 0 0 0 0)
 FMTCHECKLIST=(0 0 0 0)
 
 RED='\033[1;31m'
@@ -448,6 +448,26 @@ generate_fstab()
 	fi
 }
 
+download_postinstall()
+{
+	print_submenu_heading "DOWNLOAD POST INSTALL SCRIPT"
+
+	local user_confirm="n"
+
+	echo -e "Download post-install script."
+	get_yn_confirmation user_confirm
+
+	if [[ "$user_confirm" == "y" ]]; then
+		print_progress_text "Downloading post-install script"
+		curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh
+		cp arch-post-install.sh /mnt
+
+		MAINCHECKLIST[8]=1
+
+		get_any_key
+	fi
+}
+
 main_menu()
 {
 	clear
@@ -464,6 +484,7 @@ main_menu()
 	print_menu_item F ${MAINCHECKLIST[5]} 'Mount partitions'
 	print_menu_item G ${MAINCHECKLIST[6]} 'Install base packages'
 	print_menu_item H ${MAINCHECKLIST[7]} 'Generate fstab file'
+	print_menu_item I ${MAINCHECKLIST[8]} 'Download post-install script'
 
 	echo ""
 	echo -e "-------------------------------------------------------------------------------"
@@ -488,13 +509,15 @@ main_menu()
 			install_base ;;
 		[hH])
 			generate_fstab ;;
+		[iI])
+			download_postinstall ;;
 		[qQ])
 			clear
 			echo -e "To complete the installation, change root into the new system:"
 			echo ""
 			echo -e "   ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
 			echo ""
-			echo -e "Download and execute the script ${GREEN}arch-post-install.sh${RESET}."
+			echo -e "Execute the script ${GREEN}arch-post-install.sh${RESET}."
 			echo ""
 			exit 0
 			;;
