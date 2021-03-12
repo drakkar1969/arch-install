@@ -102,7 +102,7 @@ set_kbpermanent()
 	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Setting keyboard layout"
 		echo KEYMAP=$kb_code > /etc/vconsole.conf
 
@@ -124,7 +124,7 @@ set_timezone()
 	echo -e "Set the timezone to ${GREEN}${timezone}${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Creating symlink for timezone $timezone"
 		ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 
@@ -143,7 +143,7 @@ sync_hwclock()
 	echo -e "Sync hardware clock."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Setting hardware clock to UTC"
 		hwclock --systohc --utc
 
@@ -168,7 +168,7 @@ set_locale()
 	echo -e "Set the language to ${GREEN}${locale_US}${RESET} and the format locale to ${GREEN}${locale_DK}${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Setting language to $locale_US and formats to $locale_DK"
 		locale_US_UTF="$locale_US.UTF-8"
 		locale_DK_UTF="$locale_DK.UTF-8"
@@ -214,7 +214,7 @@ set_hostname()
 	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Setting hostname to $pc_name"
 		echo $pc_name > /etc/hostname
 
@@ -242,7 +242,7 @@ enable_multilib()
 	echo -e "Enable the multilib repository in ${GREEN}/etc/pacman.conf${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Enabling multilib repository in /etc/pacman.conf"
 		sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 
@@ -266,7 +266,7 @@ root_password()
 	echo -e "Set the password for the root user."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		passwd
 
 		MAINCHECKLIST[6]=1
@@ -290,7 +290,7 @@ add_sudouser()
 	echo -e "Create new user ${GREEN}${new_user}${RESET} with sudo privileges."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Creating new user $new_user"
 		useradd -m -G wheel -c $user_desc -s /bin/bash $new_user
 
@@ -318,7 +318,7 @@ install_bootloader()
 	echo -e "Install the grub bootloader."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing grub bootloader"
 		pacman -S grub efibootmgr os-prober
 		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
@@ -344,7 +344,7 @@ enable_wifi()
 	echo -e "Enable Wifi."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing Network Manager"
  		pacman -S networkmanager
 

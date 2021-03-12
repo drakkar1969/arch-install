@@ -91,7 +91,7 @@ enable_wifi()
 	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Connecting to wifi network"
 		nmcli device wifi connect "$wifi_ssid" password "$wifi_passwd"
 
@@ -113,7 +113,7 @@ install_xorg()
 	echo -e "Install Xorg graphical environment."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
@@ -137,7 +137,7 @@ display_drivers()
 	echo -e "Install display drivers."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing nVidia video drivers"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
@@ -163,7 +163,7 @@ install_gnome()
 	echo -e "Install the GNOME desktop environment."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing GNOME"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""

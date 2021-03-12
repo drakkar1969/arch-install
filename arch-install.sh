@@ -123,7 +123,7 @@ set_keyboard()
 	echo -e "Set keyboard layout to ${GREEN}${kb_code}${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Setting keyboard layout"
 		loadkeys $kb_code
 
@@ -165,7 +165,7 @@ enable_wifi()
 	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET} on adapter ${GREEN}${adapter_id}${RESET}."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Connecting to wifi network"
 		station $adapter_id connect $wifi_ssid
 
@@ -187,7 +187,7 @@ system_clock()
 	echo -e "Enable clock synchronization over network."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Enabling clock synchronization over network"
 		timedatectl set-ntp true
 
@@ -216,7 +216,7 @@ sub_format_boot()
 
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Formatting boot partition"
 		mkfs.fat -F32 $fmt_esp_id
 
@@ -242,7 +242,7 @@ sub_format_root()
 
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Formatting root partition"
 		mkfs.ext4 $fmt_root_id
 
@@ -268,7 +268,7 @@ sub_format_home()
 
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Formatting home partition"
 		mkfs.ext4 $fmt_home_id
 
@@ -294,7 +294,7 @@ sub_make_swap()
 
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Activating SWAP partition"
 		mkswap $fmt_swap_id
 		swapon $fmt_swap_id
@@ -382,7 +382,7 @@ mount_partitions()
 
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Mounting partitions"
 		if [[ "$mnt_root_id" != "" ]]; then
 			mount $mnt_root_id /mnt
@@ -416,7 +416,7 @@ install_base()
 	echo -e "Install base packages."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing base packages"
 		pacstrap /mnt base base-devel linux linux-firmware
 
@@ -435,7 +435,7 @@ generate_fstab()
 	echo -e "Generate new fstab file."
 	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" = "y" ]]; then
+	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Generating fstab file"
 		genfstab -U /mnt >> /mnt/etc/fstab
 
