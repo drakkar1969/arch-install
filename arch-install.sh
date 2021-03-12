@@ -182,7 +182,7 @@ system_clock()
 {
 	print_submenu_heading "UPDATE SYSTEM CLOCK"
 
-	local user_confirm="y"
+	local user_confirm="n"
 
 	echo -e "Enable clock synchronization over network."
 	get_yn_confirmation user_confirm
