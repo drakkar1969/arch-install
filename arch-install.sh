@@ -37,6 +37,7 @@ print_submenu_heading()
 
 print_progress_text()
 {
+	echo ""
 	echo -e "${GREEN}==>${RESET} $1"
 	echo ""
 }
@@ -71,7 +72,6 @@ get_yn_confirmation()
 	local yn_choice="n"
 
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
-	echo ""
 
 	eval $output="'$yn_choice'"
 }
