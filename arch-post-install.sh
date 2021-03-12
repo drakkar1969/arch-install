@@ -468,17 +468,17 @@ main_menu()
 			clear
 			echo -e "Exit the chroot environment:"
 			echo ""
-			echo -e "   > ${GREEN}exit${RESET}"
+			echo -e "   ${GREEN}exit${RESET}"
 			echo ""
 			echo -e "Unmount partitions:"
 			echo ""
-			echo -e "   > ${GREEN}umount -R /mnt/boot${RESET}"
-			echo -e "   > ${GREEN}umount -R /mnt/home${RESET}"
-			echo -e "   > ${GREEN}umount -R /mnt${RESET}"
+			echo -e "   ${GREEN}umount -R /mnt/boot${RESET}"
+			echo -e "   ${GREEN}umount -R /mnt/home${RESET}"
+			echo -e "   ${GREEN}umount -R /mnt${RESET}"
 			echo ""
 			echo -e "Restart to boot into GNOME:"
 			echo ""
-			echo -e "   > ${GREEN}reboot${RESET}"
+			echo -e "   ${GREEN}reboot${RESET}"
 			echo ""
 			exit 0
 			;;
