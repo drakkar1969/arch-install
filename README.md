@@ -37,23 +37,6 @@ umount -R /mnt/home
 umount -R /mnt
 ```
 
-Restart:
-
-```shell
-reboot
-```
-
-## Desktop Environment
-
-Login with username and password.
-
-Download and execute the desktop environment script `arch-gnome.sh` to install the GNOME desktop environment:
-
-```shell
-curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-gnome.sh
-bash arch-post-install.sh
-```
-
 Restart to boot into GNOME:
 
 ```shell

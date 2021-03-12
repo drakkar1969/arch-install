@@ -386,13 +386,65 @@ Generate the `grub.cfg` file (this will also enable automatic `microcode` update
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-#### Enable Wifi after Reboot
+## Desktop Environment
 
-Install Network Manager:
+#### Install Xorg Graphical Environment
+
+Install Xorg:
 
 ```bash
-pacman -S networkmanager
+pacman -S xorg-server
 ```
+
+Install X widgets for testing:
+
+```bash
+pacman -S xorg-xinit xorg-twm xterm
+```
+
+Test that the Xorg environment is working with the command `startx`. To exit the graphical environment type `exit`.
+
+#### Install Video Drivers
+
+Install the Mesa OpenGL driver (for Intel video):
+
+```bash
+pacman -S mesa
+```
+
+> Note: the `xf86-video-intel` package can optionally be installed (often not recommended).
+
+Install the Intel VA-API driver for hardware video acceleration
+
+```bash
+pacman -S intel-media-driver
+```
+
+Install the nVidia video drivers:
+
+```bash
+pacman -S nvidia
+```
+
+#### Install GNOME
+
+Install GNOME package group (press `ENTER` to select all packages when prompted):
+
+```bash
+pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
+```
+
+If prompted to select provider(s), select default options.
+
+#### Enable GDM Display Manager
+
+Enable the `gdm` (GNOME Display Manager) login screen:
+
+```bash
+systemctl enable gdm.service
+```
+
+#### Enable Network Manager
 
 Enable the Network Manager service:
 
@@ -415,86 +467,6 @@ umount -R /mnt/boot
 umount -R /mnt/home
 umount -R /mnt
 ```
-
-Restart the machine:
-
-```bash
-reboot
-```
-
-## Desktop Environment
-
-#### Enable Internet Connection
-
-```bash
-nmcli device wifi "SSID" password "PASSWD"
-```
-
-Replace `SSID` and `PASSWD` with your wifi network and password.
-
-To test the internet connection:
-
-```bash
-ping -c 3 www.google.com
-```
-
-#### Install Xorg Graphical Environment
-
-Install Xorg:
-
-```bash
-sudo pacman -S xorg-server
-```
-
-Install X widgets for testing:
-
-```bash
-sudo pacman -S xorg-xinit xorg-twm xterm
-```
-
-Test that the Xorg environment is working with the command `startx`. To exit the graphical environment type `exit`.
-
-#### Install Video Drivers
-
-Install the Mesa OpenGL driver (for Intel video):
-
-```bash
-sudo pacman -S mesa
-```
-
-> Note: the `xf86-video-intel` package can optionally be installed (often not recommended).
-
-Install the Intel VA-API driver for hardware video acceleration
-
-```bash
-sudo pacman -S intel-media-driver
-```
-
-Install the nVidia video drivers:
-
-```bash
-sudo pacman -S nvidia
-```
-
-#### Install GNOME
-
-Install GNOME package group (press `ENTER` to select all packages when prompted):
-
-```bash
-sudo pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
-```
-
-If prompted to select provider(s), select default options.
-
-#### Enable GDM Display Manager
-
-Enable the `gdm` (GNOME Display Manager) login screen:
-
-```bash
-sudo systemctl enable gdm.service
-```
-
-#### Reboot
 
 Restart the machine to boot into GNOME:
 
