@@ -386,6 +386,8 @@ Generate the `grub.cfg` file (this will also enable automatic `microcode` update
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
+---
+
 ## Desktop Environment
 
 #### Install Xorg Graphical Environment
