@@ -473,29 +473,21 @@ main_menu()
 
 	case $main_choice in
 		[aA])
-			set_keyboard
-			;;
+			set_keyboard ;;
 		[bB])
-			check_uefimode
-			;;
+			check_uefimode ;;
 		[cC])
-			enable_wifi
-			;;
+			enable_wifi ;;
 		[dD])
-			system_clock
-			;;
+			system_clock ;;
 		[eE])
-			format_partitions
-			;;
+			format_partitions ;;
 		[fF])
-			mount_partitions
-			;;
+			mount_partitions ;;
 		[gG])
-			install_base
-			;;
+			install_base ;;
 		[hH])
-			generate_fstab
-			;;
+			generate_fstab ;;
 		[qQ])
 			clear
 			echo -e "To complete the installation, change root into the new system:"

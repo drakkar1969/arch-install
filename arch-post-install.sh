@@ -441,41 +441,29 @@ main_menu()
 
 	case $main_choice in
 		[aA])
-			set_kbpermanent
-			;;
+			set_kbpermanent ;;
 		[bB])
-			set_timezone
-			;;
+			set_timezone ;;
 		[cC])
-			sync_hwclock
-			;;
+			sync_hwclock ;;
 		[dD])
-			set_locale
-			;;
+			set_locale ;;
 		[eE])
-			set_hostname
-			;;
+			set_hostname ;;
 		[fF])
-			enable_multilib
-			;;
+			enable_multilib ;;
 		[gG])
-			root_password
-			;;
+			root_password ;;
 		[hH])
-			add_sudouser
-			;;
+			add_sudouser ;;
 		[iI])
-			install_bootloader
-			;;
+			install_bootloader ;;
 		[jJ])
-			install_xorg
-			;;
+			install_xorg ;;
 		[kK])
-			display_drivers
-			;;
+			display_drivers ;;
 		[lL])
-			install_gnome
-			;;
+			install_gnome ;;
 		[qQ])
 			clear
 			echo -e "Exit the chroot environment:"
