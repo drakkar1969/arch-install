@@ -134,17 +134,12 @@ display_drivers()
 
 	local user_confirm="n"
 
-	echo -e "Install display drivers."
+	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and nVidia display drivers."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" == "y" ]]; then
-		print_progress_text "Installing nVidia video drivers"
-		echo -e "If prompted to select provider(s), select default options"
-		echo ""
-		sudo pacman -S nvidia lib32-virtualgl lib32-nvidia-utils
-
-		print_progress_text "Installing Intel VA-API (hardware acccel) drivers"
-		sudo pacman -S intel-media-driver
+		print_progress_text "Installing display drivers"
+		sudo pacman -S mesa intel-media-driver nvidia
 
 		MAINCHECKLIST[2]=1
 
