@@ -456,7 +456,7 @@ Test that the Xorg environment is working with the command `startx`. To exit the
 
 #### Install Video Drivers
 
-Install the Intel video drivers:
+Install the Mesa OpenGL driver (for Intel video):
 
 ```bash
 sudo pacman -S mesa
