@@ -330,17 +330,13 @@ format_partitions()
 
 		case $loop_input in
 			1)
-				sub_format_boot
-				;;
+				sub_format_boot ;;
 			2)
-				sub_format_root
-				;;
+				sub_format_root ;;
 			3)
-				sub_format_home
-				;;
+				sub_format_home ;;
 			4)
-				sub_make_swap
-				;;
+				sub_make_swap ;;
 		esac
 	done
 
