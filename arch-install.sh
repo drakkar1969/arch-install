@@ -310,7 +310,7 @@ format_partitions()
 
 		# Print header
 		echo -e "-------------------------------------------------------------------------------"
-		echo -e "-- ${GREEN} FORMAT PARTIONS :: SUB MENU${RESET}"
+		echo -e "-- ${GREEN} FORMAT PARTIONS ${RESET}::${GREEN} SUB MENU${RESET}"
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print sub-menu items
@@ -513,7 +513,7 @@ main_menu()
 
 		# Print header
 		echo -e "-------------------------------------------------------------------------------"
-		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} MAIN MENU${RESET}"
+		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} INSTALL MENU${RESET}"
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
