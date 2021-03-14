@@ -3,7 +3,6 @@
 #===========================================================================================================
 # GLOBAL VARIABLES
 #===========================================================================================================
-MAINCHECKLIST=(0 0 0 0 0 0 0 0 0)
 FMTCHECKLIST=(0 0 0 0)
 
 RED='\033[1;31m'
@@ -127,7 +126,7 @@ set_keyboard()
 		print_progress_text "Setting keyboard layout"
 		loadkeys $kb_code
 
-		MAINCHECKLIST[0]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -140,7 +139,7 @@ check_uefimode()
 	print_progress_text "Listing EFI variables"
 	ls /sys/firmware/efi/efivars
 
-	MAINCHECKLIST[1]=1
+	MAINCHECKLIST[$1]=1
 
 	get_any_key
 }
@@ -172,7 +171,7 @@ enable_wifi()
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com
 
-		MAINCHECKLIST[2]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -194,7 +193,7 @@ system_clock()
 		print_progress_text "Checking time and date status"
 		timedatectl
 
-		MAINCHECKLIST[3]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -343,7 +342,7 @@ format_partitions()
 	local fmt_array_sum=$((${FMTCHECKLIST[@]/%/+}0))
 
 	if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
-		MAINCHECKLIST[4]=1
+		MAINCHECKLIST[$1]=1
 	fi
 }
 
@@ -397,7 +396,7 @@ mount_partitions()
 		print_progress_text "Verifying partition structure"
 		print_partition_structure
 
-		MAINCHECKLIST[5]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -416,7 +415,7 @@ install_base()
 		print_progress_text "Installing base packages"
 		pacstrap /mnt base base-devel linux linux-firmware
 
-		MAINCHECKLIST[6]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -438,7 +437,7 @@ generate_fstab()
 		print_file_contents "/mnt/etc/fstab"
 		print_warning "In case of errors, do not run the command a second time, edit the fstab file manually"
 
-		MAINCHECKLIST[7]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -458,7 +457,7 @@ download_postinstall()
 		curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh
 		cp arch-post-install.sh /mnt
 
-		MAINCHECKLIST[8]=1
+		MAINCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -466,61 +465,83 @@ download_postinstall()
 
 main_menu()
 {
-	clear
+	MAINITEMS=("Set keyboard layout|set_keyboard"
+						 "Check UEFI mode|check_uefimode"
+						 "Enable wifi connection|enable_wifi"
+						 "Update system clock|system_clock"
+						 "Format partitions|format_partitions"
+						 "Mount partitions|mount_partitions"
+						 "Install base packages|install_base"
+						 "Generate fstab file|generate_fstab"
+						 "Download post-install script|download_postinstall")
+	MAINCHECKLIST=()
 
-	echo -e "-------------------------------------------------------------------------------"
-	echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} MAIN MENU${RESET}"
-	echo -e "-------------------------------------------------------------------------------"
+	# Initialize status array with '0'
+	local i
 
-	print_menu_item A ${MAINCHECKLIST[0]} 'Set keyboard layout'
-	print_menu_item B ${MAINCHECKLIST[1]} 'Check UEFI mode'
-	print_menu_item C ${MAINCHECKLIST[2]} 'Enable wifi connection'
-	print_menu_item D ${MAINCHECKLIST[3]} 'Update system clock'
-	print_menu_item E ${MAINCHECKLIST[4]} 'Format partitions'
-	print_menu_item F ${MAINCHECKLIST[5]} 'Mount partitions'
-	print_menu_item G ${MAINCHECKLIST[6]} 'Install base packages'
-	print_menu_item H ${MAINCHECKLIST[7]} 'Generate fstab file'
-	print_menu_item I ${MAINCHECKLIST[8]} 'Download post-install script'
+	for i in ${!MAINITEMS[@]}; do
+		MAINCHECKLIST+=("0")
+	done
 
-	echo ""
-	echo -e "-------------------------------------------------------------------------------"
-	echo ""
-	read -s -e -n 1 -p " => Select option or (q)uit: " main_choice
-	echo ""
+	# Main menu loop
+	while true; do
+		clear
 
-	case $main_choice in
-		[aA])
-			set_keyboard ;;
-		[bB])
-			check_uefimode ;;
-		[cC])
-			enable_wifi ;;
-		[dD])
-			system_clock ;;
-		[eE])
-			format_partitions ;;
-		[fF])
-			mount_partitions ;;
-		[gG])
-			install_base ;;
-		[hH])
-			generate_fstab ;;
-		[iI])
-			download_postinstall ;;
-		[qQ])
-			clear
-			echo -e "To complete the installation, change root into the new system:"
-			echo ""
-			echo -e "   ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
-			echo ""
-			echo -e "Execute the script ${GREEN}arch-post-install.sh${RESET}."
-			echo ""
-			exit 0
-			;;
-	esac
+		# Print header
+		echo -e "-------------------------------------------------------------------------------"
+		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} MAIN MENU${RESET}"
+		echo -e "-------------------------------------------------------------------------------"
+
+		# Print menu items
+		for i in ${!MAINITEMS[@]}; do
+			# Get character from ascii code (0->A,etc.)
+			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
+
+			local item_text=$(echo "${MAINITEMS[$i]}" | cut -f1 -d'|')
+
+			print_menu_item $item_index ${MAINCHECKLIST[$i]} "$item_text"
+		done
+
+		# Print footer
+		echo ""
+		echo -e "-------------------------------------------------------------------------------"
+		echo ""
+		echo -e -n " => Select option or (q)uit: "
+
+		# Get menu selection
+		local main_index=-1
+
+		until (( $main_index >= 0 && $main_index < ${#MAINITEMS[@]} ))
+		do
+			local main_choice
+
+			read -r -s -n 1 main_choice
+
+			# Exit main menu
+			if [[ "${main_choice,,}" == "q" ]]; then
+				clear
+				echo -e "To complete the installation, change root into the new system:"
+				echo ""
+				echo -e "   ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
+				echo ""
+				echo -e "Execute the script ${GREEN}arch-post-install.sh${RESET}."
+				echo ""
+				exit 0
+			fi
+
+			# Get selection index
+			if [[ "$main_choice" == [a-zA-Z] ]]; then
+				# Get ascii code from character (A->65, etc.)
+				main_index=$(LC_CTYPE=C printf '%d' "'${main_choice^^}")
+				main_index=$(($main_index-65))
+			fi
+		done
+
+		local item_func=$(echo "${MAINITEMS[$main_index]}" | cut -f2 -d'|')
+
+		# Execute function
+		eval ${item_func} $main_index
+	done
 }
 
-while true
-do
-	main_menu
-done
+main_menu
