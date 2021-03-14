@@ -314,6 +314,8 @@ format_partitions()
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print sub-menu items
+		local i
+
 		for i in ${!FMTITEMS[@]}; do
 			local sub_text=$(echo "${FMTITEMS[$i]}" | cut -f1 -d'|')
 
