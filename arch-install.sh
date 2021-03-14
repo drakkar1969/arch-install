@@ -463,7 +463,7 @@ download_postinstall()
 
 	local user_confirm="n"
 
-	echo -e "Download post-install script."
+	echo -e "Download post install script ${GREEN}arch-post-install.sh${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" == "y" ]]; then
@@ -487,7 +487,7 @@ main_menu()
 						 "Mount partitions|mount_partitions"
 						 "Install base packages|install_base"
 						 "Generate fstab file|generate_fstab"
-						 "Download post-install script|download_postinstall")
+						 "Download post install script|download_postinstall")
 	MAINCHECKLIST=()
 
 	FMTITEMS=("Format boot (ESP) partition (FAT32)|sub_format_boot"
