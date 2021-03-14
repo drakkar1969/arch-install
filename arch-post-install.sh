@@ -494,9 +494,9 @@ main_menu()
 			fi
 		done
 
+		# Execute function
 		local item_func=$(echo "${MAINITEMS[$main_index]}" | cut -f2 -d'|')
 
-		# Execute function
 		eval ${item_func} $main_index
 	done
 }

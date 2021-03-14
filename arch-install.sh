@@ -346,11 +346,12 @@ format_partitions()
 			fi
 		done
 
+		# Execute function
 		local sub_func=$(echo "${FMTITEMS[$fmt_index]}" | cut -f2 -d'|')
 
-		# Execute function
 		eval ${sub_func} $fmt_index
 
+		# Check sub-menu status
 		local fmt_array_sum=$((${FMTCHECKLIST[@]/%/+}0))
 
 		if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
@@ -560,9 +561,9 @@ main_menu()
 			fi
 		done
 
+		# Execute function
 		local item_func=$(echo "${MAINITEMS[$main_index]}" | cut -f2 -d'|')
 
-		# Execute function
 		eval ${item_func} $main_index
 	done
 }
