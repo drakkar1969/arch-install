@@ -3,8 +3,6 @@
 #===========================================================================================================
 # GLOBAL VARIABLES
 #===========================================================================================================
-FMTCHECKLIST=(0 0 0 0)
-
 RED='\033[1;31m'
 GREEN='\033[1;32m'
 RESET='\033[0m'
@@ -219,7 +217,7 @@ sub_format_boot()
 		print_progress_text "Formatting boot partition"
 		mkfs.fat -F32 $fmt_esp_id
 
-		FMTCHECKLIST[0]=1
+		FMTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -245,7 +243,7 @@ sub_format_root()
 		print_progress_text "Formatting root partition"
 		mkfs.ext4 $fmt_root_id
 
-		FMTCHECKLIST[1]=1
+		FMTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -271,7 +269,7 @@ sub_format_home()
 		print_progress_text "Formatting home partition"
 		mkfs.ext4 $fmt_home_id
 
-		FMTCHECKLIST[2]=1
+		FMTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -298,7 +296,7 @@ sub_make_swap()
 		mkswap $fmt_swap_id
 		swapon $fmt_swap_id
 
-		FMTCHECKLIST[3]=1
+		FMTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -306,44 +304,59 @@ sub_make_swap()
 
 format_partitions()
 {
-	local loop_input=""
-
-	while [[ "$loop_input" != "b" ]]
-	do
+	# Format menu loop
+	while true; do
 		clear
 
+		# Print header
 		echo -e "-------------------------------------------------------------------------------"
 		echo -e "-- ${GREEN} FORMAT PARTIONS :: SUB MENU${RESET}"
 		echo -e "-------------------------------------------------------------------------------"
 
-		print_menu_item 1 ${FMTCHECKLIST[0]} "Format boot (ESP) partition (FAT32)"
-		print_menu_item 2 ${FMTCHECKLIST[1]} "Format root partition (EXT4)"
-		print_menu_item 3 ${FMTCHECKLIST[2]} "Format home partition (EXT4)"
-		print_menu_item 4 ${FMTCHECKLIST[3]} "Make SWAP partition"
+		# Print sub-menu items
+		for i in ${!FMTITEMS[@]}; do
+			local sub_text=$(echo "${FMTITEMS[$i]}" | cut -f1 -d'|')
 
+			print_menu_item $(($i+1)) ${FMTCHECKLIST[$i]} "$sub_text"
+		done
+
+		# Print footer
 		echo ""
 		echo -e "-------------------------------------------------------------------------------"
 		echo ""
-		read -s -e -n 1 -p " Select option or (b)ack: " loop_input
-		echo ""
+		echo -e -n " => Select option or (b)ack: "
 
-		case $loop_input in
-			1)
-				sub_format_boot ;;
-			2)
-				sub_format_root ;;
-			3)
-				sub_format_home ;;
-			4)
-				sub_make_swap ;;
-		esac
+		# Get sub-menu selection
+		local fmt_index=-1
+
+		until (( $fmt_index >= 0 && $fmt_index < ${#FMTITEMS[@]} ))
+		do
+			local fmt_choice
+
+			read -r -s -n 1 fmt_choice
+
+			# Exit sub-menu
+			if [[ "${fmt_choice,,}" == "b" ]]; then
+				return
+			fi
+
+			# Get selection index
+			if [[ "$fmt_choice" == [0-9] ]]; then
+				fmt_index=$(($fmt_choice-1))
+			fi
+		done
+
+		local sub_func=$(echo "${FMTITEMS[$fmt_index]}" | cut -f2 -d'|')
+
+		# Execute function
+		eval ${sub_func} $fmt_index
+
+		local fmt_array_sum=$((${FMTCHECKLIST[@]/%/+}0))
+
+		if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
+			MAINCHECKLIST[$1]=1
+		fi
 	done
-
-	local fmt_array_sum=$((${FMTCHECKLIST[@]/%/+}0))
-
-	if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
-		MAINCHECKLIST[$1]=1
-	fi
 }
 
 mount_partitions()
@@ -476,11 +489,21 @@ main_menu()
 						 "Download post-install script|download_postinstall")
 	MAINCHECKLIST=()
 
-	# Initialize status array with '0'
+	FMTITEMS=("Format boot (ESP) partition (FAT32)|sub_format_boot"
+						"Format root partition (EXT4)|sub_format_root"
+						"Format home partition (EXT4)|sub_format_home"
+						"Make SWAP partition|sub_make_swap")
+	FMTCHECKLIST=()
+
+	# Initialize checklist arrays with '0'
 	local i
 
 	for i in ${!MAINITEMS[@]}; do
 		MAINCHECKLIST+=("0")
+	done
+
+	for i in ${!FMTITEMS[@]}; do
+		FMTCHECKLIST+=("0")
 	done
 
 	# Main menu loop
