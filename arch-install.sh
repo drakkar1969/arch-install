@@ -97,10 +97,14 @@ print_partition_structure()
 
 get_partition_info()
 {
-	local blk_part_info=$(lsblk --output NAME,SIZE,FSTYPE --paths --raw | grep -i $1)
-	local blk_part_id=$(echo $blk_part_info | awk '{print $1}')
-	local blk_part_size=$(echo $blk_part_info | awk '{print $2}')
-	local blk_part_fs=$(echo $blk_part_info | awk '{print $3}')
+	local blk_part_id=$1
+
+	local blk_part_size=$(lsblk --output SIZE --paths --raw --noheadings $blk_part_id)
+	local blk_part_fs=$(lsblk --output FSTYPE --paths --raw --noheadings $blk_part_id)
+
+	if [[ "$blk_part_fs" == "" ]]; then
+		blk_part_fs="unknown"
+	fi
 
 	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
 }
