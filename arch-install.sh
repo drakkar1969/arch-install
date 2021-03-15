@@ -469,9 +469,8 @@ download_postinstall()
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" == "y" ]]; then
-		print_progress_text "Downloading post-install script"
-		curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh
-		cp arch-post-install.sh /mnt
+		print_progress_text "Downloading post install script"
+		curl -LJSs -o /mnt/arch-post-install.sh "https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh"
 
 		MAINCHECKLIST[$1]=1
 
