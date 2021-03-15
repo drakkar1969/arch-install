@@ -68,6 +68,7 @@ get_yn_confirmation()
 	local output=$1
 	local yn_choice="n"
 
+	echo ""
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 
 	eval $output="'$yn_choice'"
