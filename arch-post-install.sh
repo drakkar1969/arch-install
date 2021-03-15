@@ -41,7 +41,7 @@ print_progress_text()
 
 print_warning()
 {
-	echo -e "${RED}Warning:${RESET} $1"
+	echo -e "${RED}WARNING:${RESET} $1"
 }
 
 print_file_contents()
