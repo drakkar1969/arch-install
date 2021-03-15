@@ -267,6 +267,8 @@ sub_format_home()
 
 	echo -e "Partition $(get_partition_info $fmt_home_id) will be formated with file system ${GREEN}EXT4${RESET}."
 
+	echo ""
+	print_warning "Proceed with formatting, only if the home partition is empty"
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" == "y" ]]; then
