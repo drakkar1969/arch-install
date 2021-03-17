@@ -472,12 +472,12 @@ download_postinstall()
 
 	local user_confirm="n"
 
-	echo -e "Download post install script ${GREEN}arch-post-install.sh${RESET}."
+	echo -e "Download post install script ${GREEN}arch-post-install.bash${RESET}."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Downloading post install script"
-		curl -LJSs -o /mnt/arch-post-install.sh "https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.sh"
+		curl -LJSs -o /mnt/arch-post-install.bash "https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.bash"
 
 		MAINCHECKLIST[$1]=1
 
@@ -556,7 +556,7 @@ main_menu()
 				echo ""
 				echo -e "   ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
 				echo ""
-				echo -e "Execute the script ${GREEN}arch-post-install.sh${RESET}."
+				echo -e "Execute the script ${GREEN}arch-post-install.bash${RESET}."
 				echo ""
 				exit 0
 			fi
