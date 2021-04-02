@@ -154,7 +154,7 @@ Verify partitions and exit `parted`:
 Format the `ESP` partition:
 
 ```bash
-mkfs.fat -F32 /dev/nvme0n1p1
+mkfs.fat -F32 -n "BOOT" /dev/nvme0n1p1
 ```
 
 Activate the `swap` partition:
@@ -167,13 +167,13 @@ swapon /dev/nvme0n1p3
 Format the `root` partition:
 
 ```bash
-mkfs.ext4 /dev/nvme0n1p2
+mkfs.ext4 -L "ROOT" /dev/nvme0n1p2
 ```
 
 Format the `home` partition (**do this only if the `home` partition is not empty**):
 
 ```bash
-mkfs.ext4 /dev/nvme0n1p4
+mkfs.ext4 -L "HOME" /dev/nvme0n1p4
 ```
 
 Format the data partition on the additional HDD (**do this only if the data partition is not empty**):

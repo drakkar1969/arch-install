@@ -220,7 +220,7 @@ sub_format_boot()
 
 	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Formatting boot partition"
-		mkfs.fat -F32 $fmt_esp_id
+		mkfs.fat -F32 -n "BOOT" $fmt_esp_id
 
 		FMTCHECKLIST[$1]=1
 
@@ -246,7 +246,7 @@ sub_format_root()
 
 	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Formatting root partition"
-		mkfs.ext4 $fmt_root_id
+		mkfs.ext4 -L "ROOT" $fmt_root_id
 
 		FMTCHECKLIST[$1]=1
 
@@ -274,7 +274,7 @@ sub_format_home()
 
 	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Formatting home partition"
-		mkfs.ext4 $fmt_home_id
+		mkfs.ext4 -L "HOME" $fmt_home_id
 
 		FMTCHECKLIST[$1]=1
 
