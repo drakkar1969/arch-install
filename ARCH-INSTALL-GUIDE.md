@@ -414,7 +414,7 @@ Install the Mesa OpenGL driver (for Intel video):
 pacman -S mesa
 ```
 
-> Note: the `xf86-video-intel` package can optionally be installed (often not recommended).
+> Note: the `xf86-video-intel` package can optionally be installed, see https://wiki.archlinux.org/index.php/Intel_graphics#Installation.
 
 Install the Intel VA-API driver for hardware video acceleration
 
