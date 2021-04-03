@@ -408,13 +408,13 @@ Test that the Xorg environment is working with the command `startx`. To exit the
 
 #### Install Video Drivers
 
-Install the Mesa OpenGL driver (for Intel video):
+Install the Mesa OpenGL driver (for Intel and Nouveau):
 
 ```bash
 pacman -S mesa
 ```
 
-> Note: the `xf86-video-intel` package can optionally be installed, see https://wiki.archlinux.org/index.php/Intel_graphics#Installation.
+> Note: the `xf86-video-intel` Intel driver is optional, see https://wiki.archlinux.org/index.php/Intel_graphics#Installation.
 
 Install the Intel VA-API driver for hardware video acceleration
 
@@ -422,11 +422,21 @@ Install the Intel VA-API driver for hardware video acceleration
 pacman -S intel-media-driver
 ```
 
-Install the nVidia video drivers:
+Install the nVidia proprietary video drivers:
 
 ```bash
 pacman -S nvidia
 ```
+
+**--OR--**
+
+Install the open source Nouveau driver for nVidia:
+
+```bash
+pacman -S xf86-video-nouveau
+```
+
+
 
 #### Install GNOME
 

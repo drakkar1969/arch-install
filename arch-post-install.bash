@@ -363,12 +363,12 @@ display_drivers()
 
 	local user_confirm="n"
 
-	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and nVidia display drivers."
+	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and Nouveau display drivers."
 	get_yn_confirmation user_confirm
 
 	if [[ "$user_confirm" == "y" ]]; then
 		print_progress_text "Installing display drivers"
-		pacman -S mesa intel-media-driver nvidia
+		pacman -S mesa intel-media-driver xf86-video-nouveau
 
 		MAINCHECKLIST[$1]=1
 
