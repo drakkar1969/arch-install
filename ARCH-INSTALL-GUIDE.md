@@ -362,7 +362,7 @@ bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
 
 #### Install Boot Loader
 
-Install the two packages `grub` and `os-prober` (`os-prober` is only needed to detect other operating systems in a dual boot scenario). For UEFI/GPT systems, the package `efibootmgr` is also required:
+Install `grub`, `efibootmgr` (for UEFI systems only) and `os-prober` (only needed to detect other operating systems in a dual boot scenario):
 
 ```bash
 pacman -S grub efibootmgr os-prober
