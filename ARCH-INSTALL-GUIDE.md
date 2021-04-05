@@ -416,7 +416,7 @@ pacman -S mesa
 
 > Note: the `xf86-video-intel` Intel driver is optional, see https://wiki.archlinux.org/index.php/Intel_graphics#Installation.
 
-Install the Intel VA-API driver for hardware video acceleration
+Install the Intel VA-API driver for hardware video acceleration:
 
 ```bash
 pacman -S intel-media-driver
@@ -435,8 +435,6 @@ Install the open source Nouveau driver for nVidia:
 ```bash
 pacman -S xf86-video-nouveau
 ```
-
-
 
 #### Install GNOME
 
