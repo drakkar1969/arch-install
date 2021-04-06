@@ -441,7 +441,7 @@ pacman -S xf86-video-nouveau
 Install GNOME package group (press `ENTER` to select all packages when prompted):
 
 ```bash
-pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca
+pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem
 ```
 
 If prompted to select provider(s), select default options.
