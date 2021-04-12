@@ -6,7 +6,7 @@ Download and execute the `arch-install.bash` script:
 
 ```shell
 curl -LJO https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-install.bash
-./arch-install.bash
+bash arch-install.bash
 ```
 After completing installation, change root into the new system:
 
@@ -19,7 +19,7 @@ arch-chroot /mnt /bin/bash
 Execute the post-installation script `arch-post-install.bash`:
 
 ```shell
-./arch-post-install.bash
+bash arch-post-install.bash
 ```
 
 Exit the `chroot` environment:
