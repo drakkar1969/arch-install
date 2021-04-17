@@ -232,23 +232,23 @@ format_partitions()
 	echo ""
 
 	if get_user_confirm; then
-		print_progress_text "Formating ESP (boot) partition"
 		if [[ "$FMT_BOOT_ID" != "" ]]; then
+			print_progress_text "Formating ESP (boot) partition"
 			mkfs.fat -F32 -n "BOOT" $FMT_BOOT_ID
 		fi
 
-		print_progress_text "Formating root partition"
 		if [[ "$FMT_ROOT_ID" != "" ]]; then
+			print_progress_text "Formating root partition"
 			mkfs.ext4 -L "ROOT" $FMT_ROOT_ID
 		fi
 
-		print_progress_text "Formating home partition"
 		if [[ "$FMT_HOME_ID" != "" ]]; then
+			print_progress_text "Formating home partition"
 			mkfs.ext4 -L "HOME" $FMT_HOME_ID
 		fi
 
-		print_progress_text "Activating swap partition"
 		if [[ "$FMT_SWAP_ID" != "" ]]; then
+			print_progress_text "Activating swap partition"
 			mkswap $FMT_SWAP_ID
 			swapon $FMT_SWAP_ID
 		fi
