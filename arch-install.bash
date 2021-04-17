@@ -225,7 +225,7 @@ format_partitions()
 	if get_user_confirm; then
 		print_progress_text "Formating ESP (boot) partition"
 		if [[ "$FMT_BOOT_ID" != "" ]]; then
-			mkfs.ext4 -L "ROOT" $FMT_BOOT_ID
+			mkfs.fat -F32 -n "BOOT" $FMT_BOOT_ID
 		fi
 
 		print_progress_text "Formating root partition"
