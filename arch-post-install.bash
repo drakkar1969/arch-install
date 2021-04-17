@@ -80,12 +80,13 @@ get_user_confirm()
 
 get_user_variable()
 {
-	local output=$1
+	local var_name=$1
+	local user_input
 
 	read -e -p "Enter $2: " -i "$3" user_input
 	echo ""
 
-	eval $output="'$user_input'"
+	declare -g "$var_name"=$user_input
 }
 
 #===========================================================================================================
@@ -95,15 +96,13 @@ set_kbpermanent()
 {
 	print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
 
-	local kb_code
+	get_user_variable KB_CODE "keyboard layout" "it"
 
-	get_user_variable kb_code "keyboard layout" "it"
-
-	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
+	echo -e "Make keyboard layout ${GREEN}${KB_CODE}${RESET} permanent."
 
 	if get_user_confirm; then
 		print_progress_text "Setting keyboard layout"
-		echo KEYMAP=$kb_code > /etc/vconsole.conf
+		echo KEYMAP=$KB_CODE > /etc/vconsole.conf
 
 		MAINCHECKLIST[$1]=1
 
@@ -115,15 +114,13 @@ set_timezone()
 {
 	print_submenu_heading "CONFIGURE TIMEZONE"
 
-	local timezone
+	get_user_variable TIMEZONE "timezone" "Europe/Sarajevo"
 
-	get_user_variable timezone "timezone" "Europe/Sarajevo"
-
-	echo -e "Set the timezone to ${GREEN}${timezone}${RESET}."
+	echo -e "Set the timezone to ${GREEN}${TIMEZONE}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Creating symlink for timezone $timezone"
-		ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+		print_progress_text "Creating symlink for timezone $TIMEZONE"
+		ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
 		MAINCHECKLIST[$1]=1
 
@@ -151,39 +148,36 @@ set_locale()
 {
 	print_submenu_heading "CONFIGURE LOCALE"
 
-	local locale_US
-	local locale_DK
+	get_user_variable LOCALE_US "language locale" "en_US"
+	get_user_variable LOCALE_DK "format locale" "en_DK"
 
-	get_user_variable locale_US "language locale" "en_US"
-	get_user_variable locale_DK "format locale" "en_DK"
-
-	echo -e "Set the language to ${GREEN}${locale_US}${RESET} and the format locale to ${GREEN}${locale_DK}${RESET}."
+	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_DK}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Setting language to $locale_US and formats to $locale_DK"
-		locale_US_UTF="$locale_US.UTF-8"
-		locale_DK_UTF="$locale_DK.UTF-8"
+		print_progress_text "Setting language to $LOCALE_US and formats to $LOCALE_DK"
+		LOCALE_US_UTF="$LOCALE_US.UTF-8"
+		LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
 
-		sed -i "/#$locale_US_UTF/ s/^#//" /etc/locale.gen
-		sed -i "/#$locale_DK_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$LOCALE_US_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$LOCALE_DK_UTF/ s/^#//" /etc/locale.gen
 
 		locale-gen
 
 		cat > /etc/locale.conf <<-LOCALECONF
-			LANG=$locale_US_UTF
-			LC_MEASUREMENT=$locale_DK_UTF
-			LC_MONETARY=$locale_US_UTF
-			LC_NUMERIC=$locale_US_UTF
-			LC_PAPER=$locale_DK_UTF
-			LC_TIME=$locale_DK_UTF
+			LANG=$LOCALE_US_UTF
+			LC_MEASUREMENT=$LOCALE_DK_UTF
+			LC_MONETARY=$LOCALE_US_UTF
+			LC_NUMERIC=$LOCALE_US_UTF
+			LC_PAPER=$LOCALE_DK_UTF
+			LC_TIME=$LOCALE_DK_UTF
 		LOCALECONF
 
-		export LANG=$locale_US_UTF
-		export LC_MEASUREMENT=$locale_DK_UTF
-		export LC_MONETARY=$locale_US_UTF
-		export LC_NUMERIC=$locale_US_UTF
-		export LC_PAPER=$locale_DK_UTF
-		export LC_TIME=$locale_DK_UTF
+		export LANG=$LOCALE_US_UTF
+		export LC_MEASUREMENT=$LOCALE_DK_UTF
+		export LC_MONETARY=$LOCALE_US_UTF
+		export LC_NUMERIC=$LOCALE_US_UTF
+		export LC_PAPER=$LOCALE_DK_UTF
+		export LC_TIME=$LOCALE_DK_UTF
 
 		print_file_contents "/etc/locale.conf"
 
@@ -197,20 +191,18 @@ set_hostname()
 {
 	print_submenu_heading "CONFIGURE HOSTNAME"
 
-	local pc_name
+	get_user_variable PC_NAME "hostname" "ProBook450"
 
-	get_user_variable pc_name "hostname" "ProBook450"
-
-	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
+	echo -e "Set the hostname to ${GREEN}${PC_NAME}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Setting hostname to $pc_name"
-		echo $pc_name > /etc/hostname
+		print_progress_text "Setting hostname to $PC_NAME"
+		echo $PC_NAME > /etc/hostname
 
 		cat > /etc/hosts <<-HOSTSFILE
 			127.0.0.1       localhost
 			::1             localhost
-			127.0.1.1       ${pc_name}.localdomain      ${pc_name}
+			127.0.1.1       ${PC_NAME}.localdomain      ${PC_NAME}
 		HOSTSFILE
 
 		print_file_contents "/etc/hostname"
@@ -262,26 +254,23 @@ add_sudouser()
 {
 	print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
 
-	local new_user
-	local user_desc
+	get_user_variable NEW_USER "user name" "drakkar"
+	get_user_variable USER_DESC "user description" "draKKar"
 
-	get_user_variable new_user "user name" "drakkar"
-	get_user_variable user_desc "user description" "draKKar"
-
-	echo -e "Create new user ${GREEN}${new_user}${RESET} with sudo privileges."
+	echo -e "Create new user ${GREEN}${NEW_USER}${RESET} with sudo privileges."
 
 	if get_user_confirm; then
-		print_progress_text "Creating new user $new_user"
-		useradd -m -G wheel -c $user_desc -s /bin/bash $new_user
+		print_progress_text "Creating new user $NEW_USER"
+		useradd -m -G wheel -c $USER_DESC -s /bin/bash $NEW_USER
 
-		print_progress_text "Setting password for user $new_user"
-		passwd $new_user
+		print_progress_text "Setting password for user $NEW_USER"
+		passwd $NEW_USER
 
-		print_progress_text "Enabling sudo privileges for user $new_user"
+		print_progress_text "Enabling sudo privileges for user $NEW_USER"
 		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
 
-		print_progress_text "Verifying user $new_user identity"
-		id $new_user
+		print_progress_text "Verifying user $NEW_USER identity"
+		id $NEW_USER
 
 		MAINCHECKLIST[$1]=1
 
@@ -353,7 +342,7 @@ install_gnome()
 {
 	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
 
-	get_user_variable gnome_ignore "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem"
+	get_user_variable GNOME_IGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem"
 
 	echo -e "Install the GNOME desktop environment."
 
@@ -362,8 +351,8 @@ install_gnome()
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		if [[ "$gnome_ignore" != "" ]]; then
-			pacman -S gnome --ignore $gnome_ignore
+		if [[ "$GNOME_IGNORE" != "" ]]; then
+			pacman -S gnome --ignore $GNOME_IGNORE
 		else
 			pacman -S gnome
 		fi
