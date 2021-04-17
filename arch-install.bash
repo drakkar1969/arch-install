@@ -410,7 +410,9 @@ main_menu()
 				echo ""
 				echo -e "   ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
 				echo ""
-				echo -e "Execute the script ${GREEN}arch-post-install.bash${RESET}."
+				echo -e "Execute the post install script:"
+				echo ""
+				echo -e "   ${GREEN}bash arch-post-install.bash${RESET}"
 				echo ""
 				exit 0
 			fi
