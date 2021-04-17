@@ -195,148 +195,59 @@ system_clock()
 	fi
 }
 
-sub_format_boot()
-{
-	print_submenu_heading "FORMAT BOOT (ESP) PARTITION (FAT32)"
-
-	print_partition_structure
-
-	get_user_variable FMT_ESP_ID "boot (ESP) partition ID" "/dev/nvme0n1p1"
-
-	echo -e "Partition $(get_partition_info $FMT_ESP_ID) will be formated with file system ${GREEN}FAT32${RESET}."
-
-	if get_user_confirm; then
-		print_progress_text "Formatting boot partition"
-		mkfs.fat -F32 -n "BOOT" $FMT_ESP_ID
-
-		FMTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
-sub_format_root()
-{
-	print_submenu_heading "FORMAT ROOT PARTITION"
-
-	print_partition_structure
-
-	get_user_variable FMT_ROOT_ID "root partition ID" "/dev/nvme0n1p2"
-
-	echo -e "Partition $(get_partition_info $FMT_ROOT_ID) will be formated with file system ${GREEN}EXT4${RESET}."
-
-	if get_user_confirm; then
-		print_progress_text "Formatting root partition"
-		mkfs.ext4 -L "ROOT" $FMT_ROOT_ID
-
-		FMTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
-sub_format_home()
-{
-	print_submenu_heading "FORMAT HOME PARTITION"
-
-	print_partition_structure
-
-	get_user_variable FMT_HOME_ID "home partition ID" "/dev/nvme0n1p4"
-
-	echo -e "Partition $(get_partition_info $FMT_HOME_ID) will be formated with file system ${GREEN}EXT4${RESET}."
-
-	echo ""
-	print_warning "Proceed with formatting only if the home partition is empty"
-
-	if get_user_confirm; then
-		print_progress_text "Formatting home partition"
-		mkfs.ext4 -L "HOME" $FMT_HOME_ID
-
-		FMTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
-sub_make_swap()
-{
-	print_submenu_heading "MAKE SWAP PARTITION"
-
-	print_partition_structure
-
-	get_user_variable FMT_SWAP_ID "SWAP partition ID" "/dev/nvme0n1p3"
-
-	echo -e "Partition $(get_partition_info $FMT_SWAP_ID) will be activated as ${GREEN}SWAP${RESET} partition."
-
-	if get_user_confirm; then
-		print_progress_text "Activating SWAP partition"
-		mkswap $FMT_SWAP_ID
-		swapon $FMT_SWAP_ID
-
-		FMTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
 format_partitions()
 {
-	# Format menu loop
-	while true; do
-		clear
+	print_submenu_heading "FORMAT PARTITIONS"
 
-		# Print header
-		echo -e "-------------------------------------------------------------------------------"
-		echo -e "-- ${GREEN} FORMAT PARTIONS ${RESET}::${GREEN} SUB MENU${RESET}"
-		echo -e "-------------------------------------------------------------------------------"
+	print_partition_structure
 
-		# Print sub-menu items
-		local i
+	get_user_variable FMT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
+	get_user_variable FMT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
+	get_user_variable FMT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
+	get_user_variable FMT_SWAP_ID "swap partition ID (blank to skip)" "/dev/nvme0n1p3"
 
-		for i in ${!FMTITEMS[@]}; do
-			local sub_text=$(echo "${FMTITEMS[$i]}" | cut -f1 -d'|')
+	echo -e "The following partitions will be formatted:"
+	echo ""
+	if [[ "$FMT_BOOT_ID" != "" ]]; then
+		echo -e "   + ESP (boot) partition $(get_partition_info $FMT_BOOT_ID) will be formated with file system ${GREEN}FAT32${RESET}."
+	fi
+	if [[ "$FMT_ROOT_ID" != "" ]]; then
+		echo -e "   + Root partition $(get_partition_info $FMT_ROOT_ID) will formated with file system ${GREEN}EXT4${RESET}."
+	fi
+	if [[ "$FMT_HOME_ID" != "" ]]; then
+		echo -e "   + Home partition $(get_partition_info $FMT_HOME_ID) will be formated with file system ${GREEN}EXT4${RESET}."
+	fi
+	if [[ "$FMT_SWAP_ID" != "" ]]; then
+		echo -e "   + Swap partition $(get_partition_info $FMT_SWAP_ID) will be activated as ${GREEN}SWAP${RESET} partition."
+	fi
+	echo ""
 
-			print_menu_item $(($i+1)) ${FMTCHECKLIST[$i]} "$sub_text"
-		done
-
-		# Print footer
-		echo ""
-		echo -e "-------------------------------------------------------------------------------"
-		echo ""
-		echo -e -n " => Select option or (b)ack: "
-
-		# Get sub-menu selection
-		local fmt_index=-1
-
-		until (( $fmt_index >= 0 && $fmt_index < ${#FMTITEMS[@]} ))
-		do
-			local fmt_choice
-
-			read -r -s -n 1 fmt_choice
-
-			# Exit sub-menu
-			if [[ "${fmt_choice,,}" == "b" ]]; then
-				return
-			fi
-
-			# Get selection index
-			if [[ "$fmt_choice" == [0-9] ]]; then
-				fmt_index=$(($fmt_choice-1))
-			fi
-		done
-
-		# Execute function
-		local sub_func=$(echo "${FMTITEMS[$fmt_index]}" | cut -f2 -d'|')
-
-		eval ${sub_func} $fmt_index
-
-		# Check sub-menu status
-		local fmt_array_sum=$((${FMTCHECKLIST[@]/%/+}0))
-
-		if [[ $fmt_array_sum -eq ${#FMTCHECKLIST[@]} ]]; then
-			MAINCHECKLIST[$1]=1
+	if get_user_confirm; then
+		print_progress_text "Formating ESP (boot) partition"
+		if [[ "$FMT_BOOT_ID" != "" ]]; then
+			mkfs.ext4 -L "ROOT" $FMT_BOOT_ID
 		fi
-	done
+
+		print_progress_text "Formating root partition"
+		if [[ "$FMT_ROOT_ID" != "" ]]; then
+			mkfs.ext4 -L "ROOT" $FMT_ROOT_ID
+		fi
+
+		print_progress_text "Formating home partition"
+		if [[ "$FMT_HOME_ID" != "" ]]; then
+			mkfs.ext4 -L "HOME" $FMT_HOME_ID
+		fi
+
+		print_progress_text "Activating swap partition"
+		if [[ "$FMT_SWAP_ID" != "" ]]; then
+			mkswap $FMT_SWAP_ID
+			swapon $FMT_SWAP_ID
+		fi
+
+		MAINCHECKLIST[$1]=1
+
+		get_any_key
+	fi
 }
 
 mount_partitions()
@@ -451,21 +362,11 @@ main_menu()
 						 "Download post install script|download_postinstall")
 	MAINCHECKLIST=()
 
-	FMTITEMS=("Format boot (ESP) partition (FAT32)|sub_format_boot"
-						"Format root partition (EXT4)|sub_format_root"
-						"Format home partition (EXT4)|sub_format_home"
-						"Make SWAP partition|sub_make_swap")
-	FMTCHECKLIST=()
-
-	# Initialize checklist arrays with '0'
+	# Initialize status array with '0'
 	local i
 
 	for i in ${!MAINITEMS[@]}; do
 		MAINCHECKLIST+=("0")
-	done
-
-	for i in ${!FMTITEMS[@]}; do
-		FMTCHECKLIST+=("0")
 	done
 
 	# Main menu loop
