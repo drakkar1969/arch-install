@@ -63,15 +63,19 @@ get_any_key()
 	read -s -e -n 1 -p "Press any key to continue ..."
 }
 
-get_yn_confirmation()
+get_user_confirm()
 {
-	local output=$1
+	local ret_val=1
 	local yn_choice="n"
 
 	echo ""
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 
-	eval $output="'$yn_choice'"
+	if [[ "${yn_choice,,}" == "y" ]]; then
+		ret_val=0
+	fi
+
+	return $ret_val
 }
 
 get_user_variable()
@@ -91,16 +95,13 @@ set_kbpermanent()
 {
 	print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
 
-	local user_confirm="n"
-
 	local kb_code
 
 	get_user_variable kb_code "keyboard layout" "it"
 
 	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Setting keyboard layout"
 		echo KEYMAP=$kb_code > /etc/vconsole.conf
 
@@ -114,15 +115,13 @@ set_timezone()
 {
 	print_submenu_heading "CONFIGURE TIMEZONE"
 
-	local user_confirm="n"
 	local timezone
 
 	get_user_variable timezone "timezone" "Europe/Sarajevo"
 
 	echo -e "Set the timezone to ${GREEN}${timezone}${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Creating symlink for timezone $timezone"
 		ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
 
@@ -136,12 +135,9 @@ sync_hwclock()
 {
 	print_submenu_heading "SYNC HARDWARE CLOCK"
 
-	local user_confirm="n"
-
 	echo -e "Sync hardware clock."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Setting hardware clock to UTC"
 		hwclock --systohc --utc
 
@@ -155,8 +151,6 @@ set_locale()
 {
 	print_submenu_heading "CONFIGURE LOCALE"
 
-	local user_confirm="n"
-
 	local locale_US
 	local locale_DK
 
@@ -164,9 +158,8 @@ set_locale()
 	get_user_variable locale_DK "format locale" "en_DK"
 
 	echo -e "Set the language to ${GREEN}${locale_US}${RESET} and the format locale to ${GREEN}${locale_DK}${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Setting language to $locale_US and formats to $locale_DK"
 		locale_US_UTF="$locale_US.UTF-8"
 		locale_DK_UTF="$locale_DK.UTF-8"
@@ -204,15 +197,13 @@ set_hostname()
 {
 	print_submenu_heading "CONFIGURE HOSTNAME"
 
-	local user_confirm="n"
 	local pc_name
 
 	get_user_variable pc_name "hostname" "ProBook450"
 
 	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Setting hostname to $pc_name"
 		echo $pc_name > /etc/hostname
 
@@ -235,12 +226,9 @@ enable_multilib()
 {
 	print_submenu_heading "ENABLE MULTILIB REPOSITORY"
 
-	local user_confirm="n"
-
 	echo -e "Enable the multilib repository in ${GREEN}/etc/pacman.conf${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Enabling multilib repository in /etc/pacman.conf"
 		sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 
@@ -259,12 +247,9 @@ root_password()
 {
 	print_submenu_heading "CONFIGURE ROOT PASSWORD"
 
-	local user_confirm="n"
-
 	echo -e "Set the password for the root user."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		passwd
 
 		MAINCHECKLIST[$1]=1
@@ -277,8 +262,6 @@ add_sudouser()
 {
 	print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
 
-	local user_confirm="n"
-
 	local new_user
 	local user_desc
 
@@ -286,9 +269,8 @@ add_sudouser()
 	get_user_variable user_desc "user description" "draKKar"
 
 	echo -e "Create new user ${GREEN}${new_user}${RESET} with sudo privileges."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Creating new user $new_user"
 		useradd -m -G wheel -c $user_desc -s /bin/bash $new_user
 
@@ -311,12 +293,9 @@ install_bootloader()
 {
 	print_submenu_heading "INSTALL BOOT LOADER"
 
-	local user_confirm="n"
-
 	echo -e "Install the grub bootloader."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Installing grub bootloader"
 		pacman -S grub efibootmgr os-prober
 		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
@@ -337,12 +316,9 @@ install_xorg()
 {
 	print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
 
-	local user_confirm="n"
-
 	echo -e "Install Xorg graphical environment."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
@@ -361,12 +337,9 @@ display_drivers()
 {
 	print_submenu_heading "INSTALL DISPLAY DRIVERS"
 
-	local user_confirm="n"
-
 	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and Nouveau display drivers."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Installing display drivers"
 		pacman -S mesa intel-media-driver xf86-video-nouveau
 
@@ -380,14 +353,11 @@ install_gnome()
 {
 	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
 
-	local user_confirm="n"
-
 	get_user_variable gnome_ignore "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem"
 
 	echo -e "Install the GNOME desktop environment."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Installing GNOME"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""

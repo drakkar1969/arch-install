@@ -63,15 +63,19 @@ get_any_key()
 	read -s -e -n 1 -p "Press any key to continue ..."
 }
 
-get_yn_confirmation()
+get_user_confirm()
 {
-	local output=$1
+	local ret_val=1
 	local yn_choice="n"
 
 	echo ""
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 
-	eval $output="'$yn_choice'"
+	if [[ "${yn_choice,,}" == "y" ]]; then
+		ret_val=0
+	fi
+
+	return $ret_val
 }
 
 get_user_variable()
@@ -117,15 +121,13 @@ set_keyboard()
 {
 	print_submenu_heading "SET KEYBOARD LAYOUT"
 
-	local user_confirm="n"
 	local kb_code
 
 	get_user_variable kb_code "keyboard layout" "it"
 
 	echo -e "Set keyboard layout to ${GREEN}${kb_code}${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Setting keyboard layout"
 		loadkeys $kb_code
 
@@ -151,7 +153,6 @@ enable_wifi()
 {
 	print_submenu_heading "ENABLE WIFI CONNECTION"
 
-	local user_confirm="n"
 	local adapter_id
 	local wifi_ssid
 
@@ -165,9 +166,8 @@ enable_wifi()
 	get_user_variable wifi_ssid "wireless network name" ""
 
 	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET} on adapter ${GREEN}${adapter_id}${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Connecting to wifi network"
 		station $adapter_id connect $wifi_ssid
 
@@ -184,12 +184,9 @@ system_clock()
 {
 	print_submenu_heading "UPDATE SYSTEM CLOCK"
 
-	local user_confirm="n"
-
 	echo -e "Enable clock synchronization over network."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Enabling clock synchronization over network"
 		timedatectl set-ntp true
 
@@ -206,8 +203,6 @@ sub_format_boot()
 {
 	print_submenu_heading "FORMAT BOOT (ESP) PARTITION (FAT32)"
 
-	local user_confirm="n"
-
 	print_partition_structure
 
 	local fmt_esp_id
@@ -216,9 +211,7 @@ sub_format_boot()
 
 	echo -e "Partition $(get_partition_info $fmt_esp_id) will be formated with file system ${GREEN}FAT32${RESET}."
 
-	get_yn_confirmation user_confirm
-
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Formatting boot partition"
 		mkfs.fat -F32 -n "BOOT" $fmt_esp_id
 
@@ -232,8 +225,6 @@ sub_format_root()
 {
 	print_submenu_heading "FORMAT ROOT PARTITION"
 
-	local user_confirm="n"
-
 	print_partition_structure
 
 	local fmt_root_id
@@ -242,9 +233,7 @@ sub_format_root()
 
 	echo -e "Partition $(get_partition_info $fmt_root_id) will be formated with file system ${GREEN}EXT4${RESET}."
 
-	get_yn_confirmation user_confirm
-
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Formatting root partition"
 		mkfs.ext4 -L "ROOT" $fmt_root_id
 
@@ -258,8 +247,6 @@ sub_format_home()
 {
 	print_submenu_heading "FORMAT HOME PARTITION"
 
-	local user_confirm="n"
-
 	print_partition_structure
 
 	local fmt_home_id
@@ -270,9 +257,8 @@ sub_format_home()
 
 	echo ""
 	print_warning "Proceed with formatting only if the home partition is empty"
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Formatting home partition"
 		mkfs.ext4 -L "HOME" $fmt_home_id
 
@@ -286,8 +272,6 @@ sub_make_swap()
 {
 	print_submenu_heading "MAKE SWAP PARTITION"
 
-	local user_confirm="n"
-
 	print_partition_structure
 
 	local fmt_swap_id
@@ -296,9 +280,7 @@ sub_make_swap()
 
 	echo -e "Partition $(get_partition_info $fmt_swap_id) will be activated as ${GREEN}SWAP${RESET} partition."
 
-	get_yn_confirmation user_confirm
-
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Activating SWAP partition"
 		mkswap $fmt_swap_id
 		swapon $fmt_swap_id
@@ -373,8 +355,6 @@ mount_partitions()
 {
 	print_submenu_heading "MOUNT PARTITIONS"
 
-	local user_confirm="n"
-
 	print_partition_structure
 
 	local mnt_boot_id
@@ -398,9 +378,7 @@ mount_partitions()
 	fi
 	echo ""
 
-	get_yn_confirmation user_confirm
-
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
 		if [[ "$mnt_root_id" != "" ]]; then
 			mount $mnt_root_id /mnt
@@ -429,12 +407,9 @@ install_base()
 {
 	print_submenu_heading "INSTALL BASE PACKAGES"
 
-	local user_confirm="n"
-
 	echo -e "Install base packages."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Installing base packages"
 		pacstrap /mnt base base-devel linux linux-firmware
 
@@ -448,12 +423,9 @@ generate_fstab()
 {
 	print_submenu_heading "GENERATE FSTAB FILE"
 
-	local user_confirm="n"
-
 	echo -e "Generate new fstab file."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Generating fstab file"
 		genfstab -U /mnt >> /mnt/etc/fstab
 
@@ -470,12 +442,9 @@ download_postinstall()
 {
 	print_submenu_heading "DOWNLOAD POST INSTALL SCRIPT"
 
-	local user_confirm="n"
-
 	echo -e "Download post install script ${GREEN}arch-post-install.bash${RESET}."
-	get_yn_confirmation user_confirm
 
-	if [[ "$user_confirm" == "y" ]]; then
+	if get_user_confirm; then
 		print_progress_text "Downloading post install script"
 		curl -LJSs -o /mnt/arch-post-install.bash "https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.bash"
 
