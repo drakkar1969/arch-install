@@ -119,7 +119,7 @@ set_timezone()
 	echo -e "Set the timezone to ${GREEN}${TIMEZONE}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Creating symlink for timezone $TIMEZONE"
+		print_progress_text "Creating symlink for timezone"
 		ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
 		MAINCHECKLIST[$1]=1
@@ -154,7 +154,7 @@ set_locale()
 	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_DK}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Setting language to $LOCALE_US and formats to $LOCALE_DK"
+		print_progress_text "Setting language and format locales"
 		LOCALE_US_UTF="$LOCALE_US.UTF-8"
 		LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
 
@@ -196,7 +196,7 @@ set_hostname()
 	echo -e "Set the hostname to ${GREEN}${PC_NAME}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Setting hostname to $PC_NAME"
+		print_progress_text "Setting hostname"
 		echo $PC_NAME > /etc/hostname
 
 		cat > /etc/hosts <<-HOSTSFILE
@@ -221,7 +221,7 @@ enable_multilib()
 	echo -e "Enable the multilib repository in ${GREEN}/etc/pacman.conf${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Enabling multilib repository in /etc/pacman.conf"
+		print_progress_text "Enabling multilib repository"
 		sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
 
 		print_file_contents "/etc/pacman.conf"
@@ -260,16 +260,16 @@ add_sudouser()
 	echo -e "Create new user ${GREEN}${NEW_USER}${RESET} with sudo privileges."
 
 	if get_user_confirm; then
-		print_progress_text "Creating new user $NEW_USER"
+		print_progress_text "Creating new user"
 		useradd -m -G wheel -c $USER_DESC -s /bin/bash $NEW_USER
 
-		print_progress_text "Setting password for user $NEW_USER"
+		print_progress_text "Setting password for user"
 		passwd $NEW_USER
 
-		print_progress_text "Enabling sudo privileges for user $NEW_USER"
+		print_progress_text "Enabling sudo privileges for user"
 		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
 
-		print_progress_text "Verifying user $NEW_USER identity"
+		print_progress_text "Verifying user identity"
 		id $NEW_USER
 
 		MAINCHECKLIST[$1]=1
@@ -292,7 +292,7 @@ install_bootloader()
 		print_progress_text "Installing microcode package"
 		pacman -S intel-ucode
 
-		print_progress_text "Generating grub.cfg file"
+		print_progress_text "Generating grub config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
 
 		MAINCHECKLIST[$1]=1
