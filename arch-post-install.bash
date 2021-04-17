@@ -114,13 +114,13 @@ set_timezone()
 {
 	print_submenu_heading "CONFIGURE TIMEZONE"
 
-	get_user_variable TIMEZONE "timezone" "Europe/Sarajevo"
+	get_user_variable TIME_ZONE "timezone" "Europe/Sarajevo"
 
-	echo -e "Set the timezone to ${GREEN}${TIMEZONE}${RESET}."
+	echo -e "Set the timezone to ${GREEN}${TIME_ZONE}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Creating symlink for timezone"
-		ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+		ln -sf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
 
 		MAINCHECKLIST[$1]=1
 

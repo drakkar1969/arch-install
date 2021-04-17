@@ -153,19 +153,19 @@ enable_wifi()
 	print_submenu_heading "ENABLE WIFI CONNECTION"
 
 	iwctl device list
-	get_user_variable ADAPTER_ID "wireless adapter name" "wlp3s0"
+	get_user_variable WIFI_ADAPTER "wireless adapter name" "wlp3s0"
 
 	print_progress_text "Scanning for wifi networks ..."
 
-	iwctl station $ADAPTER_ID scan
-	iwctl station $ADAPTER_ID get-networks
+	iwctl station $WIFI_ADAPTER scan
+	iwctl station $WIFI_ADAPTER get-networks
 	get_user_variable WIFI_SSID "wireless network name" ""
 
-	echo -e "Connect to wifi network ${GREEN}${WIFI_SSID}${RESET} on adapter ${GREEN}${ADAPTER_ID}${RESET}."
+	echo -e "Connect to wifi network ${GREEN}${WIFI_SSID}${RESET} on adapter ${GREEN}${WIFI_ADAPTER}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Connecting to wifi network"
-		station $ADAPTER_ID connect $WIFI_SSID
+		station $WIFI_ADAPTER connect $WIFI_SSID
 
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com
