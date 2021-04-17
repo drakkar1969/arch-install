@@ -32,14 +32,6 @@ sudo systemctl enable vboxservice.service
 
 This will also enable time synchronization between host and guest systems.
 
-#### Reboot
-
-Reboot the guest system:
-
-```bash
-reboot
-```
-
 #### Enable Shared Folders
 
 Add the user in the guest system to the `vboxsf` group, which should have been created during installation of the Guest Additions:
@@ -60,3 +52,12 @@ Auto-mount: Yes
 Mount point: /media/VirtualBoxShare
 Make permanent: Yes
 ```
+
+#### Reboot
+
+Reboot the guest system:
+
+```bash
+reboot
+```
+
