@@ -101,6 +101,15 @@ print_partition_structure()
 	echo ""
 }
 
+get_partition_size()
+{
+	local blk_part_id=$1
+
+	local blk_part_size=$(lsblk --output SIZE --paths --raw --noheadings $blk_part_id)
+
+	echo -e "${GREEN}$blk_part_id${RESET} [size: ${GREEN}$blk_part_size${RESET}]"
+}
+
 get_partition_info()
 {
 	local blk_part_id=$1
@@ -209,16 +218,16 @@ format_partitions()
 	echo -e "The following partitions will be formatted:"
 	echo ""
 	if [[ "$FMT_BOOT_ID" != "" ]]; then
-		echo -e "   + ESP (boot) partition $(get_partition_info $FMT_BOOT_ID) will be formated with file system ${GREEN}FAT32${RESET}."
+		echo -e "   + ESP (boot) partition $(get_partition_size $FMT_BOOT_ID) will be formated with file system ${GREEN}FAT32${RESET}."
 	fi
 	if [[ "$FMT_ROOT_ID" != "" ]]; then
-		echo -e "   + Root partition $(get_partition_info $FMT_ROOT_ID) will formated with file system ${GREEN}EXT4${RESET}."
+		echo -e "   + Root partition $(get_partition_size $FMT_ROOT_ID) will formated with file system ${GREEN}EXT4${RESET}."
 	fi
 	if [[ "$FMT_HOME_ID" != "" ]]; then
-		echo -e "   + Home partition $(get_partition_info $FMT_HOME_ID) will be formated with file system ${GREEN}EXT4${RESET}."
+		echo -e "   + Home partition $(get_partition_size $FMT_HOME_ID) will be formated with file system ${GREEN}EXT4${RESET}."
 	fi
 	if [[ "$FMT_SWAP_ID" != "" ]]; then
-		echo -e "   + Swap partition $(get_partition_info $FMT_SWAP_ID) will be activated as ${GREEN}SWAP${RESET} partition."
+		echo -e "   + Swap partition $(get_partition_size $FMT_SWAP_ID) will be activated as ${GREEN}SWAP${RESET} partition."
 	fi
 	echo ""
 
