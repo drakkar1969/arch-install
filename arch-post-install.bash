@@ -282,17 +282,17 @@ install_bootloader()
 {
 	print_submenu_heading "INSTALL BOOT LOADER"
 
-	echo -e "Install the grub bootloader."
+	echo -e "Install the GRUB bootloader."
 
 	if get_user_confirm; then
-		print_progress_text "Installing grub bootloader"
+		print_progress_text "Installing GRUB bootloader"
 		pacman -S grub efibootmgr os-prober
 		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 
 		print_progress_text "Installing microcode package"
 		pacman -S intel-ucode
 
-		print_progress_text "Generating grub config file"
+		print_progress_text "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
 
 		MAINCHECKLIST[$1]=1
