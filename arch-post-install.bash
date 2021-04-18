@@ -155,29 +155,29 @@ set_locale()
 
 	if get_user_confirm; then
 		print_progress_text "Setting language and format locales"
-		LOCALE_US_UTF="$LOCALE_US.UTF-8"
-		LOCALE_DK_UTF="$LOCALE_DK.UTF-8"
+		local locale_US_utf="$LOCALE_US.UTF-8"
+		local locale_DK_utf="$LOCALE_DK.UTF-8"
 
-		sed -i "/#$LOCALE_US_UTF/ s/^#//" /etc/locale.gen
-		sed -i "/#$LOCALE_DK_UTF/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_US_utf/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_DK_utf/ s/^#//" /etc/locale.gen
 
 		locale-gen
 
 		cat > /etc/locale.conf <<-LOCALECONF
-			LANG=$LOCALE_US_UTF
-			LC_MEASUREMENT=$LOCALE_DK_UTF
-			LC_MONETARY=$LOCALE_US_UTF
-			LC_NUMERIC=$LOCALE_US_UTF
-			LC_PAPER=$LOCALE_DK_UTF
-			LC_TIME=$LOCALE_DK_UTF
+			LANG=$locale_US_utf
+			LC_MEASUREMENT=$locale_DK_utf
+			LC_MONETARY=$locale_US_utf
+			LC_NUMERIC=$locale_US_utf
+			LC_PAPER=$locale_DK_utf
+			LC_TIME=$locale_DK_utf
 		LOCALECONF
 
-		export LANG=$LOCALE_US_UTF
-		export LC_MEASUREMENT=$LOCALE_DK_UTF
-		export LC_MONETARY=$LOCALE_US_UTF
-		export LC_NUMERIC=$LOCALE_US_UTF
-		export LC_PAPER=$LOCALE_DK_UTF
-		export LC_TIME=$LOCALE_DK_UTF
+		export LANG=$locale_US_utf
+		export LC_MEASUREMENT=$locale_DK_utf
+		export LC_MONETARY=$locale_US_utf
+		export LC_NUMERIC=$locale_US_utf
+		export LC_PAPER=$locale_DK_utf
+		export LC_TIME=$locale_DK_utf
 
 		print_file_contents "/etc/locale.conf"
 
