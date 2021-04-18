@@ -445,15 +445,11 @@ pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-c
 
 If prompted to select provider(s), select default options.
 
-#### Enable GDM Display Manager
-
 Enable the `gdm` (GNOME Display Manager) login screen:
 
 ```bash
 systemctl enable gdm.service
 ```
-
-#### Enable Network Manager
 
 Enable the Network Manager service:
 
