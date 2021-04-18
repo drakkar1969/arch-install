@@ -376,6 +376,22 @@ install_gnome()
 	fi
 }
 
+install_codecs()
+{
+	print_submenu_heading "INSTALL MULTIMEDIA CODECS"
+
+	echo -e "Install multimedia codecs."
+
+	if get_user_confirm; then
+		print_progress_text "Installing codecs"
+		pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
+
+		MAINCHECKLIST[$1]=1
+
+		get_any_key
+	fi
+}
+
 main_menu()
 {
 	MAINITEMS=("Make keyboard layout permanent|set_kbpermanent"
@@ -390,7 +406,8 @@ main_menu()
 						 "Install Xorg graphical environment|install_xorg"
 						 "Install display drivers|display_drivers"
 						 "Install PipeWire|install_pipewire"
-						 "Install GNOME desktop environment|install_gnome")
+						 "Install GNOME desktop environment|install_gnome"
+						 "Install multimedia codecs|install_codecs")
 	MAINCHECKLIST=()
 
 	# Initialize status array with '0'

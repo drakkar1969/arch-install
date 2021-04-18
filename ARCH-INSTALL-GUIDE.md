@@ -461,6 +461,14 @@ Enable the Network Manager service:
 systemctl enable NetworkManager.service
 ```
 
+#### Install Multimedia Codecs
+
+Install needed codecs:
+
+```bash
+pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
+```
+
 #### Reboot
 
 Exit the `chroot` environment:
