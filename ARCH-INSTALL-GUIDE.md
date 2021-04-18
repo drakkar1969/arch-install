@@ -267,10 +267,10 @@ Uncomment locales in the `/etc/locale.gen` file:
 
 ```bash
 LOCALE_US="en_US.UTF-8"
-LOCALE_DK="en_DK.UTF-8"
+LOCALE_IE="en_IE.UTF-8"
 
 sed -i "/#$LOCALE_US/ s/^#//" /etc/locale.gen
-sed -i "/#$LOCALE_DK/ s/^#//" /etc/locale.gen
+sed -i "/#$LOCALE_IE/ s/^#//" /etc/locale.gen
 ```
 
 Generate locales:
@@ -283,14 +283,14 @@ Export locale variables:
 
 ```bash
 echo LANG=$LOCALE_US > /etc/locale.conf
-echo LC_MEASUREMENT=$LOCALE_DK >> /etc/locale.conf
-echo LC_PAPER=$LOCALE_DK >> /etc/locale.conf
-echo LC_TIME=$LOCALE_DK >> /etc/locale.conf
+echo LC_MEASUREMENT=$LOCALE_IE >> /etc/locale.conf
+echo LC_PAPER=$LOCALE_IE >> /etc/locale.conf
+echo LC_TIME=$LOCALE_IE >> /etc/locale.conf
 
 export LANG=$LOCALE_US
-export LC_MEASUREMENT=$LOCALE_DK
-export LC_PAPER=$LOCALE_DK
-export LC_TIME=$LOCALE_DK
+export LC_MEASUREMENT=$LOCALE_IE
+export LC_PAPER=$LOCALE_IE
+export LC_TIME=$LOCALE_IE
 ```
 
 #### Configure Hostname

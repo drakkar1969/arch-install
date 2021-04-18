@@ -149,31 +149,31 @@ set_locale()
 	print_submenu_heading "CONFIGURE LOCALE"
 
 	get_user_variable LOCALE_US "language locale" "en_US"
-	get_user_variable LOCALE_DK "format locale" "en_DK"
+	get_user_variable LOCALE_IE "format locale" "en_IE"
 
-	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_DK}${RESET}."
+	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_IE}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Setting language and format locales"
 		local locale_US_utf="$LOCALE_US.UTF-8"
-		local locale_DK_utf="$LOCALE_DK.UTF-8"
+		local locale_IE_utf="$LOCALE_IE.UTF-8"
 
 		sed -i "/#$locale_US_utf/ s/^#//" /etc/locale.gen
-		sed -i "/#$locale_DK_utf/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_IE_utf/ s/^#//" /etc/locale.gen
 
 		locale-gen
 
 		cat > /etc/locale.conf <<-LOCALECONF
 			LANG=$locale_US_utf
-			LC_MEASUREMENT=$locale_DK_utf
-			LC_PAPER=$locale_DK_utf
-			LC_TIME=$locale_DK_utf
+			LC_MEASUREMENT=$locale_IE_utf
+			LC_PAPER=$locale_IE_utf
+			LC_TIME=$locale_IE_utf
 		LOCALECONF
 
 		export LANG=$locale_US_utf
-		export LC_MEASUREMENT=$locale_DK_utf
-		export LC_PAPER=$locale_DK_utf
-		export LC_TIME=$locale_DK_utf
+		export LC_MEASUREMENT=$locale_IE_utf
+		export LC_PAPER=$locale_IE_utf
+		export LC_TIME=$locale_IE_utf
 
 		print_file_contents "/etc/locale.conf"
 
