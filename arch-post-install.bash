@@ -170,11 +170,6 @@ set_locale()
 			LC_TIME=$locale_IE_utf
 		LOCALECONF
 
-		export LANG=$locale_US_utf
-		export LC_MEASUREMENT=$locale_IE_utf
-		export LC_PAPER=$locale_IE_utf
-		export LC_TIME=$locale_IE_utf
-
 		print_file_contents "/etc/locale.conf"
 
 		MAINCHECKLIST[$1]=1

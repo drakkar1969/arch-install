@@ -279,18 +279,13 @@ Generate locales:
 locale-gen
 ```
 
-Export locale variables:
+Create locale configuration file:
 
 ```bash
 echo LANG=$LOCALE_US > /etc/locale.conf
 echo LC_MEASUREMENT=$LOCALE_IE >> /etc/locale.conf
 echo LC_PAPER=$LOCALE_IE >> /etc/locale.conf
 echo LC_TIME=$LOCALE_IE >> /etc/locale.conf
-
-export LANG=$LOCALE_US
-export LC_MEASUREMENT=$LOCALE_IE
-export LC_PAPER=$LOCALE_IE
-export LC_TIME=$LOCALE_IE
 ```
 
 #### Configure Hostname
