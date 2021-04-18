@@ -360,15 +360,15 @@ download_postinstall()
 
 main_menu()
 {
-	MAINITEMS=("Set keyboard layout|set_keyboard"
-						 "Check UEFI mode|check_uefimode"
-						 "Enable wifi connection|enable_wifi"
-						 "Update system clock|system_clock"
-						 "Format partitions|format_partitions"
-						 "Mount partitions|mount_partitions"
-						 "Install base packages|install_base"
-						 "Generate fstab file|generate_fstab"
-						 "Download post install script|download_postinstall")
+	MAINITEMS=("Set Keyboard Layout|set_keyboard"
+						 "Check UEFI Mode|check_uefimode"
+						 "Enable Wifi Connection|enable_wifi"
+						 "Update System Clock|system_clock"
+						 "Format Partitions|format_partitions"
+						 "Mount Partitions|mount_partitions"
+						 "Install Base Packages|install_base"
+						 "Generate Fstab File|generate_fstab"
+						 "Download Post Install Script|download_postinstall")
 	MAINCHECKLIST=()
 
 	# Initialize status array with '0'
