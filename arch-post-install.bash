@@ -166,16 +166,12 @@ set_locale()
 		cat > /etc/locale.conf <<-LOCALECONF
 			LANG=$locale_US_utf
 			LC_MEASUREMENT=$locale_DK_utf
-			LC_MONETARY=$locale_US_utf
-			LC_NUMERIC=$locale_US_utf
 			LC_PAPER=$locale_DK_utf
 			LC_TIME=$locale_DK_utf
 		LOCALECONF
 
 		export LANG=$locale_US_utf
 		export LC_MEASUREMENT=$locale_DK_utf
-		export LC_MONETARY=$locale_US_utf
-		export LC_NUMERIC=$locale_US_utf
 		export LC_PAPER=$locale_DK_utf
 		export LC_TIME=$locale_DK_utf
 

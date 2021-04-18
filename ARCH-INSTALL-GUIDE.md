@@ -284,15 +284,11 @@ Export locale variables:
 ```bash
 echo LANG=$LOCALE_US > /etc/locale.conf
 echo LC_MEASUREMENT=$LOCALE_DK >> /etc/locale.conf
-echo LC_MONETARY=$LOCALE_US >> /etc/locale.conf
-echo LC_NUMERIC=$LOCALE_US >> /etc/locale.conf
 echo LC_PAPER=$LOCALE_DK >> /etc/locale.conf
 echo LC_TIME=$LOCALE_DK >> /etc/locale.conf
 
 export LANG=$LOCALE_US
 export LC_MEASUREMENT=$LOCALE_DK
-export LC_MONETARY=$LOCALE_US
-export LC_NUMERIC=$LOCALE_US
 export LC_PAPER=$LOCALE_DK
 export LC_TIME=$LOCALE_DK
 ```
