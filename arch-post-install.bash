@@ -329,6 +329,22 @@ display_drivers()
 	fi
 }
 
+install_pipewire()
+{
+	print_submenu_heading "INSTALL PIPEWIRE"
+
+	echo -e "Install the PipeWire multimedia framework."
+
+	if get_user_confirm; then
+		print_progress_text "Installing PipeWire"
+		pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa gst-plugin-pipewire
+
+		MAINCHECKLIST[$1]=1
+
+		get_any_key
+	fi
+}
+
 install_gnome()
 {
 	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
@@ -373,6 +389,7 @@ main_menu()
 						 "Install boot loader|install_bootloader"
 						 "Install Xorg graphical environment|install_xorg"
 						 "Install display drivers|display_drivers"
+						 "Install PipeWire|install_pipewire"
 						 "Install GNOME desktop environment|install_gnome")
 	MAINCHECKLIST=()
 

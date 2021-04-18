@@ -427,6 +427,14 @@ Install the open source Nouveau driver for nVidia:
 pacman -S xf86-video-nouveau
 ```
 
+#### Install PipeWire
+
+Install PipeWire packages as dependencies:
+
+```bash
+pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa gst-plugin-pipewire
+```
+
 #### Install GNOME
 
 Install GNOME package group (press `ENTER` to select all packages when prompted):
