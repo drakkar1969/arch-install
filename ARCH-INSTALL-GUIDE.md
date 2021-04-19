@@ -179,7 +179,7 @@ mkfs.ext4 -L "HOME" /dev/nvme0n1p4
 Format the data partition on the additional HDD (**do this only if the data partition is not empty**):
 
 ```bash
-mkfs.ext4 /dev/sda1
+mkfs.ext4 -L "DATA" /dev/sda1
 ```
 
 ##### 3. Mount Partitions
