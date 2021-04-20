@@ -226,7 +226,7 @@ In case of errors, __do not run the command a second time__, edit the `fstab` fi
 #### Change Root into New System
 
 ```bash
-arch-chroot /mnt /bin/bash
+arch-chroot /mnt
 ```
 
 The last argument (optional) specifies to use the `bash` shell (the default is `sh`).

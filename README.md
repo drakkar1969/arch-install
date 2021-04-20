@@ -11,7 +11,7 @@ bash arch-install.bash
 After completing installation, change root into the new system:
 
 ```shell
-arch-chroot /mnt /bin/bash
+arch-chroot /mnt
 ```
 
 ## Post-Installation

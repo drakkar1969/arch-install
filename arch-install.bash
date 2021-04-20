@@ -417,7 +417,7 @@ main_menu()
 				clear
 				echo -e "To complete the installation, change root into the new system:"
 				echo ""
-				echo -e "   ${GREEN}arch-chroot /mnt /bin/bash${RESET}"
+				echo -e "   ${GREEN}arch-chroot /mnt${RESET}"
 				echo ""
 				echo -e "Execute the post install script:"
 				echo ""
