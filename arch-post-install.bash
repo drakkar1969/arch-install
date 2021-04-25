@@ -393,19 +393,19 @@ install_codecs()
 main_menu()
 {
 	MAINITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
-						 "Configure Timezone|set_timezone"
-						 "Sync Hardware Clock|sync_hwclock"
-						 "Configure Locale|set_locale"
-						 "Configure Hostname|set_hostname"
-						 "Enable Multilib Repository|enable_multilib"
-						 "Configure Root Password|root_password"
-						 "Add New User with Sudo Privileges|add_sudouser"
-						 "Install Boot Loader|install_bootloader"
-						 "Install Xorg Graphical Environment|install_xorg"
-						 "Install Display Drivers|display_drivers"
-						 "Install PipeWire|install_pipewire"
-						 "Install GNOME Desktop Environment|install_gnome"
-						 "Install Multimedia Codecs|install_codecs")
+				"Configure Timezone|set_timezone"
+				"Sync Hardware Clock|sync_hwclock"
+				"Configure Locale|set_locale"
+				"Configure Hostname|set_hostname"
+				"Enable Multilib Repository|enable_multilib"
+				"Configure Root Password|root_password"
+				"Add New User with Sudo Privileges|add_sudouser"
+				"Install Boot Loader|install_bootloader"
+				"Install Xorg Graphical Environment|install_xorg"
+				"Install Display Drivers|display_drivers"
+				"Install PipeWire|install_pipewire"
+				"Install GNOME Desktop Environment|install_gnome"
+				"Install Multimedia Codecs|install_codecs")
 	MAINCHECKLIST=()
 
 	# Initialize status array with '0'
