@@ -218,47 +218,47 @@ format_partitions()
 
 	print_partition_structure
 
-	get_global_variable FMT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_global_variable FMT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_global_variable FMT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
-	get_global_variable FMT_SWAP_ID "swap partition ID (blank to skip)" "/dev/nvme0n1p3"
+	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
+	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
+	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
+	get_global_variable SWAP_PART_ID "swap partition ID (blank to skip)" "/dev/nvme0n1p3"
 
 	echo -e "The following partitions will be formatted:"
 	echo ""
-	if [[ "$FMT_BOOT_ID" != "" ]]; then
-		echo -e "   + ESP (boot) partition $(get_partition_size $FMT_BOOT_ID) will be formated with file system ${GREEN}FAT32${RESET}."
+	if [[ "$ESP_PART_ID" != "" ]]; then
+		echo -e "   + ESP (boot) partition $(get_partition_size $ESP_PART_ID) will be formated with file system ${GREEN}FAT32${RESET}."
 	fi
-	if [[ "$FMT_ROOT_ID" != "" ]]; then
-		echo -e "   + Root partition $(get_partition_size $FMT_ROOT_ID) will formated with file system ${GREEN}EXT4${RESET}."
+	if [[ "$ROOT_PART_ID" != "" ]]; then
+		echo -e "   + Root partition $(get_partition_size $ROOT_PART_ID) will formated with file system ${GREEN}EXT4${RESET}."
 	fi
-	if [[ "$FMT_HOME_ID" != "" ]]; then
-		echo -e "   + Home partition $(get_partition_size $FMT_HOME_ID) will be formated with file system ${GREEN}EXT4${RESET}."
+	if [[ "$HOME_PART_ID" != "" ]]; then
+		echo -e "   + Home partition $(get_partition_size $HOME_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
 	fi
-	if [[ "$FMT_SWAP_ID" != "" ]]; then
-		echo -e "   + Swap partition $(get_partition_size $FMT_SWAP_ID) will be activated as ${GREEN}SWAP${RESET} partition."
+	if [[ "$SWAP_PART_ID" != "" ]]; then
+		echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
 	fi
 	echo ""
 
 	if get_user_confirm; then
-		if [[ "$FMT_BOOT_ID" != "" ]]; then
+		if [[ "$ESP_PART_ID" != "" ]]; then
 			print_progress_text "Formating ESP (boot) partition"
-			mkfs.fat -F32 -n "BOOT" $FMT_BOOT_ID
+			mkfs.fat -F32 -n "BOOT" $ESP_PART_ID
 		fi
 
-		if [[ "$FMT_ROOT_ID" != "" ]]; then
+		if [[ "$ROOT_PART_ID" != "" ]]; then
 			print_progress_text "Formating root partition"
-			mkfs.ext4 -L "ROOT" $FMT_ROOT_ID
+			mkfs.ext4 -L "ROOT" $ROOT_PART_ID
 		fi
 
-		if [[ "$FMT_HOME_ID" != "" ]]; then
+		if [[ "$HOME_PART_ID" != "" ]]; then
 			print_progress_text "Formating home partition"
-			mkfs.ext4 -L "HOME" $FMT_HOME_ID
+			mkfs.ext4 -L "HOME" $HOME_PART_ID
 		fi
 
-		if [[ "$FMT_SWAP_ID" != "" ]]; then
+		if [[ "$SWAP_PART_ID" != "" ]]; then
 			print_progress_text "Activating swap partition"
-			mkswap $FMT_SWAP_ID
-			swapon $FMT_SWAP_ID
+			mkswap $SWAP_PART_ID
+			swapon $SWAP_PART_ID
 		fi
 
 		MAINCHECKLIST[$1]=1
@@ -273,37 +273,33 @@ mount_partitions()
 
 	print_partition_structure
 
-	get_global_variable MNT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_global_variable MNT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_global_variable MNT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
-
 	echo -e "The following partitions will be mounted:"
 	echo ""
-	if [[ "$MNT_BOOT_ID" != "" ]]; then
-		echo -e "   + ESP (boot) partition $(get_partition_info $MNT_BOOT_ID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	if [[ "$ESP_PART_ID" != "" ]]; then
+		echo -e "   + ESP (boot) partition $(get_partition_info $ESP_PART_ID) will be mounted to ${GREEN}/mnt/boot${RESET}"
 	fi
-	if [[ "$MNT_ROOT_ID" != "" ]]; then
-		echo -e "   + Root partition $(get_partition_info $MNT_ROOT_ID) will be mounted to ${GREEN}/mnt${RESET}"
+	if [[ "$ROOT_PART_ID" != "" ]]; then
+		echo -e "   + Root partition $(get_partition_info $ROOT_PART_ID) will be mounted to ${GREEN}/mnt${RESET}"
 	fi
-	if [[ "$MNT_HOME_ID" != "" ]]; then
-		echo -e "   + Home partition $(get_partition_info $MNT_HOME_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
+	if [[ "$HOME_PART_ID" != "" ]]; then
+		echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
 	fi
 	echo ""
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
-		if [[ "$MNT_ROOT_ID" != "" ]]; then
-			mount $MNT_ROOT_ID /mnt
+		if [[ "$ROOT_PART_ID" != "" ]]; then
+			mount $ROOT_PART_ID /mnt
 		fi
 
-		if [[ "$MNT_HOME_ID" != "" ]]; then
+		if [[ "$HOME_PART_ID" != "" ]]; then
 			mkdir /mnt/home
-			mount $MNT_HOME_ID /mnt/home
+			mount $HOME_PART_ID /mnt/home
 		fi
 
-		if [[ "$MNT_BOOT_ID" != "" ]]; then
+		if [[ "$ESP_PART_ID" != "" ]]; then
 			mkdir /mnt/boot
-			mount $MNT_BOOT_ID /mnt/boot
+			mount $ESP_PART_ID /mnt/boot
 		fi
 
 		print_progress_text "Verifying partition structure"
