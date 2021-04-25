@@ -212,7 +212,7 @@ Use the `lsblk` command to verify partitions are correctly mounted.
 #### Install Base Packages
 
 ```bash
-pacstrap /mnt base base-devel linux linux-firmware nano man-db man-pages
+pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 ```
 
 #### Generate Fstab File
