@@ -218,6 +218,9 @@ format_partitions()
 
 	print_partition_structure
 
+	print_warning "Be careful specifying partitions to format - these will also be used for mount operations"
+	echo ""
+
 	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
 	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
 	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
