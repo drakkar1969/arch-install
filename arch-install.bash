@@ -377,6 +377,8 @@ unmount_partitions()
 	fi
 	echo ""
 
+	print_warning "Proceed only if all installation steps have been completed"
+
 	if get_user_confirm; then
 		print_progress_text "Unmounting partitions"
 		if [[ "$home_mnt" != "" ]]; then
