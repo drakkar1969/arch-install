@@ -49,10 +49,6 @@ Mount point: /media/VirtualBoxShare   # Note: on guest system
 Make permanent: Yes
 ```
 
-#### Reboot
+#### Restart
 
-Reboot the guest system:
-
-```bash
-reboot
-```
+Restart the guest system to apply settings.
