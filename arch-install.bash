@@ -367,9 +367,9 @@ unmount_partitions()
 	print_submenu_heading "UNMOUNT PARTITIONS"
 
 	local mount_points=$(mount)
-	local root_mnt=$(mount | grep -i "/mnt " | cut -d' ' -f1-3)
-	local boot_mnt=$(mount | grep -i "/mnt/boot " | cut -d' ' -f1-3)
-	local home_mnt=$(mount | grep -i "/mnt/home " | cut -d' ' -f1-3)
+	local root_mnt=$(echo "$mount_points" | grep -i "/mnt ")
+	local boot_mnt=$(echo "$mount_points" | grep -i "/mnt/boot ")
+	local home_mnt=$(echo "$mount_points" | grep -i "/mnt/home ")
 
 	echo -e "The following partitions will be unmounted:"
 	echo ""
