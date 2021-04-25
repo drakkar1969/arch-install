@@ -415,7 +415,7 @@ post_menu()
 		POSTCHECKLIST+=("0")
 	done
 
-	# Main menu loop
+	# Post install menu loop
 	while true; do
 		clear
 
@@ -438,7 +438,7 @@ post_menu()
 		echo ""
 		echo -e "-------------------------------------------------------------------------------"
 		echo ""
-		echo -e -n " => Select option or (q)uit: "
+		echo -e -n " => Select option or (r)eturn to main menu: "
 
 		# Get menu selection
 		local post_index=-1
@@ -449,23 +449,9 @@ post_menu()
 
 			read -r -s -n 1 post_choice
 
-			# Exit main menu
-			if [[ "${post_choice,,}" == "q" ]]; then
+			# Return to main menu
+			if [[ "${post_choice,,}" == "r" ]]; then
 				clear
-				echo -e "Exit the chroot environment:"
-				echo ""
-				echo -e "   ${GREEN}exit${RESET}"
-				echo ""
-				echo -e "Unmount partitions:"
-				echo ""
-				echo -e "   ${GREEN}umount -R /mnt/boot${RESET}"
-				echo -e "   ${GREEN}umount -R /mnt/home${RESET}"
-				echo -e "   ${GREEN}umount -R /mnt${RESET}"
-				echo ""
-				echo -e "Restart to boot into GNOME:"
-				echo ""
-				echo -e "   ${GREEN}reboot${RESET}"
-				echo ""
 				exit 0
 			fi
 

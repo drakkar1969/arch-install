@@ -342,15 +342,54 @@ generate_fstab()
 	fi
 }
 
-download_postinstall()
+run_postinstall()
 {
-	print_submenu_heading "DOWNLOAD POST INSTALL SCRIPT"
+	# Download post install script if not present
+	if [[ ! -f /mnt/arch-post-install.bash ]]; then
+		curl -LJSs -o /mnt/arch-post-install.bash "https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.bash"
+	fi
 
-	echo -e "Download post install script ${GREEN}arch-post-install.bash${RESET}."
+	# Chroot and run post install script
+	arch-chroot /mnt ./arch-post-install.bash
+
+	MAINCHECKLIST[$1]=1
+}
+
+unmount_partitions()
+{
+	print_submenu_heading "UNMOUNT PARTITIONS"
+
+	local mount_points=$(mount)
+	local root_mnt=$(mount | grep -i "/mnt " | cut -d' ' -f1-3)
+	local boot_mnt=$(mount | grep -i "/mnt/boot " | cut -d' ' -f1-3)
+	local home_mnt=$(mount | grep -i "/mnt/home " | cut -d' ' -f1-3)
+
+	echo -e "The following partitions will be unmounted:"
+	echo ""
+	if [[ "$root_mnt" != "" ]]; then
+		echo -e "   + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
+	fi
+	if [[ "$boot_mnt" != "" ]]; then
+		echo -e "   + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
+	fi
+	if [[ "$home_mnt" != "" ]]; then
+		echo -e "   + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
+	fi
+	echo ""
 
 	if get_user_confirm; then
-		print_progress_text "Downloading post install script"
-		curl -LJSs -o /mnt/arch-post-install.bash "https://raw.githubusercontent.com/drakkar1969/arch-install/master/arch-post-install.bash"
+		print_progress_text "Unmounting partitions"
+		if [[ "$home_mnt" != "" ]]; then
+			umount -R /mnt/home
+		fi
+
+		if [[ "$boot_mnt" != "" ]]; then
+			umount -R /mnt/boot
+		fi
+
+		if [[ "$root_mnt" != "" ]]; then
+			umount -R /mnt
+		fi
 
 		MAINCHECKLIST[$1]=1
 
@@ -368,7 +407,8 @@ main_menu()
 				"Mount Partitions|mount_partitions"
 				"Install Base Packages|install_base"
 				"Generate Fstab File|generate_fstab"
-				"Download Post Install Script|download_postinstall")
+				"Run Post Install Script >>|run_postinstall"
+				"Unmount Partitions|unmount_partitions")
 	MAINCHECKLIST=()
 
 	# Initialize status array with '0'
@@ -415,13 +455,9 @@ main_menu()
 			# Exit main menu
 			if [[ "${main_choice,,}" == "q" ]]; then
 				clear
-				echo -e "To complete the installation, change root into the new system:"
+				echo -e "Restart to boot into GNOME:"
 				echo ""
-				echo -e "   ${GREEN}arch-chroot /mnt${RESET}"
-				echo ""
-				echo -e "Execute the post install script:"
-				echo ""
-				echo -e "   ${GREEN}bash arch-post-install.bash${RESET}"
+				echo -e "   ${GREEN}reboot${RESET}"
 				echo ""
 				exit 0
 			fi
