@@ -6,9 +6,12 @@ Go to `Settings -> System` and enable the `Enable EFI (special OSes only)` check
 
 Note: booting from UEFI may hang the first time for a minute or two.
 
-#### Allocate Base Memory
+#### System Settings
 
-To run GNOME with GDM, ensure the guest system has at least 2048 MB of base memory in `Settings -> System`.
+To run GNOME with GDM, ensure the guest system has:
+* At least 2048 MB of base memory in `Settings -> System -> Motherboard`
+* At least 2 CPU processors in `Settings -> System -> Processor`
+
 
 #### Enable Shared Clipboard
 
@@ -60,4 +63,3 @@ Reboot the guest system:
 ```bash
 reboot
 ```
-
