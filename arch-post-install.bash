@@ -104,7 +104,7 @@ set_kbpermanent()
 		print_progress_text "Setting keyboard layout"
 		echo KEYMAP=$KB_CODE > /etc/vconsole.conf
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -122,7 +122,7 @@ set_timezone()
 		print_progress_text "Creating symlink for timezone"
 		ln -sf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -138,7 +138,7 @@ sync_hwclock()
 		print_progress_text "Setting hardware clock to UTC"
 		hwclock --systohc --utc
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -172,7 +172,7 @@ set_locale()
 
 		print_file_contents "/etc/locale.conf"
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -199,7 +199,7 @@ set_hostname()
 		print_file_contents "/etc/hostname"
 		print_file_contents "/etc/hosts"
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -220,7 +220,7 @@ enable_multilib()
 		print_progress_text "Refreshing package databases"
 		pacman -Syy
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -235,7 +235,7 @@ root_password()
 	if get_user_confirm; then
 		passwd
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -263,7 +263,7 @@ add_sudouser()
 		print_progress_text "Verifying user identity"
 		id $NEW_USER
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -286,7 +286,7 @@ install_bootloader()
 		print_progress_text "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -304,7 +304,7 @@ install_xorg()
 		echo ""
  		pacman -S xorg-server xorg-xinit xorg-twm xterm
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -321,7 +321,7 @@ display_drivers()
 		pacman -S --needed --asdeps mesa
 		pacman -S intel-media-driver xf86-video-nouveau
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -337,7 +337,7 @@ install_pipewire()
 		print_progress_text "Installing PipeWire"
 		pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa gst-plugin-pipewire
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -368,7 +368,7 @@ install_gnome()
 		print_progress_text "Enabling Network Manager service"
 		systemctl enable NetworkManager.service
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
@@ -384,15 +384,15 @@ install_codecs()
 		print_progress_text "Installing codecs"
 		pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
 
-		MAINCHECKLIST[$1]=1
+		POSTCHECKLIST[$1]=1
 
 		get_any_key
 	fi
 }
 
-main_menu()
+post_menu()
 {
-	MAINITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
+	POSTITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
 				"Configure Timezone|set_timezone"
 				"Sync Hardware Clock|sync_hwclock"
 				"Configure Locale|set_locale"
@@ -406,13 +406,13 @@ main_menu()
 				"Install PipeWire|install_pipewire"
 				"Install GNOME Desktop Environment|install_gnome"
 				"Install Multimedia Codecs|install_codecs")
-	MAINCHECKLIST=()
+	POSTCHECKLIST=()
 
 	# Initialize status array with '0'
 	local i
 
-	for i in ${!MAINITEMS[@]}; do
-		MAINCHECKLIST+=("0")
+	for i in ${!POSTITEMS[@]}; do
+		POSTCHECKLIST+=("0")
 	done
 
 	# Main menu loop
@@ -425,13 +425,13 @@ main_menu()
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
-		for i in ${!MAINITEMS[@]}; do
+		for i in ${!POSTITEMS[@]}; do
 			# Get character from ascii code (0->A,etc.)
 			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
 
-			local item_text=$(echo "${MAINITEMS[$i]}" | cut -f1 -d'|')
+			local item_text=$(echo "${POSTITEMS[$i]}" | cut -f1 -d'|')
 
-			print_menu_item $item_index ${MAINCHECKLIST[$i]} "$item_text"
+			print_menu_item $item_index ${POSTCHECKLIST[$i]} "$item_text"
 		done
 
 		# Print footer
@@ -441,16 +441,16 @@ main_menu()
 		echo -e -n " => Select option or (q)uit: "
 
 		# Get menu selection
-		local main_index=-1
+		local post_index=-1
 
-		until (( $main_index >= 0 && $main_index < ${#MAINITEMS[@]} ))
+		until (( $post_index >= 0 && $post_index < ${#POSTITEMS[@]} ))
 		do
-			local main_choice
+			local post_choice
 
-			read -r -s -n 1 main_choice
+			read -r -s -n 1 post_choice
 
 			# Exit main menu
-			if [[ "${main_choice,,}" == "q" ]]; then
+			if [[ "${post_choice,,}" == "q" ]]; then
 				clear
 				echo -e "Exit the chroot environment:"
 				echo ""
@@ -470,18 +470,18 @@ main_menu()
 			fi
 
 			# Get selection index
-			if [[ "$main_choice" == [a-zA-Z] ]]; then
+			if [[ "$post_choice" == [a-zA-Z] ]]; then
 				# Get ascii code from character (A->65, etc.)
-				main_index=$(LC_CTYPE=C printf '%d' "'${main_choice^^}")
-				main_index=$(($main_index-65))
+				post_index=$(LC_CTYPE=C printf '%d' "'${post_choice^^}")
+				post_index=$(($post_index-65))
 			fi
 		done
 
 		# Execute function
-		local item_func=$(echo "${MAINITEMS[$main_index]}" | cut -f2 -d'|')
+		local item_func=$(echo "${POSTITEMS[$post_index]}" | cut -f2 -d'|')
 
-		eval ${item_func} $main_index
+		eval ${item_func} $post_index
 	done
 }
 
-main_menu
+post_menu
