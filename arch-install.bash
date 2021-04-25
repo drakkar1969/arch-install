@@ -350,7 +350,7 @@ run_postinstall()
 	fi
 
 	# Chroot and run post install script
-	arch-chroot /mnt ./arch-post-install.bash
+	arch-chroot /mnt /bin/bash arch-post-install.bash
 
 	MAINCHECKLIST[$1]=1
 }
