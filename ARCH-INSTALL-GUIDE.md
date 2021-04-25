@@ -93,11 +93,11 @@ Create a partition table (GPT):
 ```bash
 (parted) mklabel gpt
 ```
-Create `boot` partition of type `ESP` (EFI system partition) and set boot flag:
+Create `boot` partition of type `ESP` (EFI system partition) and set `esp` flag:
 
 ```bash
 (parted) mkpart ESP fat32 1MiB 513MiB
-(parted) set 1 boot on
+(parted) set 1 esp on
 ```
 Create `root` partition:
 
