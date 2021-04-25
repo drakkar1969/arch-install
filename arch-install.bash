@@ -315,7 +315,7 @@ install_base()
 
 	if get_user_confirm; then
 		print_progress_text "Installing base packages"
-		pacstrap /mnt base base-devel linux linux-firmware
+		pacstrap /mnt base base-devel linux linux-firmware nano man-db man-pages
 
 		MAINCHECKLIST[$1]=1
 
