@@ -421,7 +421,7 @@ post_menu()
 
 		# Print header
 		echo -e "-------------------------------------------------------------------------------"
-		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} POST INSTALL MENU${RESET}"
+		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} INSTALL MENU ${RESET}>>${GREEN} POST INSTALL${RESET}"
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
