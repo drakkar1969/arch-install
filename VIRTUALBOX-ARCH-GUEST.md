@@ -1,21 +1,14 @@
 ## VirtualBox: Installing Arch Linux as Guest
 
-#### Enable UEFI Mode
-
-Go to `Settings -> System` and enable the `Enable EFI (special OSes only)` checkbox.
-
-Note: booting from UEFI may hang the first time for a minute or two.
-
 #### System Settings
 
-To run GNOME with GDM, ensure the guest system has:
-* At least 2048 MB of base memory in `Settings -> System -> Motherboard`
-* At least 2 CPU processors in `Settings -> System -> Processor`
-
-
-#### Enable Shared Clipboard
-
-To enable copy and paste between host and guest, go to `Settings -> General -> Advanced` and select `Bidirectional` in the shared clipboard dropdown.
+| Option           | Settings Section      | Details                                                      |
+| ---------------- | --------------------- | ------------------------------------------------------------ |
+| UEFI Mode        | System -> Motherboard | Enable the `Enable EFI (special OSes only)` checkbox         |
+| CPU              | System -> Processor   | Select at least 2 processors to run GNOME                    |
+| RAM              | System -> Motherboard | Select at least 2048 MB of base memory to run GNOME          |
+| Networking       | Network -> Advanced   | Select the `Paravitualized Network (virtio-net)` in the `Adapter Type` dropdown for best performance |
+| Shared Clipboard | General -> Advanced   | Select `Bidirectional` in the `Shared clipboard` dropdown    |
 
 #### Install Guest Additions
 
