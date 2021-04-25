@@ -78,17 +78,6 @@ get_user_confirm()
 	return $ret_val
 }
 
-get_user_variable()
-{
-	local var_name=$1
-	local user_input
-
-	read -e -p "Enter $2: " -i "$3" user_input
-	echo ""
-
-	declare -g "$var_name"=$user_input
-}
-
 #===========================================================================================================
 # INSTALLATION FUNCTIONS
 #===========================================================================================================

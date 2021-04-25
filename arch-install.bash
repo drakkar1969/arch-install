@@ -78,7 +78,7 @@ get_user_confirm()
 	return $ret_val
 }
 
-get_user_variable()
+get_global_variable()
 {
 	local var_name=$1
 	local user_input
@@ -218,10 +218,10 @@ format_partitions()
 
 	print_partition_structure
 
-	get_user_variable FMT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_user_variable FMT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_user_variable FMT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
-	get_user_variable FMT_SWAP_ID "swap partition ID (blank to skip)" "/dev/nvme0n1p3"
+	get_global_variable FMT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
+	get_global_variable FMT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
+	get_global_variable FMT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
+	get_global_variable FMT_SWAP_ID "swap partition ID (blank to skip)" "/dev/nvme0n1p3"
 
 	echo -e "The following partitions will be formatted:"
 	echo ""
@@ -273,9 +273,9 @@ mount_partitions()
 
 	print_partition_structure
 
-	get_user_variable MNT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_user_variable MNT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_user_variable MNT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
+	get_global_variable MNT_BOOT_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
+	get_global_variable MNT_ROOT_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
+	get_global_variable MNT_HOME_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
