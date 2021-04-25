@@ -258,7 +258,7 @@ add_sudouser()
 		passwd $NEW_USER
 
 		print_progress_text "Enabling sudo privileges for user"
-		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
+		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 
 		print_progress_text "Verifying user identity"
 		id $NEW_USER

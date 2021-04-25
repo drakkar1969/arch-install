@@ -348,7 +348,7 @@ passwd $NEWUSER
 Allow the new user to issue commands as root, i.e. with `sudo`:
 
 ```bash
-bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo)'
+bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 ```
 
 #### Install Boot Loader
