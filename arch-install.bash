@@ -131,13 +131,16 @@ set_keyboard()
 {
 	print_submenu_heading "SET KEYBOARD LAYOUT"
 
-	get_user_variable KB_CODE "keyboard layout" "it"
+	local kb_code
 
-	echo -e "Set keyboard layout to ${GREEN}${KB_CODE}${RESET}."
+	read -e -p "Enter keyboard layout: " -i "it" kb_code
+	echo ""
+
+	echo -e "Set keyboard layout to ${GREEN}${kb_code}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Setting keyboard layout"
-		loadkeys $KB_CODE
+		loadkeys $kb_code
 
 		MAINCHECKLIST[$1]=1
 
@@ -161,20 +164,25 @@ enable_wifi()
 {
 	print_submenu_heading "ENABLE WIFI CONNECTION"
 
+	local wifi_adapter
+	local wifi_ssid
+
 	iwctl device list
-	get_user_variable WIFI_ADAPTER "wireless adapter name" "wlp3s0"
+	read -e -p "Enter wireless adapter name: " -i "wlp3s0" wifi_adapter
+	echo ""
 
 	print_progress_text "Scanning for wifi networks ..."
 
-	iwctl station $WIFI_ADAPTER scan
-	iwctl station $WIFI_ADAPTER get-networks
-	get_user_variable WIFI_SSID "wireless network name" ""
+	iwctl station $wifi_adapter scan
+	iwctl station $wifi_adapter get-networks
+	read -e -p "Enter wireless network name: " -i "" wifi_ssid
+	echo ""
 
-	echo -e "Connect to wifi network ${GREEN}${WIFI_SSID}${RESET} on adapter ${GREEN}${WIFI_ADAPTER}${RESET}."
+	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET} on adapter ${GREEN}${wifi_adapter}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Connecting to wifi network"
-		station $WIFI_ADAPTER connect $WIFI_SSID
+		station $wifi_adapter connect $wifi_ssid
 
 		print_progress_text "Checking network connection"
 		ping -c 3 www.google.com

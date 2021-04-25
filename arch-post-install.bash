@@ -96,13 +96,16 @@ set_kbpermanent()
 {
 	print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
 
-	get_user_variable KB_CODE "keyboard layout" "it"
+	local kb_code
 
-	echo -e "Make keyboard layout ${GREEN}${KB_CODE}${RESET} permanent."
+	read -e -p "Enter keyboard layout: " -i "it" kb_code
+	echo ""
+
+	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
 
 	if get_user_confirm; then
 		print_progress_text "Setting keyboard layout"
-		echo KEYMAP=$KB_CODE > /etc/vconsole.conf
+		echo KEYMAP=$kb_code > /etc/vconsole.conf
 
 		POSTCHECKLIST[$1]=1
 
@@ -114,13 +117,16 @@ set_timezone()
 {
 	print_submenu_heading "CONFIGURE TIMEZONE"
 
-	get_user_variable TIME_ZONE "timezone" "Europe/Sarajevo"
+	local time_zone
 
-	echo -e "Set the timezone to ${GREEN}${TIME_ZONE}${RESET}."
+	read -e -p "Enter timezone: " -i "Europe/Sarajevo" time_zone
+	echo ""
+
+	echo -e "Set the timezone to ${GREEN}${time_zone}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Creating symlink for timezone"
-		ln -sf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime
+		ln -sf /usr/share/zoneinfo/$time_zone /etc/localtime
 
 		POSTCHECKLIST[$1]=1
 
@@ -148,15 +154,20 @@ set_locale()
 {
 	print_submenu_heading "CONFIGURE LOCALE"
 
-	get_user_variable LOCALE_US "language locale" "en_US"
-	get_user_variable LOCALE_IE "format locale" "en_IE"
+	local locale_US
+	local locale_IE
 
-	echo -e "Set the language to ${GREEN}${LOCALE_US}${RESET} and the format locale to ${GREEN}${LOCALE_IE}${RESET}."
+	read -e -p "Enter language locale: " -i "en_US" locale_US
+	echo ""
+	read -e -p "Enter format locale: " -i "en_IE" locale_IE
+	echo ""
+
+	echo -e "Set the language to ${GREEN}${locale_US}${RESET} and the format locale to ${GREEN}${locale_IE}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Setting language and format locales"
-		local locale_US_utf="$LOCALE_US.UTF-8"
-		local locale_IE_utf="$LOCALE_IE.UTF-8"
+		local locale_US_utf="$locale_US.UTF-8"
+		local locale_IE_utf="$locale_IE.UTF-8"
 
 		sed -i "/#$locale_US_utf/ s/^#//" /etc/locale.gen
 		sed -i "/#$locale_IE_utf/ s/^#//" /etc/locale.gen
@@ -182,18 +193,21 @@ set_hostname()
 {
 	print_submenu_heading "CONFIGURE HOSTNAME"
 
-	get_user_variable PC_NAME "hostname" "ProBook450"
+	local pc_name
 
-	echo -e "Set the hostname to ${GREEN}${PC_NAME}${RESET}."
+	read -e -p "Enter hostname: " -i "ProBook450" pc_name
+	echo ""
+
+	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Setting hostname"
-		echo $PC_NAME > /etc/hostname
+		echo $pc_name > /etc/hostname
 
 		cat > /etc/hosts <<-HOSTSFILE
 			127.0.0.1       localhost
 			::1             localhost
-			127.0.1.1       ${PC_NAME}.localdomain      ${PC_NAME}
+			127.0.1.1       ${pc_name}.localdomain      ${pc_name}
 		HOSTSFILE
 
 		print_file_contents "/etc/hostname"
@@ -245,23 +259,28 @@ add_sudouser()
 {
 	print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
 
-	get_user_variable NEW_USER "user name" "drakkar"
-	get_user_variable USER_DESC "user description" "draKKar"
+	local new_user
+	local user_desc
 
-	echo -e "Create new user ${GREEN}${NEW_USER}${RESET} with sudo privileges."
+	read -e -p "Enter user name: " -i "drakkar" new_user
+	echo ""
+	read -e -p "Enter user description: " -i "draKKar" user_desc
+	echo ""
+
+	echo -e "Create new user ${GREEN}${new_user}${RESET} with sudo privileges."
 
 	if get_user_confirm; then
 		print_progress_text "Creating new user"
-		useradd -m -G wheel -c $USER_DESC -s /bin/bash $NEW_USER
+		useradd -m -G wheel -c $user_desc -s /bin/bash $new_user
 
 		print_progress_text "Setting password for user"
-		passwd $NEW_USER
+		passwd $new_user
 
 		print_progress_text "Enabling sudo privileges for user"
 		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 
 		print_progress_text "Verifying user identity"
-		id $NEW_USER
+		id $new_user
 
 		POSTCHECKLIST[$1]=1
 
@@ -347,7 +366,10 @@ install_gnome()
 {
 	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
 
-	get_user_variable GNOME_IGNORE "GNOME packages to ignore" "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem"
+	local gnome_ignore
+
+	read -e -p "Enter GNOME packages to ignore: " -i "epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem" gnome_ignore
+	echo ""
 
 	echo -e "Install the GNOME desktop environment."
 
@@ -356,8 +378,8 @@ install_gnome()
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		if [[ "$GNOME_IGNORE" != "" ]]; then
-			pacman -S gnome --ignore $GNOME_IGNORE
+		if [[ "$gnome_ignore" != "" ]]; then
+			pacman -S gnome --ignore $gnome_ignore
 		else
 			pacman -S gnome
 		fi
