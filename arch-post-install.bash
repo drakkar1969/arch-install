@@ -155,19 +155,19 @@ set_locale()
 
 	if get_user_confirm; then
 		print_progress_text "Setting language and format locales"
-		local locale_US_utf="$locale_US.UTF-8"
-		local locale_IE_utf="$locale_IE.UTF-8"
+		locale_US="$locale_US.UTF-8"
+		locale_IE="$locale_IE.UTF-8"
 
-		sed -i "/#$locale_US_utf/ s/^#//" /etc/locale.gen
-		sed -i "/#$locale_IE_utf/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_US/ s/^#//" /etc/locale.gen
+		sed -i "/#$locale_IE/ s/^#//" /etc/locale.gen
 
 		locale-gen
 
 		cat > /etc/locale.conf <<-LOCALECONF
-			LANG=$locale_US_utf
-			LC_MEASUREMENT=$locale_IE_utf
-			LC_PAPER=$locale_IE_utf
-			LC_TIME=$locale_IE_utf
+			LANG=$locale_US
+			LC_MEASUREMENT=$locale_IE
+			LC_PAPER=$locale_IE
+			LC_TIME=$locale_IE
 		LOCALECONF
 
 		print_file_contents "/etc/locale.conf"
