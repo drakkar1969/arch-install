@@ -402,7 +402,7 @@ Test that the Xorg environment is working with the command `startx`. To exit the
 Install the Mesa OpenGL driver (for Intel and Nouveau):
 
 ```bash
-pacman -S mesa
+pacman -S --needed --asdeps mesa
 ```
 
 > Note: the `xf86-video-intel` Intel driver is optional, see https://wiki.archlinux.org/index.php/Intel_graphics#Installation.

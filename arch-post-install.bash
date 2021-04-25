@@ -321,7 +321,8 @@ display_drivers()
 
 	if get_user_confirm; then
 		print_progress_text "Installing display drivers"
-		pacman -S mesa intel-media-driver xf86-video-nouveau
+		pacman -S --needed --asdeps mesa
+		pacman -S intel-media-driver xf86-video-nouveau
 
 		MAINCHECKLIST[$1]=1
 
