@@ -41,6 +41,8 @@ If the directory does not exist, the system may be in MBR/BIOS mode.
 
 #### Enable Internet Connection
 
+> Note: not required for VirtualBox installation
+
 Wired internet connection is enabled by default.
 
 To enable wireless connection:
@@ -403,6 +405,8 @@ pacman -S xorg-xinit xorg-twm xterm
 Test that the Xorg environment is working with the command `startx`. To exit the graphical environment type `exit`.
 
 #### Install Video Drivers
+
+> Note: not required for VirtualBox installation
 
 Install the Mesa OpenGL driver (for Intel and Nouveau):
 
