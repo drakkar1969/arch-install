@@ -15,6 +15,8 @@ Where `path-to-image.iso` is the full path of the CD image, and `/dev/sdX` is th
 
 #### Set Keyboard Layout
 
+> Note: this step is only required for non-US keyboards
+
 The default keymap is US. Set your keymap with the command (replace `it` with your actual keymap):
 
 ```bash
@@ -236,6 +238,8 @@ The last argument (optional) specifies to use the `bash` shell (the default is `
 ## System Configuration
 
 #### Set Keyboard layout
+
+> Note: this step is only required for non-US keyboards
 
 Make the keyboard layout permanent (replace `it` with your keymap):
 
