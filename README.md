@@ -1,5 +1,17 @@
 # Arch Linux Installation
 
+Set the keyboard layout, if different from US keyboard:
+
+```bash
+loadkeys it
+```
+
+ Replace `it`  with your keyboard layout. Available layouts can be listed with:
+
+```bash
+ls /usr/share/kbd/keymaps/**/*.map.gz
+```
+
 Download and execute the `arch-install.bash` script:
 
 ```shell

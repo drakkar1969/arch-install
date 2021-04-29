@@ -127,27 +127,6 @@ get_partition_info()
 #===========================================================================================================
 # INSTALLATION FUNCTIONS
 #===========================================================================================================
-set_keyboard()
-{
-	print_submenu_heading "SET KEYBOARD LAYOUT"
-
-	local kb_code
-
-	read -e -p "Enter keyboard layout: " -i "it" kb_code
-	echo ""
-
-	echo -e "Set keyboard layout to ${GREEN}${kb_code}${RESET}."
-
-	if get_user_confirm; then
-		print_progress_text "Setting keyboard layout"
-		loadkeys $kb_code
-
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
 check_uefimode()
 {
 	print_submenu_heading "CHECK UEFI MODE"
@@ -408,8 +387,7 @@ unmount_partitions()
 
 main_menu()
 {
-	MAINITEMS=("Set Keyboard Layout|set_keyboard"
-				"Check UEFI Mode|check_uefimode"
+	MAINITEMS=("Check UEFI Mode|check_uefimode"
 				"Enable Wifi Connection|enable_wifi"
 				"Update System Clock|system_clock"
 				"Format Partitions|format_partitions"
