@@ -265,7 +265,6 @@ mount_partitions()
 	if [[ "$HOME_PART_ID" != "" ]]; then
 		echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
 	fi
-	echo ""
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
