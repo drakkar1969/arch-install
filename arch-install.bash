@@ -197,9 +197,6 @@ format_partitions()
 
 	print_partition_structure
 
-	print_warning "Be careful specifying partitions to format - these will also be used for mount operations"
-	echo ""
-
 	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
 	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
 	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
@@ -220,6 +217,8 @@ format_partitions()
 		echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
 	fi
 	echo ""
+
+	print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
 
 	if get_user_confirm; then
 		if [[ "$ESP_PART_ID" != "" ]]; then
