@@ -307,10 +307,10 @@ install_xorg()
 	echo -e "Install Xorg graphical environment."
 
 	if get_user_confirm; then
-		print_progress_text "Installing Xorg with X widgets for testing"
+		print_progress_text "Installing Xorg"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
- 		pacman -S xorg-server xorg-xinit xorg-twm xterm
+ 		pacman -S --asdeps xorg-server
 
 		POSTCHECKLIST[$1]=1
 

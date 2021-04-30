@@ -393,16 +393,16 @@ grub-mkconfig -o /boot/grub/grub.cfg
 Install Xorg:
 
 ```bash
-pacman -S xorg-server
+pacman -S --asdeps xorg-server
 ```
 
-Install X widgets for testing:
+Optionally install X widgets for testing:
 
 ```bash
 pacman -S xorg-xinit xorg-twm xterm
 ```
 
-Test that the Xorg environment is working with the command `startx`. To exit the graphical environment type `exit`.
+To test the Xorg environment, use the `startx` command; to exit the graphical environment type `exit`.
 
 #### Install Video Drivers
 
