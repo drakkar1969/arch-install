@@ -84,9 +84,10 @@ This section assumes that:
 
 You can use the `lsblk` command to check this.
 
+__Warning: this will destroy all data on the disks__.
+
 ##### 1. Create Partitions
 
-__Warning__: this will destroy all data on the disk.
 Run `parted` to partition the __primary SSD__:
 
 ```bash
