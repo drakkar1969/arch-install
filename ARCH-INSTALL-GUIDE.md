@@ -198,14 +198,14 @@ mount /dev/nvme0n1p2 /mnt
 Mount the `home` partition:
 
 ```bash
-mkdir /mnt/home
+mkdir -p /mnt/home
 mount /dev/nvme0n1p4 /mnt/home
 ```
 
 Mount the `ESP boot` partition:
 
 ```bash
-mkdir /mnt/boot
+mkdir -p /mnt/boot
 mount /dev/nvme0n1p1 /mnt/boot
 ```
 

@@ -275,12 +275,12 @@ mount_partitions()
 		fi
 
 		if [[ "$HOME_PART_ID" != "" ]]; then
-			mkdir /mnt/home
+			mkdir -p /mnt/home
 			mount $HOME_PART_ID /mnt/home
 		fi
 
 		if [[ "$ESP_PART_ID" != "" ]]; then
-			mkdir /mnt/boot
+			mkdir -p /mnt/boot
 			mount $ESP_PART_ID /mnt/boot
 		fi
 
