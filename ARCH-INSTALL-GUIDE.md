@@ -361,10 +361,16 @@ bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d
 
 #### Install Boot Loader
 
-Install `grub`, `efibootmgr` (for UEFI systems only) and `os-prober` (only needed to detect other operating systems in a dual boot scenario):
+Install `grub` and `efibootmgr`:
 
 ```bash
-pacman -S grub efibootmgr os-prober
+pacman -S grub efibootmgr
+```
+
+Optionally install `os-prober` (only needed to detect other operating systems in a dual boot scenario):
+
+```bash
+pacman -S os-prober
 ```
 
 Install the `grub` boot loader:
