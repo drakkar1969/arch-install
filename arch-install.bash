@@ -394,14 +394,7 @@ main_menu()
 				"Generate Fstab File|generate_fstab"
 				"Run Post Install Script >>|run_postinstall"
 				"Unmount Partitions|unmount_partitions")
-	MAINCHECKLIST=()
-
-	# Initialize status array with '0'
-	local i
-
-	for i in ${!MAINITEMS[@]}; do
-		MAINCHECKLIST+=("0")
-	done
+	MAINCHECKLIST=("${MAINITEMS[@]/*/0}")
 
 	# Main menu loop
 	while true; do
@@ -413,6 +406,8 @@ main_menu()
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
+		local i
+
 		for i in ${!MAINITEMS[@]}; do
 			# Get character from ascii code (0->A,etc.)
 			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")

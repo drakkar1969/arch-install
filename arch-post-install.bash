@@ -417,14 +417,7 @@ post_menu()
 				"Install PipeWire|install_pipewire"
 				"Install GNOME Desktop Environment|install_gnome"
 				"Install Multimedia Codecs|install_codecs")
-	POSTCHECKLIST=()
-
-	# Initialize status array with '0'
-	local i
-
-	for i in ${!POSTITEMS[@]}; do
-		POSTCHECKLIST+=("0")
-	done
+	POSTCHECKLIST=("${POSTITEMS[@]/*/0}")
 
 	# Post install menu loop
 	while true; do
@@ -436,6 +429,8 @@ post_menu()
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
+		local i
+
 		for i in ${!POSTITEMS[@]}; do
 			# Get character from ascii code (0->A,etc.)
 			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
