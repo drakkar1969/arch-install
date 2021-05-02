@@ -443,7 +443,7 @@ main_menu()
 			fi
 
 			# Get selection index
-			if [[ "$main_choice" == [a-zA-Z] ]]; then
+			if [[ "$main_choice" =~ ^[a-zA-Z]+$ ]]; then
 				# Get ascii code from character (A->65, etc.)
 				main_index=$(LC_CTYPE=C printf '%d' "'${main_choice^^}")
 				main_index=$(($main_index-65))
