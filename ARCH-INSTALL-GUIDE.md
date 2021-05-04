@@ -1,6 +1,6 @@
 # 	Arch Linux Installation Guide (UEFI)
 ---
-## Bootable USB
+## A. Bootable USB
 
 This section assumes that `/dev/sdb` is the USB drive. You can use the `lsblk` command to check this.
 
@@ -14,7 +14,7 @@ sudo umount -R /path/to/mount
 
 Replace `/path/to/mount` with the directory name(s) where USB partitions are mounted. Mount points can be found with the command `mount | grep sdb`.
 
-#### Create and Format Partitions
+#### 1. Create and Format Partitions
 
 Run `parted` to partition the USB drive:
 
@@ -60,7 +60,7 @@ Format the data partition:
 sudo mkfs.ext4 -L "USBData" /dev/sdb2
 ```
 
-#### Copy Arch Linux ISO
+#### 2. Copy Arch Linux ISO
 
 Mount the `boot` partition:
 
@@ -92,9 +92,9 @@ sudo fatlabel /dev/sdb1 ARCH_202104
 Replace `ARCH_202104` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
 
 ---
-## Pre-Installation
+## B. Pre-Installation
 
-#### Set Keyboard Layout
+#### 1. Set Keyboard Layout
 
 > Note: this step is only required for non-US keyboards
 
@@ -110,7 +110,7 @@ Available layouts can be listed with:
 ls /usr/share/kbd/keymaps/**/*.map.gz
 ```
 
-#### Check UEFI Mode
+#### 2. Check UEFI Mode
 
 To verify that UEFI boot mode is enabled, list the `efivars` directory:
 
@@ -120,7 +120,7 @@ ls /sys/firmware/efi/efivars
 
 If the directory does not exist, the system may be in MBR/BIOS mode.
 
-#### Enable Internet Connection
+#### 3. Enable Internet Connection
 
 > Note: not required for VirtualBox installation
 
@@ -146,7 +146,7 @@ To test the internet connection:
 ping -c 3 www.google.com
 ```
 
-#### Update System Clock
+#### 4. Update System Clock
 
 Ensure the system clock is accurate:
 
@@ -155,7 +155,7 @@ timedatectl set-ntp true
 ```
 To check the status, use `timedatectl` without parameters.
 
-#### Partition Disks
+#### 5. Partition Disks
 
 This section assumes that:
 
@@ -167,7 +167,7 @@ You can use the `lsblk` command to check this.
 
 __Warning: this will destroy all data on the disks__.
 
-##### 1. Create Partitions
+##### a. Create Partitions
 
 Run `parted` to partition the __primary SSD__:
 
@@ -236,7 +236,7 @@ Verify partitions and exit `parted`:
 (parted) quit
 ```
 
-##### 2. Format Partitions
+##### b. Format Partitions
 
 Format the `ESP` partition:
 
@@ -269,7 +269,7 @@ Format the data partition on the additional HDD (**do this only if the data part
 mkfs.ext4 -L "DATA" /dev/sda1
 ```
 
-##### 3. Mount Partitions
+##### c. Mount Partitions
 
 Mount the `root` partition:
 
@@ -294,15 +294,15 @@ mount /dev/nvme0n1p1 /mnt/boot
 Use the `lsblk` command to verify partitions are correctly mounted.
 
 ---
-## Installation
+## C. Installation
 
-#### Install Base Packages
+#### 1. Install Base Packages
 
 ```bash
 pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 ```
 
-#### Generate Fstab File
+#### 2. Generate Fstab File
 
 ```bash
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -310,7 +310,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 In case of errors, __do not run the command a second time__, edit the `fstab` file manually.
 
-#### Change Root into New System
+#### 3. Change Root into New System
 
 ```bash
 arch-chroot /mnt
@@ -319,9 +319,9 @@ arch-chroot /mnt
 The last argument (optional) specifies to use the `bash` shell (the default is `sh`).
 
 ---
-## System Configuration
+## D. System Configuration
 
-#### Set Keyboard layout
+#### 1. Set Keyboard layout
 
 > Note: this step is only required for non-US keyboards
 
@@ -331,7 +331,7 @@ Make the keyboard layout permanent (replace `it` with your keymap):
 echo KEYMAP=it > /etc/vconsole.conf
 ```
 
-#### Configure Timezone
+#### 2. Configure Timezone
 
 Set the time zone:
 
@@ -342,7 +342,7 @@ ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
 The timezone format is `Region/City` where _Region_ and _City_ depend on location. To check available timezones, see the files/folders in `/usr/share/zoneinfo/`.
 
-#### Sync Hardware Clock
+#### 3. Sync Hardware Clock
 
 Set hardware clock to UTC:
 
@@ -350,7 +350,7 @@ Set hardware clock to UTC:
 hwclock --systohc --utc
 ```
 
-#### Configure Locale
+#### 4. Configure Locale
 
 Uncomment locales in the `/etc/locale.gen` file:
 
@@ -377,7 +377,7 @@ echo LC_PAPER=$LOCALE_IE >> /etc/locale.conf
 echo LC_TIME=$LOCALE_IE >> /etc/locale.conf
 ```
 
-#### Configure Hostname
+#### 5. Configure Hostname
 
 Create the `hostname` file:
 
@@ -394,7 +394,7 @@ echo "::1             localhost" >> /etc/hosts
 echo "127.0.1.1       ${PCNAME}.localdomain       ${PCNAME}" >> /etc/hosts
 ```
 
-#### Enable Multilib Repository
+#### 6. Enable Multilib Repository
 
 Enable the `multilib` repository:
 
@@ -408,7 +408,7 @@ Refresh package databases:
 pacman -Syy
 ```
 
-#### Configure Root Password
+#### 7. Configure Root Password
 
 To set the root password, run the following command and input a password:
 
@@ -416,7 +416,7 @@ To set the root password, run the following command and input a password:
 passwd
 ```
 
-#### Add New User with Sudo Privileges
+#### 8. Add New User with Sudo Privileges
 
 Add new user:
 
@@ -440,7 +440,7 @@ Allow the new user to issue commands as root, i.e. with `sudo`:
 bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 ```
 
-#### Install Boot Loader
+#### 9. Install Boot Loader
 
 Install `grub` and `efibootmgr`:
 
@@ -474,9 +474,9 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 ---
 
-## Desktop Environment
+## E. Desktop Environment
 
-#### Install Xorg Graphical Environment
+#### 1. Install Xorg Graphical Environment
 
 Install Xorg:
 
@@ -492,7 +492,7 @@ pacman -S xorg-xinit xorg-twm xterm
 
 To test the Xorg environment, use the `startx` command; to exit the graphical environment type `exit`.
 
-#### Install Video Drivers
+#### 2. Install Video Drivers
 
 > Note: not required for VirtualBox installation
 
@@ -524,7 +524,7 @@ Install the open source Nouveau driver for nVidia:
 pacman -S xf86-video-nouveau
 ```
 
-#### Install PipeWire
+#### 3. Install PipeWire
 
 Install PipeWire packages as dependencies:
 
@@ -532,7 +532,7 @@ Install PipeWire packages as dependencies:
 pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa gst-plugin-pipewire
 ```
 
-#### Install GNOME
+#### 4. Install GNOME
 
 Install GNOME package group (press `ENTER` to select all packages when prompted):
 
@@ -554,7 +554,7 @@ Enable the Network Manager service:
 systemctl enable NetworkManager.service
 ```
 
-#### Install Multimedia Codecs
+#### 5. Install Multimedia Codecs
 
 Install needed codecs:
 
@@ -562,7 +562,7 @@ Install needed codecs:
 pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
 ```
 
-#### Reboot
+#### 6. Reboot
 
 Exit the `chroot` environment:
 
