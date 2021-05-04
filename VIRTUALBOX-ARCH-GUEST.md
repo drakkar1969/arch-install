@@ -1,6 +1,6 @@
 ## VirtualBox: Installing Arch Linux as Guest
 
-#### System Settings
+#### 1. System Settings
 
 | Option           | Settings Section      | Details                                                      |
 | ---------------- | --------------------- | ------------------------------------------------------------ |
@@ -10,7 +10,7 @@
 | Networking       | Network -> Advanced   | Select the `Paravitualized Network (virtio-net)` in the `Adapter Type` dropdown for best performance |
 | Shared Clipboard | General -> Advanced   | Select `Bidirectional` in the `Shared clipboard` dropdown    |
 
-#### Install Guest Additions
+#### 2. Install Guest Additions
 
 In the guest system, install the Guest Additions:
 
@@ -18,7 +18,7 @@ In the guest system, install the Guest Additions:
 sudo pacman -S virtualbox-guest-utils
 ```
 
-#### Load VirtualBox Kernel Modules
+#### 3. Load VirtualBox Kernel Modules
 
 To load the VirtualBox kernel modules automatically, enable the `vboxservice` service:
 
@@ -28,7 +28,7 @@ sudo systemctl enable vboxservice.service
 
 This will also enable time synchronization between host and guest systems.
 
-#### Enable Shared Folders
+#### 4. Enable Shared Folders
 
 Add the user in the guest system to the `vboxsf` group, which should have been created during installation of the Guest Additions:
 
@@ -49,6 +49,6 @@ Mount point: /media/VirtualBoxShare   # Note: on guest system
 Make permanent: Yes
 ```
 
-#### Restart
+#### 5. Restart
 
 Restart the guest system to apply settings.
