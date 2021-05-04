@@ -2,13 +2,94 @@
 ---
 ## Bootable USB
 
-To create a bootable USB from a CD image, use the following command:
+This section assumes that `/dev/sdb` is the USB drive. You can use the `lsblk` command to check this.
+
+__Warning: this will destroy all data on the USB drive__.
+
+Unmount any mounted partitions on the USB drive:
 
 ```bash
-dd bs=4M if=path-to-image.iso of=/dev/sdX status=progress && sync
+sudo umount -R /path/to/mount
 ```
 
-Where `path-to-image.iso` is the full path of the CD image, and `/dev/sdX` is the USB device to write to.
+Replace `/path/to/mount` with the directory name(s) where USB partitions are mounted. Mount points can be found with the command `mount | grep sdb`.
+
+#### Create and Format Partitions
+
+Run `parted` to partition the USB drive:
+
+```bash
+sudo parted /dev/sdb
+```
+
+Create a partition table (GPT):
+
+```bash
+(parted) mklabel gpt
+```
+
+Create a `boot` partition of type `ESP` (EFI system partition) and set `boot` flag:
+
+```bash
+(parted) mkpart ESP fat32 1MiB 4GiB
+(parted) set 1 boot on
+```
+
+Create a data partition in the remaining space:
+
+```bash
+(parted) mkpart primary ext4 4GiB 100%
+```
+
+Verify partitions and exit `parted`:
+
+```bash
+(parted) print
+(parted) quit
+```
+
+Format the `boot` partition:
+
+```bash
+sudo mkfs.fat -F32 /dev/sdb1
+```
+
+Format the data partition:
+
+```bash
+sudo mkfs.ext4 -L "USBData" /dev/sdb2
+```
+
+#### Copy Arch Linux ISO
+
+Mount the `boot` partition:
+
+```bash
+sudo mkdir -p /mnt/usb
+sudo mount /dev/sdb1 /mnt/usb 
+```
+
+Extract the Arch Linux ISO to the `boot` partition:
+
+```bash
+sudo bsdtar -x --exclude=syslinux/ -f archlinux-2021.04.01-x86_64.iso -C /mnt/usb
+```
+
+Replace `archlinux-2021.04.01-x86_64.iso` with the path to the Arch Linux ISO.
+
+Unmount the `boot` partition:
+
+```bash
+sudo umount -R /mnt/usb
+```
+
+Change the label of the `boot` partition to ensure booting:
+
+```bash
+sudo fatlabel /dev/sdb1 ARCH_202104
+```
+
+Replace `ARCH_202104` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
 
 ---
 ## Pre-Installation
