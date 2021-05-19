@@ -139,39 +139,6 @@ check_uefimode()
 	get_any_key
 }
 
-enable_wifi()
-{
-	print_submenu_heading "ENABLE WIFI CONNECTION"
-
-	local wifi_adapter
-	local wifi_ssid
-
-	iwctl device list
-	read -e -p "Enter wireless adapter name: " -i "wlp3s0" wifi_adapter
-	echo ""
-
-	print_progress_text "Scanning for wifi networks ..."
-
-	iwctl station $wifi_adapter scan
-	iwctl station $wifi_adapter get-networks
-	read -e -p "Enter wireless network name: " -i "" wifi_ssid
-	echo ""
-
-	echo -e "Connect to wifi network ${GREEN}${wifi_ssid}${RESET} on adapter ${GREEN}${wifi_adapter}${RESET}."
-
-	if get_user_confirm; then
-		print_progress_text "Connecting to wifi network"
-		station $wifi_adapter connect $wifi_ssid
-
-		print_progress_text "Checking network connection"
-		ping -c 3 www.google.com
-
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
 system_clock()
 {
 	print_submenu_heading "UPDATE SYSTEM CLOCK"
@@ -386,7 +353,6 @@ unmount_partitions()
 main_menu()
 {
 	MAINITEMS=("Check UEFI Mode|check_uefimode"
-				"Enable Wifi Connection|enable_wifi"
 				"Update System Clock|system_clock"
 				"Format Partitions|format_partitions"
 				"Mount Partitions|mount_partitions"
