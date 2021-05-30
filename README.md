@@ -16,7 +16,7 @@ ls /usr/share/kbd/keymaps/**/*.map.gz
 
 ### Connect to Wifi
 
-To enable wireless connection:
+Enable wireless connection:
 
 ```bash
 iwctl
@@ -30,11 +30,7 @@ iwctl
 [iwd] quit
 ```
 
-To test the internet connection:
-
-```bash
-ping -c 3 www.google.com
-```
+To test the internet connection, use the command `ping -c 3 www.google.com`.
 
 ### Run Install Script
 
