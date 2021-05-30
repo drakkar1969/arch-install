@@ -38,7 +38,7 @@ Create a `boot` partition of type `ESP` (EFI system partition) and set `boot` fl
 Create a data partition in the remaining space:
 
 ```bash
-(parted) mkpart primary ext4 4GiB 100%
+(parted) mkpart data ext4 4GiB 100%
 ```
 
 Verify partitions and exit `parted`:
@@ -66,7 +66,7 @@ Mount the `boot` partition:
 
 ```bash
 sudo mkdir -p /mnt/usb
-sudo mount /dev/sdb1 /mnt/usb 
+sudo mount /dev/sdb1 /mnt/usb
 ```
 
 Extract the Arch Linux ISO to the `boot` partition:
@@ -189,19 +189,19 @@ Create `boot` partition of type `ESP` (EFI system partition) and set `esp` flag:
 Create `root` partition:
 
 ```bash
-(parted) mkpart primary ext4 513MiB 50GiB
+(parted) mkpart root ext4 513MiB 50GiB
 ```
 
 Create `swap` partition:
 
 ```bash
-(parted) mkpart primary linux-swap 50GiB 66GiB
+(parted) mkpart swap linux-swap 50GiB 66GiB
 ```
 
 Create `home` partition:
 
 ```bash
-(parted) mkpart primary ext4 66GiB 100%
+(parted) mkpart home ext4 66GiB 100%
 ```
 
 Verify partitions and exit `parted`:
@@ -226,7 +226,7 @@ Create a partition table (GPT):
 Create a data partition:
 
 ```bash
-(parted) mkpart primary ext4 1MiB 100%
+(parted) mkpart data ext4 1MiB 100%
 ```
 
 Verify partitions and exit `parted`:
