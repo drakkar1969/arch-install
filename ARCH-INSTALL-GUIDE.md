@@ -535,7 +535,7 @@ pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa 
 Install GNOME package group (press `ENTER` to select all packages when prompted):
 
 ```bash
-pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-photos,gnome-software,orca,totem
+pacman -S gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-music,gnome-photos,gnome-software,orca,totem
 ```
 
 If prompted to select provider(s), select default options.
