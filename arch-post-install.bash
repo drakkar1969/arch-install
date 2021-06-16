@@ -322,12 +322,12 @@ display_drivers()
 {
 	print_submenu_heading "INSTALL DISPLAY DRIVERS"
 
-	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and Nouveau display drivers."
+	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and nVidia display drivers."
 
 	if get_user_confirm; then
 		print_progress_text "Installing display drivers"
 		pacman -S --needed --asdeps mesa
-		pacman -S intel-media-driver xf86-video-nouveau
+		pacman -S intel-media-driver nvidia
 
 		POSTCHECKLIST[$1]=1
 
