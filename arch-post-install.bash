@@ -368,9 +368,9 @@ install_gnome()
 		echo ""
 
 		if [[ "$gnome_ignore" != "" ]]; then
-			pacman -S gnome --ignore $gnome_ignore
+			pacman -S networkmanager gnome --ignore $gnome_ignore
 		else
-			pacman -S gnome
+			pacman -S networkmanager gnome
 		fi
 
 		print_progress_text "Enabling GDM service"
