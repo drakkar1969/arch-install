@@ -7,6 +7,11 @@ YELLOW='\033[1;33m'
 GREEN='\033[1;32m'
 RESET='\033[0m'
 
+ESP_PART_ID="/dev/nvme0n1p1"
+ROOT_PART_ID="/dev/nvme0n1p2"
+HOME_PART_ID="/dev/nvme0n1p4"
+SWAP_PART_ID="/dev/nvme0n1p3"
+
 #===========================================================================================================
 # HELPER FUNCTIONS
 #===========================================================================================================
@@ -164,10 +169,10 @@ format_partitions()
 
 	print_partition_structure
 
-	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
-	get_global_variable SWAP_PART_ID "swap partition ID (blank to skip)" "/dev/nvme0n1p3"
+	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "$ESP_PART_ID"
+	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "$ROOT_PART_ID"
+	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "$HOME_PART_ID"
+	get_global_variable SWAP_PART_ID "swap partition ID (blank to skip)" "$SWAP_PART_ID"
 
 	echo -e "The following partitions will be formatted:"
 	echo ""
@@ -221,9 +226,9 @@ mount_partitions()
 
 	print_partition_structure
 
-	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "/dev/nvme0n1p1"
-	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "/dev/nvme0n1p2"
-	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "/dev/nvme0n1p4"
+	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "$ESP_PART_ID"
+	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "$ROOT_PART_ID"
+	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "$HOME_PART_ID"
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
