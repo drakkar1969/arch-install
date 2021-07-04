@@ -363,14 +363,17 @@ install_gnome()
 	echo -e "Install the GNOME desktop environment."
 
 	if get_user_confirm; then
+		print_progress_text "Installing Network Manager"
+		pacman -S networkmanager
+
 		print_progress_text "Installing GNOME"
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
 		if [[ "$gnome_ignore" != "" ]]; then
-			pacman -S networkmanager gnome --ignore $gnome_ignore
+			pacman -S gnome --ignore $gnome_ignore
 		else
-			pacman -S networkmanager gnome
+			pacman -S gnome
 		fi
 
 		print_progress_text "Enabling GDM service"
