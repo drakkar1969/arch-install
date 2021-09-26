@@ -24,7 +24,7 @@ iwctl
 
 ```bash
 [iwd] device list
-[iwd] station [wlan0] scan	# replace [wlan0] with your device name from the previous command
+[iwd] station [wlan0] scan				# replace [wlan0] with your device name from the previous command
 [iwd] station [wlan0] get-networks
 [iwd] station [wlan0] connect [SSID]	# replace [SSID] with your network name from the previous command
 [iwd] quit
