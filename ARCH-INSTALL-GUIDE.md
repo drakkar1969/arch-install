@@ -299,7 +299,7 @@ Use the `lsblk` command to verify partitions are correctly mounted.
 #### 1. Install Base Packages
 
 ```bash
-pacstrap /mnt base base-devel linux linux-lts linux-firmware sof-firmware nano man-db man-pages
+pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 ```
 
 #### 2. Generate Fstab File
@@ -511,7 +511,7 @@ pacman -S intel-media-driver
 Install the nVidia proprietary video drivers:
 
 ```bash
-pacman -S nvidia nvidia-lts
+pacman -S nvidia
 ```
 
 **--OR--**

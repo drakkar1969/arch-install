@@ -327,7 +327,7 @@ display_drivers()
 	if get_user_confirm; then
 		print_progress_text "Installing display drivers"
 		pacman -S --needed --asdeps mesa
-		pacman -S intel-media-driver nvidia nvidia-lts
+		pacman -S intel-media-driver nvidia
 
 		POSTCHECKLIST[$1]=1
 
