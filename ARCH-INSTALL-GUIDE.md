@@ -334,7 +334,7 @@ echo KEYMAP=it > /etc/vconsole.conf
 Set the time zone:
 
 ```bash
-TIMEZONE="Europe/Sarajevo"
+TIMEZONE="Europe/Rome"
 ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 ```
 

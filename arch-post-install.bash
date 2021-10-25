@@ -108,7 +108,7 @@ set_timezone()
 
 	local time_zone
 
-	read -e -p "Enter timezone: " -i "Europe/Sarajevo" time_zone
+	read -e -p "Enter timezone: " -i "Europe/Rome" time_zone
 	echo ""
 
 	echo -e "Set the timezone to ${GREEN}${time_zone}${RESET}."
