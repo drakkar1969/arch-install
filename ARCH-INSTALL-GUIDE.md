@@ -535,7 +535,7 @@ pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa 
 Install Network Manager and GNOME package group (press `ENTER` to select all packages when prompted):
 
 ```bash
-pacman -S networkmanager gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-characters,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-music,gnome-photos,gnome-software,orca,totem
+pacman -S networkmanager gnome --ignore epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-characters,gnome-clocks,gnome-contacts,gnome-documents,gnome-maps,gnome-music,gnome-photos,gnome-software,orca,totem,vino
 ```
 
 If prompted to select provider(s), select default options.
