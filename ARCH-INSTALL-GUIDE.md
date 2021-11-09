@@ -527,7 +527,7 @@ pacman -S xf86-video-nouveau
 Install PipeWire packages as dependencies:
 
 ```bash
-pacman -S --asdeps pipewire pipewire-media-session pipewire-pulse pipewire-alsa gst-plugin-pipewire
+pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire
 ```
 
 #### 4. Install GNOME
