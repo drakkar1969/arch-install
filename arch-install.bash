@@ -122,7 +122,7 @@ get_partition_info()
 	local blk_part_size=$(lsblk --output SIZE --paths --raw --noheadings $blk_part_id)
 	local blk_part_fs=$(lsblk --output FSTYPE --paths --raw --noheadings $blk_part_id)
 
-	if [[ "$blk_part_fs" == "" ]]; then
+	if [[ -z $blk_part_fs ]]; then
 		blk_part_fs="unknown"
 	fi
 
@@ -176,16 +176,16 @@ format_partitions()
 
 	echo -e "The following partitions will be formatted:"
 	echo ""
-	if [[ "$ESP_PART_ID" != "" ]]; then
+	if [[ -n $ESP_PART_ID ]]; then
 		echo -e "   + ESP (boot) partition $(get_partition_size $ESP_PART_ID) will be formated with file system ${GREEN}FAT32${RESET}."
 	fi
-	if [[ "$ROOT_PART_ID" != "" ]]; then
+	if [[ -n $ROOT_PART_ID ]]; then
 		echo -e "   + Root partition $(get_partition_size $ROOT_PART_ID) will formated with file system ${GREEN}EXT4${RESET}."
 	fi
-	if [[ "$HOME_PART_ID" != "" ]]; then
+	if [[ -n $HOME_PART_ID ]]; then
 		echo -e "   + Home partition $(get_partition_size $HOME_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
 	fi
-	if [[ "$SWAP_PART_ID" != "" ]]; then
+	if [[ -n $SWAP_PART_ID ]]; then
 		echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
 	fi
 	echo ""
@@ -193,22 +193,22 @@ format_partitions()
 	print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
 
 	if get_user_confirm; then
-		if [[ "$ESP_PART_ID" != "" ]]; then
+		if [[ -n $ESP_PART_ID ]]; then
 			print_progress_text "Formating ESP (boot) partition"
 			mkfs.fat -F32 -n "BOOT" $ESP_PART_ID
 		fi
 
-		if [[ "$ROOT_PART_ID" != "" ]]; then
+		if [[ -n $ROOT_PART_ID ]]; then
 			print_progress_text "Formating root partition"
 			mkfs.ext4 -L "ROOT" $ROOT_PART_ID
 		fi
 
-		if [[ "$HOME_PART_ID" != "" ]]; then
+		if [[ -n $HOME_PART_ID ]]; then
 			print_progress_text "Formating home partition"
 			mkfs.ext4 -L "HOME" $HOME_PART_ID
 		fi
 
-		if [[ "$SWAP_PART_ID" != "" ]]; then
+		if [[ -n $SWAP_PART_ID ]]; then
 			print_progress_text "Activating swap partition"
 			mkswap $SWAP_PART_ID
 			swapon $SWAP_PART_ID
@@ -232,28 +232,28 @@ mount_partitions()
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
-	if [[ "$ESP_PART_ID" != "" ]]; then
+	if [[ -n $ESP_PART_ID ]]; then
 		echo -e "   + ESP (boot) partition $(get_partition_info $ESP_PART_ID) will be mounted to ${GREEN}/mnt/boot${RESET}"
 	fi
-	if [[ "$ROOT_PART_ID" != "" ]]; then
+	if [[ -n $ROOT_PART_ID ]]; then
 		echo -e "   + Root partition $(get_partition_info $ROOT_PART_ID) will be mounted to ${GREEN}/mnt${RESET}"
 	fi
-	if [[ "$HOME_PART_ID" != "" ]]; then
+	if [[ -n $HOME_PART_ID ]]; then
 		echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
 	fi
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
-		if [[ "$ROOT_PART_ID" != "" ]]; then
+		if [[ -n $ROOT_PART_ID ]]; then
 			mount $ROOT_PART_ID /mnt
 		fi
 
-		if [[ "$HOME_PART_ID" != "" ]]; then
+		if [[ -n $HOME_PART_ID ]]; then
 			mkdir -p /mnt/home
 			mount $HOME_PART_ID /mnt/home
 		fi
 
-		if [[ "$ESP_PART_ID" != "" ]]; then
+		if [[ -n $ESP_PART_ID ]]; then
 			mkdir -p /mnt/boot
 			mount $ESP_PART_ID /mnt/boot
 		fi
@@ -326,13 +326,13 @@ unmount_partitions()
 
 	echo -e "The following partitions will be unmounted:"
 	echo ""
-	if [[ "$root_mnt" != "" ]]; then
+	if [[ -n $root_mnt ]]; then
 		echo -e "   + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
 	fi
-	if [[ "$boot_mnt" != "" ]]; then
+	if [[ -n $boot_mnt ]]; then
 		echo -e "   + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
 	fi
-	if [[ "$home_mnt" != "" ]]; then
+	if [[ -n $home_mnt ]]; then
 		echo -e "   + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
 	fi
 	echo ""
@@ -341,15 +341,15 @@ unmount_partitions()
 
 	if get_user_confirm; then
 		print_progress_text "Unmounting partitions"
-		if [[ "$home_mnt" != "" ]]; then
+		if [[ -n $home_mnt ]]; then
 			umount -R /mnt/home
 		fi
 
-		if [[ "$boot_mnt" != "" ]]; then
+		if [[ -n $boot_mnt ]]; then
 			umount -R /mnt/boot
 		fi
 
-		if [[ "$root_mnt" != "" ]]; then
+		if [[ -n $root_mnt ]]; then
 			umount -R /mnt
 		fi
 

@@ -370,7 +370,7 @@ install_gnome()
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		if [[ "$gnome_ignore" != "" ]]; then
+		if [[ -n $gnome_ignore ]]; then
 			pacman -S gnome --ignore $gnome_ignore
 		else
 			pacman -S gnome
