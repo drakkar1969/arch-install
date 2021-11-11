@@ -18,9 +18,7 @@ print_menu_item()
 
 	local checkmark="${GREEN}OK${RESET}"
 
-	if [[ $status -eq 0 ]]; then
-		checkmark="  "
-	fi
+	[[ $status -eq 0 ]] && checkmark="  "
 
 	echo -e "\n $index. [ $checkmark ] $itemname"
 }
@@ -71,9 +69,7 @@ get_user_confirm()
 	echo ""
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 
-	if [[ "${yn_choice,,}" == "y" ]]; then
-		ret_val=0
-	fi
+	[[ "${yn_choice,,}" == "y" ]] && ret_val=0
 
 	return $ret_val
 }

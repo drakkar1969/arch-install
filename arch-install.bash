@@ -23,9 +23,7 @@ print_menu_item()
 
 	local checkmark="${GREEN}OK${RESET}"
 
-	if [[ $status -eq 0 ]]; then
-		checkmark="  "
-	fi
+	[[ $status -eq 0 ]] && checkmark="  "
 
 	echo -e "\n $index. [ $checkmark ] $itemname"
 }
@@ -76,9 +74,7 @@ get_user_confirm()
 	echo ""
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
 
-	if [[ "${yn_choice,,}" == "y" ]]; then
-		ret_val=0
-	fi
+	[[ "${yn_choice,,}" == "y" ]] && ret_val=0
 
 	return $ret_val
 }
@@ -122,9 +118,7 @@ get_partition_info()
 	local blk_part_size=$(lsblk --output SIZE --paths --raw --noheadings $blk_part_id)
 	local blk_part_fs=$(lsblk --output FSTYPE --paths --raw --noheadings $blk_part_id)
 
-	if [[ -z $blk_part_fs ]]; then
-		blk_part_fs="unknown"
-	fi
+	[[ -z $blk_part_fs ]] && blk_part_fs="unknown"
 
 	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
 }
@@ -341,17 +335,10 @@ unmount_partitions()
 
 	if get_user_confirm; then
 		print_progress_text "Unmounting partitions"
-		if [[ -n $home_mnt ]]; then
-			umount -R /mnt/home
-		fi
 
-		if [[ -n $boot_mnt ]]; then
-			umount -R /mnt/boot
-		fi
-
-		if [[ -n $root_mnt ]]; then
-			umount -R /mnt
-		fi
+		[[ -n $home_mnt ]] && umount -R /mnt/home
+		[[ -n $boot_mnt ]] && umount -R /mnt/boot
+		[[ -n $root_mnt ]] && umount -R /mnt
 
 		MAINCHECKLIST[$1]=1
 
