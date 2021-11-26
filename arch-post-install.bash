@@ -353,7 +353,7 @@ install_gnome()
 
 	local gnome_ignore
 
-	read -e -p "Enter GNOME packages to ignore: " -i "cheese,epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-characters,gnome-clocks,gnome-contacts,gnome-maps,gnome-music,gnome-photos,gnome-software,gnome-video-effects,orca,rygel,totem,vino" gnome_ignore
+	read -e -p "Enter GNOME packages to ignore: " -i "cheese,epiphany,gnome-books,gnome-boxes,gnome-calendar,gnome-characters,gnome-clocks,gnome-contacts,gnome-maps,gnome-music,gnome-photos,gnome-software,gnome-video-effects,orca,rygel,totem,tracker,tracker-miners,vino" gnome_ignore
 	echo ""
 
 	echo -e "Install the GNOME desktop environment."
