@@ -568,11 +568,9 @@ Exit the `chroot` environment:
 exit
 ```
 
-Unmount the `boot`, `home` and `root` partitions:
+Unmount partitions:
 
 ```bash
-umount -R /mnt/boot
-umount -R /mnt/home
 umount -R /mnt
 ```
 

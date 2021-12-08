@@ -336,8 +336,6 @@ unmount_partitions()
 	if get_user_confirm; then
 		print_progress_text "Unmounting partitions"
 
-		[[ -n $home_mnt ]] && umount -R /mnt/home
-		[[ -n $boot_mnt ]] && umount -R /mnt/boot
 		[[ -n $root_mnt ]] && umount -R /mnt
 
 		MAINCHECKLIST[$1]=1
