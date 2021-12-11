@@ -42,10 +42,10 @@ Create a new shared folder in `Settings -> Shared Folders` under `Machine Folder
 
 ```bash
 Folder path: /home/drakkar/Scratch/VBOXSHARE   # Note: on host system
-Folder name: VirtualBoxShare
+Folder name: Share
 Read-only: No
 Auto-mount: Yes
-Mount point: /media/VirtualBoxShare   # Note: on guest system
+Mount point: /media/share   # Note: on guest system
 Make permanent: Yes
 ```
 
