@@ -81,6 +81,7 @@ Unmount the `boot` partition:
 
 ```bash
 sudo umount -R /mnt/usb
+sudo rm -Rf /mnt/usb
 ```
 
 Change the label of the `boot` partition to ensure booting:
