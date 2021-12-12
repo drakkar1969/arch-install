@@ -41,7 +41,7 @@ Replace `[username]` with the guest system username.
 Create a new shared folder in `Settings -> Shared Folders` under `Machine Folders`. For example:
 
 ```bash
-Folder path: /home/drakkar/Scratch/VBOXSHARE   # Note: on host system
+Folder path: /home/drakkar/VirtualBox VMs/Share   # Note: on host system
 Folder name: Share
 Read-only: No
 Auto-mount: Yes
