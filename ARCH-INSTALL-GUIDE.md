@@ -512,7 +512,7 @@ pacman -S intel-media-driver
 Install the nVidia proprietary video drivers:
 
 ```bash
-pacman -S nvidia
+pacman -S nvidia nvidia-prime
 ```
 
 **--OR--**
