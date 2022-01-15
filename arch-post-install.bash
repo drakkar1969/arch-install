@@ -325,6 +325,17 @@ display_drivers()
 		pacman -S --needed --asdeps mesa
 		pacman -S intel-media-driver nvidia nvidia-prime
 
+		print_progress_text "Enabling nVidia DRM kernel mode setting"
+		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
+
+		if [[ $kernel_params != *"nvidia-drm.modeset"* ]]; then
+			kernel_params+=" nvidia-drm.modeset=1"
+
+			sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
+
+			grub-mkconfig -o /boot/grub/grub.cfg
+		fi
+
 		POSTCHECKLIST[$1]=1
 
 		get_any_key

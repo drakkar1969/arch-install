@@ -523,6 +523,20 @@ Install the open source Nouveau driver for nVidia:
 pacman -S xf86-video-nouveau
 ```
 
+If you installed the nVidia drivers, enable the DRM kernel mode setting, to ensure that the Wayland session is available in GNOME:
+
+```bash
+KERNEL_PARAMS=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
+KERNEL_PARAMS+=" nvidia-drm.modeset=1"
+sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$KERNEL_PARAMS\"" /etc/default/grub
+```
+
+Re-generate the `grub.cfg` file:
+
+```bash
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
 #### 3. Install PipeWire
 
 Install PipeWire packages as dependencies:
