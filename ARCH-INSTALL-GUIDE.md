@@ -523,6 +523,18 @@ Install the open source Nouveau driver for nVidia:
 pacman -S xf86-video-nouveau
 ```
 
+Enable early KMS start for the Intel driver:
+
+```bash
+sed -i "/^MODULES=/ c MODULES=(intel_agp i915)" /etc/mkinitcpio.conf
+```
+
+Then re-generate the initramfs:
+
+```bash
+mkinitcpio -P
+```
+
 If you installed the nVidia drivers, enable the DRM kernel mode setting, to ensure that the Wayland session is available in GNOME:
 
 ```bash
@@ -531,7 +543,7 @@ KERNEL_PARAMS+=" nvidia-drm.modeset=1"
 sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$KERNEL_PARAMS\"" /etc/default/grub
 ```
 
-Re-generate the `grub.cfg` file:
+And re-generate the `grub.cfg` file:
 
 ```bash
 grub-mkconfig -o /boot/grub/grub.cfg
