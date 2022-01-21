@@ -393,7 +393,16 @@ echo "::1             localhost" >> /etc/hosts
 echo "127.0.1.1       ${PCNAME}.localdomain       ${PCNAME}" >> /etc/hosts
 ```
 
-#### 6. Enable Multilib Repository
+#### 6. Configure Pacman
+
+Enable color output and parallel downloads in pacman:
+
+```bash
+sed -i 's/#Color/Color/' /etc/pacman.conf
+sed -i 's/#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+```
+
+#### 7. Enable Multilib Repository
 
 Enable the `multilib` repository:
 
@@ -407,7 +416,7 @@ Refresh package databases:
 pacman -Syy
 ```
 
-#### 7. Configure Root Password
+#### 8. Configure Root Password
 
 To set the root password, run the following command and input a password:
 
@@ -415,7 +424,7 @@ To set the root password, run the following command and input a password:
 passwd
 ```
 
-#### 8. Add New User with Sudo Privileges
+#### 9. Add New User with Sudo Privileges
 
 Add new user:
 
@@ -439,7 +448,7 @@ Allow the new user to issue commands as root, i.e. with `sudo`:
 bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 ```
 
-#### 9. Install Boot Loader
+#### 10. Install Boot Loader
 
 Install `grub` and `efibootmgr`:
 

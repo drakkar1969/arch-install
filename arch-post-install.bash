@@ -204,6 +204,27 @@ set_hostname()
 	fi
 }
 
+config_pacman()
+{
+	print_submenu_heading "CONFIGURE PACMAN"
+
+	echo -e "Enable color output and parallel downloads in ${GREEN}/etc/pacman.conf${RESET}."
+
+	if get_user_confirm; then
+		print_progress_text "Configuring pacman"
+		sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
+			s/#Color/Color/
+			s/#ParallelDownloads/ParallelDownloads/
+		PACMAN_CONF
+
+		print_file_contents "/etc/pacman.conf"
+
+		POSTCHECKLIST[$1]=1
+
+		get_any_key
+	fi
+}
+
 enable_multilib()
 {
 	print_submenu_heading "ENABLE MULTILIB REPOSITORY"
@@ -422,6 +443,7 @@ post_menu()
 				"Sync Hardware Clock|sync_hwclock"
 				"Configure Locale|set_locale"
 				"Configure Hostname|set_hostname"
+				"Configure pacman|config_pacman"
 				"Enable Multilib Repository|enable_multilib"
 				"Configure Root Password|root_password"
 				"Add New User with Sudo Privileges|add_sudouser"
