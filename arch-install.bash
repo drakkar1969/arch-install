@@ -366,8 +366,6 @@ main_menu()
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
-		local i
-
 		for i in ${!MAINITEMS[@]}; do
 			# Get character from ascii code (0->A,etc.)
 			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
@@ -376,6 +374,7 @@ main_menu()
 
 			print_menu_item $item_index ${MAINCHECKLIST[$i]} "$item_text"
 		done
+		unset i
 
 		# Print footer
 		echo ""

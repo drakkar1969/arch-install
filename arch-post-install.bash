@@ -465,8 +465,6 @@ post_menu()
 		echo -e "-------------------------------------------------------------------------------"
 
 		# Print menu items
-		local i
-
 		for i in ${!POSTITEMS[@]}; do
 			# Get character from ascii code (0->A,etc.)
 			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
@@ -475,6 +473,7 @@ post_menu()
 
 			print_menu_item $item_index ${POSTCHECKLIST[$i]} "$item_text"
 		done
+		unset i
 
 		# Print footer
 		echo ""
