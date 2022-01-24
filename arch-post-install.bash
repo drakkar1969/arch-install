@@ -499,7 +499,7 @@ post_menu()
 			# Get selection index
 			if [[ "$post_choice" =~ ^[a-zA-Z]+$ ]]; then
 				# Get ascii code from character (A->65, etc.)
-				post_index=$(LC_CTYPE=C printf '%d' "'${post_choice^^}")
+				post_index=$(printf '%d' "'${post_choice^^}")
 				post_index=$(($post_index-65))
 			fi
 		done
