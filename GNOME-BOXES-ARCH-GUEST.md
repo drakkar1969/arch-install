@@ -14,6 +14,8 @@ Ensure that the Virtual Machine Manager is installed:
 sudo pacman -S virt-manager
 ```
 
+> Note: configuration of the Virtual Machine Manager services is not required
+
 To be able to configure virtual machine parameters, connect the Virtual Machine Manager, by selecting `File -> Add Connection...`. In the dialog box, select `QEMU/KVM user session` as the hypervisor, and click on the `Connect` button:
 
 ![image-20220125104120432](images/vmm-addconn.png)
@@ -65,3 +67,5 @@ Ensure that the virtual machine is running in GNOME Boxes. Open virtual machine 
 ![image-20220125104414235](images/boxes-addshare.png)
 
 In the guest system, the shared folder can be found in Files in Other Locations, under `Spice client folder`.
+
+> Note: when copying files from the host to the guest system, executable permissions for script files will be removed (and need to be manually re-added)
