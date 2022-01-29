@@ -375,7 +375,7 @@ install_pipewire()
 
 	if get_user_confirm; then
 		print_progress_text "Installing PipeWire"
-		pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire
+		pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire rtkit
 
 		POSTCHECKLIST[$1]=1
 
