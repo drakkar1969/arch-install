@@ -347,6 +347,7 @@ display_drivers()
 		pacman -S intel-media-driver nvidia nvidia-prime
 
 		print_progress_text "Enabling Intel early KMS"
+		cp -n /etc/mkinitcpio.conf{,.orig}
 		sed -i "/^MODULES=/ c MODULES=(intel_agp i915)" /etc/mkinitcpio.conf
 		mkinitcpio -P
 
@@ -355,6 +356,8 @@ display_drivers()
 		if [[ $kernel_params != *"nvidia-drm.modeset"* ]]; then
 			print_progress_text "Enabling nVidia DRM kernel mode setting"
 			kernel_params+=" nvidia-drm.modeset=1"
+
+			cp -n /etc/default/grub{,.orig}
 
 			sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
