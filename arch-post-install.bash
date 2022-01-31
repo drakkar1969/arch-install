@@ -510,7 +510,7 @@ post_menu()
 		# Execute function
 		local item_func=$(echo "${POSTITEMS[$post_index]}" | cut -f2 -d'|')
 
-		eval ${item_func} $post_index
+		${item_func} $post_index
 	done
 }
 

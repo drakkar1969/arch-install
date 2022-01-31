@@ -412,7 +412,7 @@ main_menu()
 		# Execute function
 		local item_func=$(echo "${MAINITEMS[$main_index]}" | cut -f2 -d'|')
 
-		eval ${item_func} $main_index
+		${item_func} $main_index
 	done
 }
 
