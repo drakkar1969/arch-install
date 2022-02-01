@@ -60,6 +60,8 @@ sudo pacman -S spice-vdagent spice-gtk
 
 The `spice-vadagent` package improves graphics rendering of the virtual machine, while `spice-gtk` enables sharing folders between host and guest systems.
 
+Restart the guest system.
+
 #### 4. Enable Shared Folders
 
 Ensure that the virtual machine is running in GNOME Boxes. Open virtual machine properties, select the `Devices & Shares` tab, and add a shared folder in the `Folder Shares` section:
