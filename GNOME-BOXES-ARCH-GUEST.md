@@ -10,7 +10,7 @@ Before installing Arch Linux in the virtual machine, configure the machine to bo
 
 Open the virtual machine properties. In the `System` tab, click on the `Edit XML` button:
 
-![](/home/drakkar/Github/arch-install/images/boxes-editxml.png)
+![](images/boxes-editxml.png)
 
 Locate the `<os>` XML section:
 
@@ -48,7 +48,7 @@ Restart the guest system.
 
 Ensure that the virtual machine is running in GNOME Boxes. Open virtual machine properties, select the `Devices & Shares` tab, and add a shared folder in the `Folder Shares` section:
 
-![image-20220125104414235](images/boxes-addshare.png)
+![](images/boxes-addshare.png)
 
 In the guest system, the shared folder can be found in Files in Other Locations, under `Spice client folder`.
 
