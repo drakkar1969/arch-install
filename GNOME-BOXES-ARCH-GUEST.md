@@ -8,29 +8,11 @@ Create a virtual machine in GNOME Boxes with the default values: 2 GiB of RAM an
 
 Before installing Arch Linux in the virtual machine, configure the machine to boot with UEFI.
 
-Ensure that the Virtual Machine Manager is installed:
+Open the virtual machine properties. In the `System` tab, click on the `Edit XML` button:
 
-```bash
-sudo pacman -S virt-manager
-```
+![](/home/drakkar/Github/arch-install/images/boxes-editxml.png)
 
-> Note: configuration of the Virtual Machine Manager services is not required
-
-To be able to configure virtual machine parameters, connect the Virtual Machine Manager, by selecting `File -> Add Connection...`. In the dialog box, select `QEMU/KVM user session` as the hypervisor, and click on the `Connect` button:
-
-![image-20220125104120432](images/vmm-addconn.png)
-
-Virtual machines created in GNOME Boxes should now be available for editing in the Virtual Machine Manager. To enable XML editing, select `Edit -> Preferences` and check the `Enable XML editing` checkbox.
-
-In the main window, double click on the Arch Linux virtual machine to configure it:
-
-![image-20220125104120432](images/vmm-main.png)
-
-In the new window that appears, select `View -> Details`:
-
-![image-20220125104120432](images/vmm-config.png)
-
-Switch to the XML tab in the machine properties, and locate the following XML snippet:
+Locate the `<os>` XML section:
 
 ```xml
   <os>
