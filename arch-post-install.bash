@@ -411,6 +411,9 @@ install_gnome()
 			pacman -S gnome
 		fi
 
+		print_progress_text "Installing GNOME Extras"
+		pacman -S gnome-tweaks dconf-editor
+
 		print_progress_text "Enabling GDM service"
 		systemctl enable gdm.service
 
