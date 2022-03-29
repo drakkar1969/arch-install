@@ -2,39 +2,15 @@
 
 #### 1. Virtual Machine Settings
 
-Create a virtual machine in GNOME Boxes with the default values: 2 GiB of RAM and 21.5 GB of maximum disk space.
+Create a virtual machine in GNOME Boxes with default values (2 GiB of memory and 21.5 GB of disk space), and enable UEFI boot:
 
-#### 2. Enable UEFI Boot
+![](images/boxes-new.png)
 
-Before installing Arch Linux in the virtual machine, configure the machine to boot with UEFI.
+Install Arch Linux.
 
-Open the virtual machine properties. In the `System` tab, click on the `Edit XML` button:
+#### 2. Install Guest Tools
 
-![](images/boxes-editxml.png)
-
-Locate the `<os>` XML section:
-
-```xml
-  <os>
-    <type arch="x86_64" machine="pc-q35-6.2">hvm</type>
-    <boot dev="hd"/>
-    <bootmenu enable="yes"/>
-  </os>
-```
-
-Change the first line to:
-
-```xml
-  <os firmware="efi">
-```
-
-Then click on the `Apply` button.
-
-Restart the virtual machine in GNOME Boxes, it should now boot in UEFI mode. Proceed with arch Linux installation.
-
-#### 3. Install Guest Tools
-
-Install the guest tools in the guest system:
+After the Arch installation is complete, install the guest tools in the guest system:
 
 ```bash
 sudo pacman -S spice-vdagent spice-gtk
@@ -46,7 +22,7 @@ Restart the guest system.
 
 #### 4. Enable Shared Folders
 
-Ensure that the virtual machine is running in GNOME Boxes. Open virtual machine properties, select the `Devices & Shares` tab, and add a shared folder in the `Folder Shares` section:
+Ensure that the virtual machine is running in GNOME Boxes. Open the virtual machine preferences, select the `Devices & Shares` tab, and add a shared folder in the `Folder Shares` section:
 
 ![](images/boxes-addshare.png)
 
