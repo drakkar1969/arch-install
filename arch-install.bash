@@ -172,21 +172,16 @@ format_partitions()
 
 	echo -e "The following partitions will be formatted:"
 	echo ""
-	if [[ -n $ESP_PART_ID ]]; then
-		echo -e "   + ESP (boot) partition $(get_partition_size $ESP_PART_ID) will be formated with file system ${GREEN}FAT32${RESET}."
-	fi
-	if [[ -n $ROOT_PART_ID ]]; then
-		echo -e "   + Root partition $(get_partition_size $ROOT_PART_ID) will formated with file system ${GREEN}EXT4${RESET}."
-	fi
-	if [[ -n $HOME_PART_ID ]]; then
-		echo -e "   + Home partition $(get_partition_size $HOME_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
-	fi
-	if [[ -n $SWAP_PART_ID ]]; then
-		echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
-	fi
-	if [[ -n $DATA_PART_ID ]]; then
-		echo -e "   + Data partition $(get_partition_size $DATA_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
-	fi
+	[[ -n $ESP_PART_ID ]] && echo -e "   + ESP (boot) partition $(get_partition_size $ESP_PART_ID) will be formated with file system ${GREEN}FAT32${RESET}."
+
+	[[ -n $ROOT_PART_ID ]] && echo -e "   + Root partition $(get_partition_size $ROOT_PART_ID) will formated with file system ${GREEN}EXT4${RESET}."
+
+	[[ -n $HOME_PART_ID ]] && echo -e "   + Home partition $(get_partition_size $HOME_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
+
+	[[ -n $SWAP_PART_ID ]] && echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
+
+	[[ -n $DATA_PART_ID ]] && echo -e "   + Data partition $(get_partition_size $DATA_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
+
 	echo ""
 
 	print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
@@ -237,18 +232,13 @@ mount_partitions()
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
-	if [[ -n $ESP_PART_ID ]]; then
-		echo -e "   + ESP (boot) partition $(get_partition_info $ESP_PART_ID) will be mounted to ${GREEN}/mnt/boot${RESET}"
-	fi
-	if [[ -n $ROOT_PART_ID ]]; then
-		echo -e "   + Root partition $(get_partition_info $ROOT_PART_ID) will be mounted to ${GREEN}/mnt${RESET}"
-	fi
-	if [[ -n $HOME_PART_ID ]]; then
-		echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
-	fi
-	if [[ -n $DATA_PART_ID ]]; then
-		echo -e "   + Data partition $(get_partition_info $DATA_PART_ID) will be mounted to ${GREEN}/mnt/home/data${RESET}"
-	fi
+	[[ -n $ESP_PART_ID ]] && echo -e "   + ESP (boot) partition $(get_partition_info $ESP_PART_ID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+
+	[[ -n $ROOT_PART_ID ]] && echo -e "   + Root partition $(get_partition_info $ROOT_PART_ID) will be mounted to ${GREEN}/mnt${RESET}"
+
+	[[ -n $HOME_PART_ID ]] && echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
+
+	[[ -n $DATA_PART_ID ]] && echo -e "   + Data partition $(get_partition_info $DATA_PART_ID) will be mounted to ${GREEN}/mnt/home/data${RESET}"
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
@@ -340,18 +330,14 @@ unmount_partitions()
 
 	echo -e "The following partitions will be unmounted:"
 	echo ""
-	if [[ -n $root_mnt ]]; then
-		echo -e "   + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
-	fi
-	if [[ -n $boot_mnt ]]; then
-		echo -e "   + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
-	fi
-	if [[ -n $home_mnt ]]; then
-		echo -e "   + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
-	fi
-	if [[ -n $data_mnt ]]; then
-		echo -e "   + ${GREEN}$(echo $data_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $data_mnt | cut -d' ' -f3)${RESET}"
-	fi
+	[[ -n $root_mnt ]] && echo -e "   + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
+
+	[[ -n $boot_mnt ]] && echo -e "   + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
+
+	[[ -n $home_mnt ]] && echo -e "   + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
+
+	[[ -n $data_mnt ]] && echo -e "   + ${GREEN}$(echo $data_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $data_mnt | cut -d' ' -f3)${RESET}"
+
 	echo ""
 
 	print_warning "Proceed only if all installation steps have been completed"

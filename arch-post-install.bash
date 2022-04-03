@@ -405,11 +405,7 @@ install_gnome()
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		if [[ -n $gnome_ignore ]]; then
-			pacman -S gnome --ignore $gnome_ignore
-		else
-			pacman -S gnome
-		fi
+		[[ -n $gnome_ignore ]] && pacman -S gnome --ignore $gnome_ignore || pacman -S gnome
 
 		print_progress_text "Installing GNOME Extras"
 		pacman -S gnome-tweaks dconf-editor
