@@ -242,24 +242,13 @@ mount_partitions()
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
-		if [[ -n $ROOT_PART_ID ]]; then
-			mount $ROOT_PART_ID /mnt
-		fi
+		[[ -n $ROOT_PART_ID ]] && mount $ROOT_PART_ID /mnt
 
-		if [[ -n $ESP_PART_ID ]]; then
-			mkdir -p /mnt/boot
-			mount $ESP_PART_ID /mnt/boot
-		fi
+		[[ -n $ESP_PART_ID ]] && mount --mkdir $ESP_PART_ID /mnt/boot
 
-		if [[ -n $HOME_PART_ID ]]; then
-			mkdir -p /mnt/home
-			mount $HOME_PART_ID /mnt/home
-		fi
+		[[ -n $HOME_PART_ID ]] && mount --mkdir $HOME_PART_ID /mnt/home
 
-		if [[ -n $DATA_PART_ID ]]; then
-			mkdir -p /mnt/home/data
-			mount $DATA_PART_ID /mnt/home/data
-		fi
+		[[ -n $DATA_PART_ID ]] && mount --mkdir $DATA_PART_ID /mnt/home/data
 
 		print_progress_text "Verifying partition structure"
 		print_partition_structure
