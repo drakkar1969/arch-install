@@ -410,6 +410,10 @@ install_gnome()
 		print_progress_text "Installing GNOME Extras"
 		pacman -S gnome-tweaks dconf-editor
 
+		print_progress_text "Enabling Wayland Screen Sharing"
+		pacman -S --asdeps xdg-desktop-portal-gnome
+		pacman -S xdg-desktop-portal
+
 		print_progress_text "Enabling GDM service"
 		systemctl enable gdm.service
 
