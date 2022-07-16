@@ -1,5 +1,7 @@
-# 	Arch Linux Installation Guide (UEFI)
+# Arch Linux Installation Guide (UEFI)
+
 ---
+
 ## A. Bootable USB
 
 This section assumes that `/dev/sdb` is the USB drive. You can use the `lsblk` command to check this.
@@ -93,6 +95,7 @@ sudo fatlabel /dev/sdb1 ARCH_202104
 Replace `ARCH_202104` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
 
 ---
+
 ## B. Pre-Installation
 
 #### 1. Set Keyboard Layout
@@ -135,9 +138,9 @@ iwctl
 
 ```bash
 [iwd] device list
-[iwd] station [wlan0] scan	# replace [wlan0] with your device name from the previous command
+[iwd] station [wlan0] scan    # replace [wlan0] with your device name from the previous command
 [iwd] station [wlan0] get-networks
-[iwd] station [wlan0] connect [SSID]	# replace [SSID] with your network name from the previous command
+[iwd] station [wlan0] connect [SSID]    # replace [SSID] with your network name from the previous command
 [iwd] quit
 ```
 
@@ -154,6 +157,7 @@ Ensure the system clock is accurate:
 ```bash
 timedatectl set-ntp true
 ```
+
 To check the status, use `timedatectl` without parameters.
 
 #### 5. Partition Disks
@@ -181,12 +185,14 @@ Create a partition table (GPT):
 ```bash
 (parted) mklabel gpt
 ```
+
 Create `boot` partition of type `ESP` (EFI system partition) and set `esp` flag:
 
 ```bash
 (parted) mkpart ESP fat32 1MiB 513MiB
 (parted) set 1 esp on
 ```
+
 Create `root` partition:
 
 ```bash
@@ -295,6 +301,7 @@ mount /dev/nvme0n1p1 /mnt/boot
 Use the `lsblk` command to verify partitions are correctly mounted.
 
 ---
+
 ## C. Installation
 
 #### 1. Install Base Packages
@@ -318,6 +325,7 @@ arch-chroot /mnt
 ```
 
 ---
+
 ## D. System Configuration
 
 #### 1. Set Keyboard layout
@@ -563,7 +571,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 Install PipeWire packages as dependencies:
 
 ```bash
-pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire
+pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire rtkit
 ```
 
 #### 4. Install GNOME
@@ -575,6 +583,19 @@ pacman -S networkmanager gnome --ignore cheese,epiphany,gnome-books,gnome-boxes,
 ```
 
 If prompted to select provider(s), select default options.
+
+Install GNOME extras:
+
+```bash
+pacman -S gnome-tweaks dconf-editor
+```
+
+Enable Wayland screen sharing:
+
+```bash
+pacman -S --asdeps xdg-desktop-portal-gnome
+
+```
 
 Enable the `gdm` (GNOME Display Manager) login screen:
 
