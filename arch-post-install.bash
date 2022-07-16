@@ -408,7 +408,7 @@ install_gnome()
 		[[ -n $gnome_ignore ]] && pacman -S gnome --ignore $gnome_ignore || pacman -S gnome
 
 		print_progress_text "Installing GNOME Extras"
-		pacman -S gnome-tweaks dconf-editor
+		pacman -S gnome-tweaks dconf-editor gnome-screenshot
 
 		print_progress_text "Enabling Wayland Screen Sharing"
 		pacman -S --asdeps xdg-desktop-portal-gnome

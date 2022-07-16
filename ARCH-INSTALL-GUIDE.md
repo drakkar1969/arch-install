@@ -587,7 +587,7 @@ If prompted to select provider(s), select default options.
 Install GNOME extras:
 
 ```bash
-pacman -S gnome-tweaks dconf-editor
+pacman -S gnome-tweaks dconf-editor gnome-screenshot
 ```
 
 Enable Wayland screen sharing:
