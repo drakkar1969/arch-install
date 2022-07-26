@@ -342,14 +342,17 @@ display_drivers()
 	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and nVidia display drivers."
 
 	if get_user_confirm; then
-		print_progress_text "Installing display drivers"
+		print_progress_text "Installing Intel display drivers"
 		pacman -S --needed --asdeps mesa
-		pacman -S intel-media-driver nvidia nvidia-prime
+		pacman -S intel-media-driver
 
 		print_progress_text "Enabling Intel early KMS"
 		cp -n /etc/mkinitcpio.conf{,.orig}
 		sed -i "/^MODULES=/ c MODULES=(intel_agp i915)" /etc/mkinitcpio.conf
 		mkinitcpio -P
+
+		print_progress_text "Installing nVidia display drivers"
+		pacman -S nvidia nvidia-prime
 
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 
@@ -408,7 +411,7 @@ install_gnome()
 		[[ -n $gnome_ignore ]] && pacman -S gnome --ignore $gnome_ignore || pacman -S gnome
 
 		print_progress_text "Installing GNOME Extras"
-		pacman -S gnome-tweaks dconf-editor gnome-screenshot
+		pacman -S gnome-tweaks dconf-editor
 
 		print_progress_text "Enabling Wayland Screen Sharing"
 		pacman -S --asdeps xdg-desktop-portal-gnome
