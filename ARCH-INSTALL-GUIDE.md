@@ -309,6 +309,7 @@ Use the `lsblk` command to verify partitions are correctly mounted.
 Update the Arch Linux keyring:
 
 ```bash
+pacman -Syy
 pacman -S archlinux-keyring
 ```
 

@@ -275,8 +275,11 @@ install_base()
 	echo -e "Install base packages."
 
 	if get_user_confirm; then
-		print_progress_text "Installing base packages"
+		print_progress_text "Updating Arch Linux keyring"
+		pacman -Syy
 		pacman -S archlinux-keyring
+
+		print_progress_text "Installing base packages"
 		pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 
 		MAINCHECKLIST[$1]=1
