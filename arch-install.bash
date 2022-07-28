@@ -11,7 +11,6 @@ ESP_PART_ID="/dev/nvme0n1p1"
 ROOT_PART_ID="/dev/nvme0n1p2"
 HOME_PART_ID="/dev/nvme0n1p4"
 SWAP_PART_ID="/dev/nvme0n1p3"
-DATA_PART_ID="/dev/sda1"
 
 #===========================================================================================================
 # HELPER FUNCTIONS
@@ -168,7 +167,6 @@ format_partitions()
 	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "$ROOT_PART_ID"
 	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "$HOME_PART_ID"
 	get_global_variable SWAP_PART_ID "swap partition ID (blank to skip)" "$SWAP_PART_ID"
-	get_global_variable DATA_PART_ID "data partition ID (blank to skip)" "$DATA_PART_ID"
 
 	echo -e "The following partitions will be formatted:"
 	echo ""
@@ -179,8 +177,6 @@ format_partitions()
 	[[ -n $HOME_PART_ID ]] && echo -e "   + Home partition $(get_partition_size $HOME_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
 
 	[[ -n $SWAP_PART_ID ]] && echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
-
-	[[ -n $DATA_PART_ID ]] && echo -e "   + Data partition $(get_partition_size $DATA_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
 
 	echo ""
 
@@ -200,11 +196,6 @@ format_partitions()
 		if [[ -n $HOME_PART_ID ]]; then
 			print_progress_text "Formating home partition"
 			mkfs.ext4 -L "HOME" $HOME_PART_ID
-		fi
-
-		if [[ -n $DATA_PART_ID ]]; then
-			print_progress_text "Formating data partition"
-			mkfs.ext4 -L "DATA" $DATA_PART_ID
 		fi
 
 		if [[ -n $SWAP_PART_ID ]]; then
@@ -228,7 +219,6 @@ mount_partitions()
 	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "$ESP_PART_ID"
 	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "$ROOT_PART_ID"
 	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "$HOME_PART_ID"
-	get_global_variable DATA_PART_ID "data partition ID (blank to skip)" "$DATA_PART_ID"
 
 	echo -e "The following partitions will be mounted:"
 	echo ""
@@ -237,8 +227,6 @@ mount_partitions()
 	[[ -n $ROOT_PART_ID ]] && echo -e "   + Root partition $(get_partition_info $ROOT_PART_ID) will be mounted to ${GREEN}/mnt${RESET}"
 
 	[[ -n $HOME_PART_ID ]] && echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
-
-	[[ -n $DATA_PART_ID ]] && echo -e "   + Data partition $(get_partition_info $DATA_PART_ID) will be mounted to ${GREEN}/mnt/home/data${RESET}"
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
@@ -252,11 +240,6 @@ mount_partitions()
 		if [[ -n $HOME_PART_ID ]]; then
 			mkdir -p /mnt/home
 			mount $HOME_PART_ID /mnt/home
-		fi
-
-		if [[ -n $DATA_PART_ID ]]; then
-			mkdir -p /mnt/home/data
-			mount $DATA_PART_ID /mnt/home/data
 		fi
 
 		print_progress_text "Verifying partition structure"
@@ -328,7 +311,6 @@ unmount_partitions()
 	local root_mnt=$(echo "$mount_points" | grep -i "/mnt ")
 	local boot_mnt=$(echo "$mount_points" | grep -i "/mnt/boot ")
 	local home_mnt=$(echo "$mount_points" | grep -i "/mnt/home ")
-	local data_mnt=$(echo "$mount_points" | grep -i "/mnt/home/data ")
 
 	echo -e "The following partitions will be unmounted:"
 	echo ""
@@ -337,8 +319,6 @@ unmount_partitions()
 	[[ -n $boot_mnt ]] && echo -e "   + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
 
 	[[ -n $home_mnt ]] && echo -e "   + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
-
-	[[ -n $data_mnt ]] && echo -e "   + ${GREEN}$(echo $data_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $data_mnt | cut -d' ' -f3)${RESET}"
 
 	echo ""
 
