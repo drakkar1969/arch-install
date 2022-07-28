@@ -351,22 +351,6 @@ display_drivers()
 		sed -i "/^MODULES=/ c MODULES=(intel_agp i915)" /etc/mkinitcpio.conf
 		mkinitcpio -P
 
-		print_progress_text "Installing nVidia display drivers"
-		pacman -S nvidia nvidia-prime
-
-		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
-
-		if [[ $kernel_params != *"nvidia-drm.modeset"* ]]; then
-			print_progress_text "Enabling nVidia DRM kernel mode setting"
-			kernel_params+=" nvidia-drm.modeset=1"
-
-			cp -n /etc/default/grub{,.orig}
-
-			sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
-
-			grub-mkconfig -o /boot/grub/grub.cfg
-		fi
-
 		POSTCHECKLIST[$1]=1
 
 		get_any_key
