@@ -339,7 +339,7 @@ display_drivers()
 {
 	print_submenu_heading "INSTALL DISPLAY DRIVERS"
 
-	echo -e "Install Mesa OpenGL, Intel VA-API (hardware accel) and nVidia display drivers."
+	echo -e "Install Mesa OpenGL and Intel VA-API (hardware accel) drivers."
 
 	if get_user_confirm; then
 		print_progress_text "Installing Intel display drivers"
