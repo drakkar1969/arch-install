@@ -306,6 +306,14 @@ Use the `lsblk` command to verify partitions are correctly mounted.
 
 #### 1. Install Base Packages
 
+Update the Arch Linux keyring:
+
+```bash
+pacman -S archlinux-keyring
+```
+
+Install the base packages:
+
 ```bash
 pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 ```
