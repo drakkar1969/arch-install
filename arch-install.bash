@@ -244,11 +244,20 @@ mount_partitions()
 		print_progress_text "Mounting partitions"
 		[[ -n $ROOT_PART_ID ]] && mount $ROOT_PART_ID /mnt
 
-		[[ -n $ESP_PART_ID ]] && mount --mkdir $ESP_PART_ID /mnt/boot
+		if [[ -n $ESP_PART_ID ]]; then
+			mkdir -p /mnt/boot
+			mount $ESP_PART_ID /mnt/boot
+		fi
 
-		[[ -n $HOME_PART_ID ]] && mount --mkdir $HOME_PART_ID /mnt/home
+		if [[ -n $HOME_PART_ID ]]; then
+			mkdir -p /mnt/home
+			mount $HOME_PART_ID /mnt/home
+		fi
 
-		[[ -n $DATA_PART_ID ]] && mount --mkdir $DATA_PART_ID /mnt/home/data
+		if [[ -n $DATA_PART_ID ]]; then
+			mkdir -p /mnt/home/data
+			mount $DATA_PART_ID /mnt/home/data
+		fi
 
 		print_progress_text "Verifying partition structure"
 		print_partition_structure
