@@ -303,7 +303,7 @@ install_bootloader()
 	if get_user_confirm; then
 		print_progress_text "Installing GRUB bootloader"
 		pacman -S grub efibootmgr
-		grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
 		print_progress_text "Installing microcode package"
 		pacman -S intel-ucode
