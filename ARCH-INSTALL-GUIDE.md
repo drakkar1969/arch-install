@@ -602,8 +602,8 @@ pacman -S gnome-tweaks dconf-editor gnome-screenshot
 Enable Wayland screen sharing:
 
 ```bash
-pacman -S --asdeps xdg-desktop-portal-gnome
-
+pacman -S --asdeps --needed xdg-desktop-portal-gnome
+pacman -S --needed xdg-desktop-portal
 ```
 
 Enable the `gdm` (GNOME Display Manager) login screen:
