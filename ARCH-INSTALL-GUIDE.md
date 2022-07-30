@@ -567,6 +567,11 @@ Install GNOME extras:
 ```bash
 pacman -S gnome-tweaks dconf-editor
 ```
+Install the power profiles daemon:
+
+```bash
+pacman -S --asdeps power-profiles-daemon
+```
 
 Enable Wayland screen sharing:
 
