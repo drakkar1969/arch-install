@@ -218,31 +218,6 @@ Verify partitions and exit `parted`:
 (parted) quit
 ```
 
-Partition the __additional HDD__:
-
-```bash
-parted /dev/sda
-```
-
-Create a partition table (GPT):
-
-```bash
-(parted) mklabel gpt
-```
-
-Create a data partition:
-
-```bash
-(parted) mkpart data ext4 1MiB 100%
-```
-
-Verify partitions and exit `parted`:
-
-```bash
-(parted) print
-(parted) quit
-```
-
 ##### b. Format Partitions
 
 Format the `ESP` partition:
@@ -268,12 +243,6 @@ Format the `home` partition (**do this only if the `home` partition is not empty
 
 ```bash
 mkfs.ext4 -L "HOME" /dev/nvme0n1p4
-```
-
-Format the data partition on the additional HDD (**do this only if the data partition is not empty**):
-
-```bash
-mkfs.ext4 -L "DATA" /dev/sda1
 ```
 
 ##### c. Mount Partitions
