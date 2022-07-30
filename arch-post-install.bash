@@ -348,7 +348,7 @@ display_drivers()
 
 		print_progress_text "Enabling Intel early KMS"
 		cp -n /etc/mkinitcpio.conf{,.orig}
-		sed -i "/^MODULES=/ c MODULES=(intel_agp i915)" /etc/mkinitcpio.conf
+		sed -i "/^MODULES=/ c MODULES=(i915)" /etc/mkinitcpio.conf
 		mkinitcpio -P
 
 		POSTCHECKLIST[$1]=1
