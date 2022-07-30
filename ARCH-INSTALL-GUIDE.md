@@ -451,7 +451,7 @@ pacman -S os-prober
 Install the `grub` boot loader:
 
 ```bash
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+grub-install --target=x86_64-efi --efi-directory=/boot --removable
 ```
 
 Install the `microcode` package (Intel CPUs):
