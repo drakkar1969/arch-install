@@ -162,19 +162,15 @@ To check the status, use `timedatectl` without parameters.
 
 #### 5. Partition Disks
 
-This section assumes that:
-
-* `/dev/nvme0n1` is the primary SSD
-
-* `/dev/sda` is the additional HDD
+This section assumes that `/dev/nvme0n1` is the primary SSD.
 
 You can use the `lsblk` command to check this.
 
-__Warning: this will destroy all data on the disks__.
+__Warning: this will destroy all data on the disk__.
 
 ##### a. Create Partitions
 
-Run `parted` to partition the __primary SSD__:
+Run `parted` to partition the primary SSD:
 
 ```bash
 parted /dev/nvme0n1
