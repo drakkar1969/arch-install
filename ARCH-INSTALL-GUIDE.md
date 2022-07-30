@@ -521,7 +521,7 @@ pacman -S xf86-video-nouveau
 Enable early KMS start for the Intel driver:
 
 ```bash
-sed -i "/^MODULES=/ c MODULES=(intel_agp i915)" /etc/mkinitcpio.conf
+sed -i "/^MODULES=/ c MODULES=(i915)" /etc/mkinitcpio.conf
 ```
 
 Then re-generate the initramfs:
