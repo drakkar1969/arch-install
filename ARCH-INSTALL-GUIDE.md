@@ -367,7 +367,7 @@ echo LC_TIME=$LOCALE_IE >> /etc/locale.conf
 Create the `hostname` file:
 
 ```bash
-PCNAME="ProBook450"
+PCNAME="SamsungBook2"
 echo $PCNAME > /etc/hostname
 ```
 
