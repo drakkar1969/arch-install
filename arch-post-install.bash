@@ -397,6 +397,9 @@ install_gnome()
 		print_progress_text "Installing GNOME Extras"
 		pacman -S gnome-tweaks dconf-editor
 
+		print_progress_text "Installing Power Profiles Daemon"
+		pacman -S --asdeps power-profiles-daemon
+
 		print_progress_text "Enabling Wayland Screen Sharing"
 		pacman -S --asdeps --needed xdg-desktop-portal-gnome
 		pacman -S --needed xdg-desktop-portal
