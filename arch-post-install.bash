@@ -410,9 +410,6 @@ install_gnome()
 		print_progress_text "Enabling Network Manager service"
 		systemctl enable NetworkManager.service
 
-		print_progress_text "Force-enabling Wayland session"
-		ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
-
 		POSTCHECKLIST[$1]=1
 
 		get_any_key

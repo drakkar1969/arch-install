@@ -588,12 +588,6 @@ Enable the Network Manager service:
 systemctl enable NetworkManager.service
 ```
 
-Force enable the Wayland session in GNOME:
-
-```bash
-ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
-```
-
 #### 5. Install Multimedia Codecs
 
 Install needed codecs:
