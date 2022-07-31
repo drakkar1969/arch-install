@@ -563,6 +563,7 @@ Install GNOME extras:
 ```bash
 pacman -S gnome-tweaks dconf-editor
 ```
+
 Install the power profiles daemon:
 
 ```bash
