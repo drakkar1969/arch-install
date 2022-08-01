@@ -1,6 +1,6 @@
 ## GNOME Boxes: Installing Arch Linux as Guest
 
-#### 1. Virtual Machine Settings
+### 1. Virtual Machine Settings
 
 Create a virtual machine in GNOME Boxes with default values (2 GiB of memory and 21.5 GB of disk space), and enable UEFI boot:
 
@@ -8,7 +8,7 @@ Create a virtual machine in GNOME Boxes with default values (2 GiB of memory and
 
 Install Arch Linux.
 
-#### 2. Install Guest Tools
+### 2. Install Guest Tools
 
 After the Arch installation is complete, install the guest tools in the guest system:
 
@@ -20,7 +20,7 @@ The `spice-vadagent` package improves graphics rendering of the virtual machine,
 
 Restart the guest system.
 
-#### 3. Enable Shared Folders
+### 3. Enable Shared Folders
 
 Ensure that the virtual machine is running in GNOME Boxes. Open the virtual machine preferences, select the `Devices & Shares` tab, and add a shared folder in the `Folder Shares` section:
 
