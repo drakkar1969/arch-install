@@ -16,7 +16,7 @@ sudo umount -R /path/to/mount
 
 Replace `/path/to/mount` with the directory name(s) where USB partitions are mounted. Mount points can be found with the command `mount | grep sdb`.
 
-#### 1. Create and Format Partitions
+### 1. Create and Format Partitions
 
 Run `parted` to partition the USB drive:
 
@@ -62,7 +62,7 @@ Format the data partition:
 sudo mkfs.ext4 -L "USBData" /dev/sdb2
 ```
 
-#### 2. Copy Arch Linux ISO
+### 2. Copy Arch Linux ISO
 
 Mount the `boot` partition:
 
@@ -98,7 +98,7 @@ Replace `ARCH_202104` with the correct version of the Arch Linux ISO, in format 
 
 ## B. Pre-Installation
 
-#### 1. Set Keyboard Layout
+### 1. Set Keyboard Layout
 
 > Note: this step is only required for non-US keyboards
 
@@ -114,7 +114,7 @@ Available layouts can be listed with:
 ls /usr/share/kbd/keymaps/**/*.map.gz
 ```
 
-#### 2. Check UEFI Mode
+### 2. Check UEFI Mode
 
 To verify that UEFI boot mode is enabled, list the `efivars` directory:
 
@@ -124,7 +124,7 @@ ls /sys/firmware/efi/efivars
 
 If the directory does not exist, the system may be in MBR/BIOS mode.
 
-#### 3. Enable Internet Connection
+### 3. Enable Internet Connection
 
 > Note: not required for VirtualBox installation
 
@@ -150,7 +150,7 @@ To test the internet connection:
 ping -c 3 www.google.com
 ```
 
-#### 4. Update System Clock
+### 4. Update System Clock
 
 Ensure the system clock is accurate:
 
@@ -160,7 +160,7 @@ timedatectl set-ntp true
 
 To check the status, use `timedatectl` without parameters.
 
-#### 5. Partition Disks
+### 5. Partition Disks
 
 This section assumes that `/dev/nvme0n1` is the primary SSD.
 
@@ -168,7 +168,7 @@ You can use the `lsblk` command to check this.
 
 __Warning: this will destroy all data on the disk__.
 
-##### a. Create Partitions
+#### a. Create Partitions
 
 Run `parted` to partition the primary SSD:
 
@@ -214,7 +214,7 @@ Verify partitions and exit `parted`:
 (parted) quit
 ```
 
-##### b. Format Partitions
+#### b. Format Partitions
 
 Format the `ESP` partition:
 
@@ -241,7 +241,7 @@ Format the `home` partition (**do this only if the `home` partition is not empty
 mkfs.ext4 -L "HOME" /dev/nvme0n1p4
 ```
 
-##### c. Mount Partitions
+#### c. Mount Partitions
 
 Mount the `root` partition:
 
@@ -269,7 +269,7 @@ Use the `lsblk` command to verify partitions are correctly mounted.
 
 ## C. Installation
 
-#### 1. Install Base Packages
+### 1. Install Base Packages
 
 Update the Arch Linux keyring:
 
@@ -284,7 +284,7 @@ Install the base packages:
 pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 ```
 
-#### 2. Generate Fstab File
+### 2. Generate Fstab File
 
 ```bash
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -292,7 +292,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 In case of errors, __do not run the command a second time__, edit the `fstab` file manually.
 
-#### 3. Change Root into New System
+### 3. Change Root into New System
 
 ```bash
 arch-chroot /mnt
@@ -302,7 +302,7 @@ arch-chroot /mnt
 
 ## D. System Configuration
 
-#### 1. Set Keyboard layout
+### 1. Set Keyboard layout
 
 > Note: this step is only required for non-US keyboards
 
@@ -312,7 +312,7 @@ Make the keyboard layout permanent (replace `it` with your keymap):
 echo KEYMAP=it > /etc/vconsole.conf
 ```
 
-#### 2. Configure Timezone
+### 2. Configure Timezone
 
 Set the time zone:
 
@@ -323,7 +323,7 @@ ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
 
 The timezone format is `Region/City` where _Region_ and _City_ depend on location. To check available timezones, see the files/folders in `/usr/share/zoneinfo/`.
 
-#### 3. Sync Hardware Clock
+### 3. Sync Hardware Clock
 
 Set hardware clock to UTC:
 
@@ -331,7 +331,7 @@ Set hardware clock to UTC:
 hwclock --systohc --utc
 ```
 
-#### 4. Configure Locale
+### 4. Configure Locale
 
 Uncomment locales in the `/etc/locale.gen` file:
 
@@ -358,7 +358,7 @@ echo LC_PAPER=$LOCALE_IE >> /etc/locale.conf
 echo LC_TIME=$LOCALE_IE >> /etc/locale.conf
 ```
 
-#### 5. Configure Hostname
+### 5. Configure Hostname
 
 Create the `hostname` file:
 
@@ -375,7 +375,7 @@ echo "::1             localhost" >> /etc/hosts
 echo "127.0.1.1       ${PCNAME}.localdomain       ${PCNAME}" >> /etc/hosts
 ```
 
-#### 6. Configure Pacman
+### 6. Configure Pacman
 
 Enable color output and parallel downloads in pacman:
 
@@ -384,7 +384,7 @@ sed -i 's/#Color/Color/' /etc/pacman.conf
 sed -i 's/#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 ```
 
-#### 7. Enable Multilib Repository
+### 7. Enable Multilib Repository
 
 Enable the `multilib` repository:
 
@@ -398,7 +398,7 @@ Refresh package databases:
 pacman -Syy
 ```
 
-#### 8. Configure Root Password
+### 8. Configure Root Password
 
 To set the root password, run the following command and input a password:
 
@@ -406,7 +406,7 @@ To set the root password, run the following command and input a password:
 passwd
 ```
 
-#### 9. Add New User with Sudo Privileges
+### 9. Add New User with Sudo Privileges
 
 Add new user:
 
@@ -430,7 +430,7 @@ Allow the new user to issue commands as root, i.e. with `sudo`:
 bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 ```
 
-#### 10. Install Boot Loader
+### 10. Install Boot Loader
 
 Install `grub` and `efibootmgr`:
 
@@ -466,7 +466,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 ## E. Desktop Environment
 
-#### 1. Install Xorg Graphical Environment
+### 1. Install Xorg Graphical Environment
 
 Install Xorg:
 
@@ -482,11 +482,11 @@ pacman -S xorg-xinit xorg-twm xterm
 
 To test the Xorg environment, use the `startx` command; to exit the graphical environment type `exit`.
 
-#### 2. Install Video Drivers
+### 2. Install Video Drivers
 
 > Note: not required for VirtualBox installation
 
-##### a. Intel
+#### a. Intel
 
 Install the Mesa OpenGL driver:
 
@@ -514,7 +514,7 @@ Then re-generate the initramfs:
 mkinitcpio -P
 ```
 
-##### b. nVidia (proprietary drivers)
+#### b. nVidia (proprietary drivers)
 
 Install the nVidia video drivers:
 
@@ -536,7 +536,7 @@ And re-generate the `grub.cfg` file:
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-##### c. Nouveau (open-source nVidia drivers)
+#### c. Nouveau (open-source nVidia drivers)
 
 Install the Mesa OpenGL driver:
 
@@ -550,7 +550,7 @@ Install the open source Nouveau driver for nVidia:
 pacman -S xf86-video-nouveau
 ```
 
-#### 3. Install PipeWire
+### 3. Install PipeWire
 
 Install PipeWire packages as dependencies:
 
@@ -558,7 +558,7 @@ Install PipeWire packages as dependencies:
 pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire rtkit
 ```
 
-#### 4. Install GNOME
+### 4. Install GNOME
 
 Install Network Manager and GNOME package group (press `ENTER` to select all packages when prompted):
 
@@ -599,7 +599,7 @@ Enable the Network Manager service:
 systemctl enable NetworkManager.service
 ```
 
-#### 5. Install Multimedia Codecs
+### 5. Install Multimedia Codecs
 
 Install needed codecs:
 
@@ -607,7 +607,7 @@ Install needed codecs:
 pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
 ```
 
-#### 6. Reboot
+### 6. Reboot
 
 Exit the `chroot` environment:
 
