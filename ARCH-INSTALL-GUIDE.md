@@ -486,7 +486,9 @@ To test the Xorg environment, use the `startx` command; to exit the graphical en
 
 > Note: not required for VirtualBox installation
 
-Install the Mesa OpenGL driver (for Intel and Nouveau):
+##### a. Intel
+
+Install the Mesa OpenGL driver:
 
 ```bash
 pacman -S --needed --asdeps mesa
@@ -498,20 +500,6 @@ Install the Intel VA-API driver for hardware video acceleration:
 
 ```bash
 pacman -S intel-media-driver
-```
-
-Install the nVidia proprietary video drivers:
-
-```bash
-pacman -S nvidia nvidia-prime
-```
-
-**--OR--**
-
-Install the open source Nouveau driver for nVidia:
-
-```bash
-pacman -S xf86-video-nouveau
 ```
 
 Enable early KMS start for the Intel driver:
@@ -526,7 +514,15 @@ Then re-generate the initramfs:
 mkinitcpio -P
 ```
 
-If you installed the nVidia drivers, enable the DRM kernel mode setting, to ensure that the Wayland session is available in GNOME:
+##### b. nVidia (proprietary drivers)
+
+Install the nVidia video drivers:
+
+```bash
+pacman -S nvidia nvidia-prime
+```
+
+Enable the DRM kernel mode setting, to ensure that the Wayland session is available in GNOME:
 
 ```bash
 KERNEL_PARAMS=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
@@ -538,6 +534,20 @@ And re-generate the `grub.cfg` file:
 
 ```bash
 grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+##### c. Nouveau (open-source nVidia drivers)
+
+Install the Mesa OpenGL driver:
+
+```bash
+pacman -S --needed --asdeps mesa
+```
+
+Install the open source Nouveau driver for nVidia:
+
+```bash
+pacman -S xf86-video-nouveau
 ```
 
 #### 3. Install PipeWire
