@@ -74,10 +74,10 @@ sudo mount /dev/sdb1 /mnt/usb
 Extract the Arch Linux ISO to the `boot` partition:
 
 ```bash
-sudo bsdtar -x --exclude=syslinux/ -f archlinux-2021.04.01-x86_64.iso -C /mnt/usb
+sudo bsdtar -x --exclude=syslinux/ -f archlinux-2022.07.01-x86_64.iso -C /mnt/usb
 ```
 
-Replace `archlinux-2021.04.01-x86_64.iso` with the path to the Arch Linux ISO.
+Replace `archlinux-2022.07.01-x86_64.iso` with the path to the Arch Linux ISO.
 
 Unmount the `boot` partition:
 
@@ -89,10 +89,10 @@ sudo rm -Rf /mnt/usb
 Change the label of the `boot` partition to ensure booting:
 
 ```bash
-sudo fatlabel /dev/sdb1 ARCH_202104
+sudo fatlabel /dev/sdb1 ARCH_202207
 ```
 
-Replace `ARCH_202104` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
+Replace `ARCH_202207` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
 
 ---
 
@@ -102,11 +102,13 @@ Replace `ARCH_202104` with the correct version of the Arch Linux ISO, in format 
 
 > Note: this step is only required for non-US keyboards
 
-The default keymap is US. Set your keymap with the command (replace `it` with your actual keymap):
+The default keymap is US. Set your keymap with the command:
 
 ```bash
 loadkeys it
 ```
+
+Replace `it` with your actual keymap.
 
 Available layouts can be listed with:
 
@@ -138,9 +140,9 @@ iwctl
 
 ```bash
 [iwd] device list
-[iwd] station [wlan0] scan    # replace [wlan0] with your device name from the previous command
+[iwd] station [wlan0] scan             # replace [wlan0] with your device name from the previous command
 [iwd] station [wlan0] get-networks
-[iwd] station [wlan0] connect [SSID]    # replace [SSID] with your network name from the previous command
+[iwd] station [wlan0] connect [SSID]   # replace [SSID] with your network name from the previous command
 [iwd] quit
 ```
 
@@ -306,11 +308,13 @@ arch-chroot /mnt
 
 > Note: this step is only required for non-US keyboards
 
-Make the keyboard layout permanent (replace `it` with your keymap):
+Make the keyboard layout permanent:
 
 ```bash
 echo KEYMAP=it > /etc/vconsole.conf
 ```
+
+Replace `it` with your keymap.
 
 ### 2. Configure Timezone
 
@@ -325,7 +329,7 @@ The timezone format is `Region/City` where _Region_ and _City_ depend on locatio
 
 ### 3. Sync Hardware Clock
 
-Set hardware clock to UTC:
+Set the hardware clock to UTC:
 
 ```bash
 hwclock --systohc --utc
@@ -438,7 +442,7 @@ Install `grub` and `efibootmgr`:
 pacman -S grub efibootmgr
 ```
 
-Optionally install `os-prober` (only needed to detect other operating systems in a dual boot scenario):
+_Optionally_ install `os-prober` (only needed to detect other operating systems in a dual boot scenario):
 
 ```bash
 pacman -S os-prober
@@ -474,7 +478,7 @@ Install Xorg:
 pacman -S --asdeps xorg-server
 ```
 
-Optionally install X widgets for testing:
+_Optionally_ install X widgets for testing:
 
 ```bash
 pacman -S xorg-xinit xorg-twm xterm
