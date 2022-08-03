@@ -128,7 +128,7 @@ If the directory does not exist, the system may be in MBR/BIOS mode.
 
 ### 3. Enable Internet Connection
 
-> Note: not required for VirtualBox installation
+> Note: not required for VirtualBox/GNOME Boxes installation
 
 Wired internet connection is enabled by default.
 
@@ -488,7 +488,7 @@ To test the Xorg environment, use the `startx` command; to exit the graphical en
 
 ### 2. Install Video Drivers
 
-> Note: not required for VirtualBox installation
+> Note: not required for VirtualBox/GNOME Boxes installation
 
 #### a. Intel
 
