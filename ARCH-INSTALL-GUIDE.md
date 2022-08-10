@@ -500,7 +500,7 @@ pacman -S --needed --asdeps mesa
 
 > Note: the `xf86-video-intel` Intel driver is optional, see https://wiki.archlinux.org/index.php/Intel_graphics#Installation.
 
-Install the Intel VA-API driver for hardware video acceleration:
+_Optionally_ install the Intel VA-API driver for hardware video acceleration:
 
 ```bash
 pacman -S intel-media-driver
@@ -608,7 +608,13 @@ systemctl enable NetworkManager.service
 Install needed codecs:
 
 ```bash
-pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
+pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly
+```
+
+_Optionally_ install the VA-API plugin for hardware video acceleration:
+
+```bash
+pacman -S --needed gstreamer-vaapi
 ```
 
 ### 6. Reboot
