@@ -344,7 +344,7 @@ display_drivers()
 	if get_user_confirm; then
 		print_progress_text "Installing Intel display drivers"
 		pacman -S --needed --asdeps mesa
-		pacman -S intel-media-driver
+		pacman -S intel-media-driver libva-utils
 
 		print_progress_text "Enabling Intel early KMS"
 		cp -n /etc/mkinitcpio.conf{,.orig}

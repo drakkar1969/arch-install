@@ -503,7 +503,7 @@ pacman -S --needed --asdeps mesa
 _Optionally_ install the Intel VA-API driver for hardware video acceleration:
 
 ```bash
-pacman -S intel-media-driver
+pacman -S intel-media-driver libva-utils
 ```
 
 Enable early KMS start for the Intel driver:
