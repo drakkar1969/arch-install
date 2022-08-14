@@ -22,7 +22,7 @@ Restart the guest system.
 
 ### 3. Enable Shared Folders
 
-Ensure that the virtual machine is running in GNOME Boxes. Open the virtual machine preferences, select the `Devices & Shares` tab, and add a shared folder in the `Folder Shares` section:
+Ensure that the virtual machine is running in GNOME Boxes. Open the virtual machine preferences, select the `Devices & Shares` tab, and add a shared folder in the `Shared Folders` section:
 
 ![](images/boxes-addshare.png)
 
