@@ -170,77 +170,101 @@ You can use the `lsblk` command to check this.
 
 __Warning: this will destroy all data on the disk__.
 
+The following partition structure assumes Arch Linux/Windows dual booting.
+
 #### a. Create Partitions
 
-Run `parted` to partition the primary SSD:
+Run `gdisk` to partition the primary SSD:
 
 ```bash
-parted /dev/nvme0n1
+gdisk /dev/nvme0n1
 ```
 
-Create a partition table (GPT):
+```
+GPT fdisk (gdisk) version 1.0.9
 
-```bash
-(parted) mklabel gpt
+Partition table scan:
+  MBR: protective
+  BSD: not present
+  APM: not present
+  GPT: present
+
+Found valid GPT with protective MBR; using GPT.
+
+Command (? for help):
 ```
 
-Create `boot` partition of type `ESP` (EFI system partition) and set `esp` flag:
+Delete any existing partitions using the `d` command.
 
-```bash
-(parted) mkpart ESP fat32 1MiB 513MiB
-(parted) set 1 esp on
+Use the `n` command repeatedly to create new partitions with the following parameters:
+
+Partition no.|First sector  |Last Sector|Hex code|Comment
+-------------|--------------|-----------|--------|---------------------
+1            |default (2048)|+512M      |EF00    |ESP
+2            |default       |+16M       |0C01    |Microsoft reserved
+3            |default       |+40G       |0700    |Windows
+4            |default       |+300M      |2700    |Windows Recovery (RE)
+5            |default       |+40G       |8300    |Boot
+6            |default       |+16G       |8200    |Swap
+7            |default       |default    |8300    |Home
+
+Use the `p` command to check the partition structure:
+
+```
+Disk /dev/nvme0n1: 2000409264 sectors, 953.9 GiB
+Model: SAMSUNG MZVLQ1T0HBLB-00B                
+Sector size (logical/physical): 512/512 bytes
+Disk identifier (GUID): A8683D17-4FEE-4E97-9C13-9A8E2160F60E
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 2000409230
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 2669 sectors (1.3 MiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048         1050623   512.0 MiB   EF00  EFI system partition
+   2         1050624         1083391   16.0 MiB    0C01  Microsoft reserved
+   3         1083392        84969471   40.0 GiB    0700  Microsoft basic data
+   4        84969472        85583871   300.0 MiB   2700  Windows RE
+   5        85583872       169469951   40.0 GiB    8300  Linux filesystem
+   6       169469952       203024383   16.0 GiB    8200  Linux swap
+   7       203024384      2000408575   857.1 GiB   8300  Linux filesystem
 ```
 
-Create `root` partition:
-
-```bash
-(parted) mkpart root ext4 513MiB 50GiB
-```
-
-Create `swap` partition:
-
-```bash
-(parted) mkpart swap linux-swap 50GiB 66GiB
-```
-
-Create `home` partition:
-
-```bash
-(parted) mkpart home ext4 66GiB 100%
-```
-
-Verify partitions and exit `parted`:
-
-```bash
-(parted) print
-(parted) quit
-```
+If everything is correct, use the `w` command to save partitions, and then `q` to exit `gdisk`.
 
 #### b. Format Partitions
 
-Format the `ESP` partition:
+Format the `ESP` partition (**do this only if Windows is not already installed**):
 
 ```bash
-mkfs.fat -F32 -n "BOOT" /dev/nvme0n1p1
+mkfs.fat -F32 -n "ESP" /dev/nvme0n1p1
+```
+
+Format the Windows data and recovery partitions (**do this only if Windows is not already installed**):
+
+```bash
+mkfs.ntfs -f /dev/nvme0n1p3
+mkfs.ntfs -f /dev/nvme0n1p4
 ```
 
 Activate the `swap` partition:
 
 ```bash
-mkswap /dev/nvme0n1p3
-swapon /dev/nvme0n1p3
+mkswap /dev/nvme0n1p6
+swapon /dev/nvme0n1p6
 ```
 
 Format the `root` partition:
 
 ```bash
-mkfs.ext4 -L "ROOT" /dev/nvme0n1p2
+mkfs.ext4 -L "Root" /dev/nvme0n1p5
 ```
 
-Format the `home` partition (**do this only if the `home` partition is not empty**):
+Format the `home` partition (**do this only if the `home` partition is empty**):
 
 ```bash
-mkfs.ext4 -L "HOME" /dev/nvme0n1p4
+mkfs.ext4 -L "Home" /dev/nvme0n1p7
 ```
 
 #### c. Mount Partitions
@@ -248,21 +272,21 @@ mkfs.ext4 -L "HOME" /dev/nvme0n1p4
 Mount the `root` partition:
 
 ```bash
-mount /dev/nvme0n1p2 /mnt
+mount /dev/nvme0n1p5 /mnt
+```
+
+Mount the `ESP` partition:
+
+```bash
+mkdir -p /mnt/boot
+mount /dev/nvme0n1p1 /mnt/boot
 ```
 
 Mount the `home` partition:
 
 ```bash
 mkdir -p /mnt/home
-mount /dev/nvme0n1p4 /mnt/home
-```
-
-Mount the `ESP boot` partition:
-
-```bash
-mkdir -p /mnt/boot
-mount /dev/nvme0n1p1 /mnt/boot
+mount /dev/nvme0n1p7 /mnt/home
 ```
 
 Use the `lsblk` command to verify partitions are correctly mounted.

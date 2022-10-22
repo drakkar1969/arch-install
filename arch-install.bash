@@ -8,9 +8,9 @@ GREEN='\033[1;32m'
 RESET='\033[0m'
 
 ESP_PART_ID="/dev/nvme0n1p1"
-ROOT_PART_ID="/dev/nvme0n1p2"
-HOME_PART_ID="/dev/nvme0n1p4"
-SWAP_PART_ID="/dev/nvme0n1p3"
+ROOT_PART_ID="/dev/nvme0n1p5"
+HOME_PART_ID="/dev/nvme0n1p7"
+SWAP_PART_ID="/dev/nvme0n1p6"
 
 #===========================================================================================================
 # HELPER FUNCTIONS
@@ -180,22 +180,30 @@ format_partitions()
 
 	echo ""
 
+	print_warning "Format the ESP (boot) partition only if Windows is not already installed"
+
+	echo ""
+
+	print_warning "Format the Home partition only if it is empty"
+
+	echo ""
+
 	print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
 
 	if get_user_confirm; then
 		if [[ -n $ESP_PART_ID ]]; then
 			print_progress_text "Formating ESP (boot) partition"
-			mkfs.fat -F32 -n "BOOT" $ESP_PART_ID
+			mkfs.fat -F32 -n "ESP" $ESP_PART_ID
 		fi
 
 		if [[ -n $ROOT_PART_ID ]]; then
 			print_progress_text "Formating root partition"
-			mkfs.ext4 -L "ROOT" $ROOT_PART_ID
+			mkfs.ext4 -L "Root" $ROOT_PART_ID
 		fi
 
 		if [[ -n $HOME_PART_ID ]]; then
 			print_progress_text "Formating home partition"
-			mkfs.ext4 -L "HOME" $HOME_PART_ID
+			mkfs.ext4 -L "Home" $HOME_PART_ID
 		fi
 
 		if [[ -n $SWAP_PART_ID ]]; then
