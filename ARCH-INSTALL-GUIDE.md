@@ -204,7 +204,7 @@ Partition no.|First sector  |Last Sector|Hex code|Comment
 2            |default       |+16M       |0C01    |Microsoft reserved
 3            |default       |+40G       |0700    |Windows
 4            |default       |+300M      |2700    |Windows Recovery (RE)
-5            |default       |+40G       |8300    |Boot
+5            |default       |+40G       |8300    |Root
 6            |default       |+16G       |8200    |Swap
 7            |default       |default    |8300    |Home
 
