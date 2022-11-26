@@ -225,27 +225,6 @@ config_pacman()
 	fi
 }
 
-enable_multilib()
-{
-	print_submenu_heading "ENABLE MULTILIB REPOSITORY"
-
-	echo -e "Enable the multilib repository in ${GREEN}/etc/pacman.conf${RESET}."
-
-	if get_user_confirm; then
-		print_progress_text "Enabling multilib repository"
-		sed -i '/^#\[multilib\]/,+1 s/^#//' /etc/pacman.conf
-
-		print_file_contents "/etc/pacman.conf"
-
-		print_progress_text "Refreshing package databases"
-		pacman -Syy
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
 root_password()
 {
 	print_submenu_heading "CONFIGURE ROOT PASSWORD"
@@ -440,7 +419,6 @@ post_menu()
 				"Configure Locale|set_locale"
 				"Configure Hostname|set_hostname"
 				"Configure pacman|config_pacman"
-				"Enable Multilib Repository|enable_multilib"
 				"Configure Root Password|root_password"
 				"Add New User with Sudo Privileges|add_sudouser"
 				"Install Boot Loader|install_bootloader"
