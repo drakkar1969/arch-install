@@ -223,7 +223,7 @@ format_partitions()
 
 	echo ""
 
-	print_warning "Format the ESP (boot) partition only if Windows is not already installed"
+	print_warning "Format the ESP partition only if Windows is not already installed"
 
 	echo ""
 
@@ -235,7 +235,7 @@ format_partitions()
 
 	if get_user_confirm; then
 		if [[ -n ${PART_IDS[ESP]} ]]; then
-			print_progress_text "Formating ESP (boot) partition"
+			print_progress_text "Formating ESP partition"
 			mkfs.fat -F32 -n "ESP" ${PART_IDS[ESP]}
 		fi
 
@@ -309,7 +309,7 @@ mount_partitions()
 
 	echo -e "\n\nThe following partitions will be mounted:"
 	echo ""
-	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} (boot) partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
 
 	[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
 
