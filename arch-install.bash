@@ -12,6 +12,8 @@ ROOT_PART_ID="/dev/nvme0n1p5"
 HOME_PART_ID="/dev/nvme0n1p7"
 SWAP_PART_ID="/dev/nvme0n1p6"
 
+declare -A PART_IDS=([ESP]="" [root]="" [home]="" [swap]="")
+
 #===========================================================================================================
 # HELPER FUNCTIONS
 #===========================================================================================================
@@ -123,6 +125,31 @@ get_partition_info()
 	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
 }
 
+print_partitions()
+{
+	part_names="$1"
+
+	for i in "${!part_names[@]}"; do
+		local part_type=$(lsblk --output PARTLABEL --noheadings ${part_names[$i]})
+		local part_size=$(lsblk --output SIZE --raw --noheadings ${part_names[$i]})
+
+		printf "   [%d] %s [type: %b; size: %b]\n" $(($i+1)) "${part_names[$i]}" "${GREEN}$part_type${RESET}" "${GREEN}$part_size${RESET}"
+	done
+	unset i
+}
+
+get_partition_type()
+{
+	local part_id=$1
+
+	local part_size=$(lsblk --output SIZE --paths --raw --noheadings $part_id)
+	local part_type=$(lsblk --output PARTLABEL --paths --noheadings $part_id)
+
+	[[ -z $part_type ]] && part_type="unknown"
+
+	echo -e "${GREEN}$part_id${RESET} [type: ${GREEN}$part_type${RESET}; size: ${GREEN}$part_size${RESET}]"
+}
+
 #===========================================================================================================
 # INSTALLATION FUNCTIONS
 #===========================================================================================================
@@ -161,22 +188,51 @@ format_partitions()
 {
 	print_submenu_heading "FORMAT PARTITIONS"
 
-	print_partition_structure
+	local part_names=()
 
-	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "$ESP_PART_ID"
-	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "$ROOT_PART_ID"
-	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "$HOME_PART_ID"
-	get_global_variable SWAP_PART_ID "swap partition ID (blank to skip)" "$SWAP_PART_ID"
+	readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
 
-	echo -e "The following partitions will be formatted:"
+	part_names=(${part_names[@]/ part/})
+
+	print_partitions ${part_names[@]}
+
+	for id in {ESP,root,swap,home}; do
+		echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
+
+		# Get menu selection
+		local part_index=-1
+
+		until (( $part_index >= 0 && $part_index < ${#part_names[@]} ))
+		do
+			local opt
+
+			read -r -s -n 1 opt
+
+			# Exit disk menu
+			if [[ "${opt,,}" == "n" ]]; then
+				part_index=-1
+				break
+			fi
+
+			if [[ "$opt" =~ ^[[:digit:]]+$ ]]; then
+				part_index=$(($opt-1))
+			fi
+		done
+
+		if (( $part_index != -1 )); then
+			PART_IDS[$id]="${part_names[$part_index]}"
+		fi
+	done
+
+	echo -e "\n\nThe following partitions will be formatted:"
 	echo ""
-	[[ -n $ESP_PART_ID ]] && echo -e "   + ESP (boot) partition $(get_partition_size $ESP_PART_ID) will be formated with file system ${GREEN}FAT32${RESET}."
+	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
 
-	[[ -n $ROOT_PART_ID ]] && echo -e "   + Root partition $(get_partition_size $ROOT_PART_ID) will formated with file system ${GREEN}EXT4${RESET}."
+	[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
 
-	[[ -n $HOME_PART_ID ]] && echo -e "   + Home partition $(get_partition_size $HOME_PART_ID) will be formated with file system ${GREEN}EXT4${RESET}."
+	[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
 
-	[[ -n $SWAP_PART_ID ]] && echo -e "   + Swap partition $(get_partition_size $SWAP_PART_ID) will be activated as ${GREEN}SWAP${RESET} partition."
+	[[ -n ${PART_IDS[swap]} ]] && echo -e "   + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
 
 	echo ""
 
@@ -191,25 +247,25 @@ format_partitions()
 	print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
 
 	if get_user_confirm; then
-		if [[ -n $ESP_PART_ID ]]; then
+		if [[ -n ${PART_IDS[ESP]} ]]; then
 			print_progress_text "Formating ESP (boot) partition"
-			mkfs.fat -F32 -n "ESP" $ESP_PART_ID
+			mkfs.fat -F32 -n "ESP" ${PART_IDS[ESP]}
 		fi
 
-		if [[ -n $ROOT_PART_ID ]]; then
+		if [[ -n ${PART_IDS[root]} ]]; then
 			print_progress_text "Formating root partition"
-			mkfs.ext4 -L "Root" $ROOT_PART_ID
+			mkfs.ext4 -L "Root" ${PART_IDS[root]}
 		fi
 
-		if [[ -n $HOME_PART_ID ]]; then
+		if [[ -n ${PART_IDS[home]} ]]; then
 			print_progress_text "Formating home partition"
-			mkfs.ext4 -L "Home" $HOME_PART_ID
+			mkfs.ext4 -L "Home" ${PART_IDS[home]}
 		fi
 
-		if [[ -n $SWAP_PART_ID ]]; then
+		if [[ -n ${PART_IDS[swap]} ]]; then
 			print_progress_text "Activating swap partition"
-			mkswap $SWAP_PART_ID
-			swapon $SWAP_PART_ID
+			mkswap ${PART_IDS[swap]}
+			swapon ${PART_IDS[swap]}
 		fi
 
 		MAINCHECKLIST[$1]=1
