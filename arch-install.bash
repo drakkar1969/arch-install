@@ -7,11 +7,6 @@ YELLOW='\033[1;33m'
 GREEN='\033[1;32m'
 RESET='\033[0m'
 
-ESP_PART_ID="/dev/nvme0n1p1"
-ROOT_PART_ID="/dev/nvme0n1p5"
-HOME_PART_ID="/dev/nvme0n1p7"
-SWAP_PART_ID="/dev/nvme0n1p6"
-
 declare -A PART_IDS=([ESP]="" [root]="" [home]="" [swap]="")
 
 #===========================================================================================================
@@ -101,31 +96,9 @@ print_partition_structure()
 	lsblk
 	echo ""
 	echo -e "---------------------------------------------------------------------------"
-	echo ""
 }
 
-get_partition_size()
-{
-	local blk_part_id=$1
-
-	local blk_part_size=$(lsblk --output SIZE --paths --raw --noheadings $blk_part_id)
-
-	echo -e "${GREEN}$blk_part_id${RESET} [size: ${GREEN}$blk_part_size${RESET}]"
-}
-
-get_partition_info()
-{
-	local blk_part_id=$1
-
-	local blk_part_size=$(lsblk --output SIZE --paths --raw --noheadings $blk_part_id)
-	local blk_part_fs=$(lsblk --output FSTYPE --paths --raw --noheadings $blk_part_id)
-
-	[[ -z $blk_part_fs ]] && blk_part_fs="unknown"
-
-	echo -e "${GREEN}$blk_part_id${RESET} [type: ${GREEN}$blk_part_fs${RESET}; size: ${GREEN}$blk_part_size${RESET}]"
-}
-
-print_partitions()
+partition_menu()
 {
 	part_names="$1"
 
@@ -148,6 +121,18 @@ get_partition_type()
 	[[ -z $part_type ]] && part_type="unknown"
 
 	echo -e "${GREEN}$part_id${RESET} [type: ${GREEN}$part_type${RESET}; size: ${GREEN}$part_size${RESET}]"
+}
+
+get_partition_info()
+{
+	local part_id=$1
+
+	local part_size=$(lsblk --output SIZE --paths --raw --noheadings $part_id)
+	local part_fs=$(lsblk --output FSTYPE --paths --raw --noheadings $part_id)
+
+	[[ -z $part_fs ]] && part_fs="unknown"
+
+	echo -e "${GREEN}$part_id${RESET} [type: ${GREEN}$part_fs${RESET}; size: ${GREEN}$part_size${RESET}]"
 }
 
 #===========================================================================================================
@@ -194,7 +179,7 @@ format_partitions()
 
 	part_names=(${part_names[@]/ part/})
 
-	print_partitions ${part_names[@]}
+	partition_menu ${part_names[@]}
 
 	for id in {ESP,root,swap,home}; do
 		echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
@@ -280,32 +265,68 @@ mount_partitions()
 {
 	print_submenu_heading "MOUNT PARTITIONS"
 
-	print_partition_structure
+	if [[ -z ${PART_IDS[ESP]} ]] || [[ -z ${PART_IDS[root]} ]] || [[ -z ${PART_IDS[home]} ]]; then
+		local part_names=()
 
-	get_global_variable ESP_PART_ID "ESP boot partition ID (blank to skip)" "$ESP_PART_ID"
-	get_global_variable ROOT_PART_ID "root partition ID (blank to skip)" "$ROOT_PART_ID"
-	get_global_variable HOME_PART_ID "home partition ID (blank to skip)" "$HOME_PART_ID"
+		readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
 
-	echo -e "The following partitions will be mounted:"
+		part_names=(${part_names[@]/ part/})
+
+		partition_menu ${part_names[@]}
+
+		for id in {ESP,root,home}; do
+			if [[ -z ${PART_IDS[$id]} ]]; then
+				echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
+
+				# Get menu selection
+				local part_index=-1
+
+				until (( $part_index >= 0 && $part_index < ${#part_names[@]} ))
+				do
+					local opt
+
+					read -r -s -n 1 opt
+
+					# Exit disk menu
+					if [[ "${opt,,}" == "n" ]]; then
+						part_index=-1
+						break
+					fi
+
+					if [[ "$opt" =~ ^[[:digit:]]+$ ]]; then
+						part_index=$(($opt-1))
+					fi
+				done
+
+				if (( $part_index != -1 )); then
+					PART_IDS[$id]="${part_names[$part_index]}"
+				else
+					PART_IDS[$id]=""
+				fi
+			fi
+		done
+	fi
+
+	echo -e "\n\nThe following partitions will be mounted:"
 	echo ""
-	[[ -n $ESP_PART_ID ]] && echo -e "   + ESP (boot) partition $(get_partition_info $ESP_PART_ID) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} (boot) partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
 
-	[[ -n $ROOT_PART_ID ]] && echo -e "   + Root partition $(get_partition_info $ROOT_PART_ID) will be mounted to ${GREEN}/mnt${RESET}"
+	[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
 
-	[[ -n $HOME_PART_ID ]] && echo -e "   + Home partition $(get_partition_info $HOME_PART_ID) will be mounted to ${GREEN}/mnt/home${RESET}"
+	[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_info ${PART_IDS[home]}) will be mounted to ${GREEN}/mnt/home${RESET}"
 
 	if get_user_confirm; then
 		print_progress_text "Mounting partitions"
-		[[ -n $ROOT_PART_ID ]] && mount $ROOT_PART_ID /mnt
+		[[ -n ${PART_IDS[root]} ]] && mount ${PART_IDS[root]} /mnt
 
-		if [[ -n $ESP_PART_ID ]]; then
+		if [[ -n ${PART_IDS[ESP]} ]]; then
 			mkdir -p /mnt/boot
-			mount $ESP_PART_ID /mnt/boot
+			mount ${PART_IDS[ESP]} /mnt/boot
 		fi
 
-		if [[ -n $HOME_PART_ID ]]; then
+		if [[ -n ${PART_IDS[home]} ]]; then
 			mkdir -p /mnt/home
-			mount $HOME_PART_ID /mnt/home
+			mount ${PART_IDS[home]} /mnt/home
 		fi
 
 		print_progress_text "Verifying partition structure"
