@@ -305,9 +305,11 @@ mount_partitions()
 				fi
 			fi
 		done
+
+		echo -e "\n"
 	fi
 
-	echo -e "\n\nThe following partitions will be mounted:"
+	echo -e "The following partitions will be mounted:"
 	echo ""
 	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
 
