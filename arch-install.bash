@@ -221,6 +221,8 @@ format_partitions()
 
 		if (( $part_index != -1 )); then
 			PART_IDS[$id]="${part_names[$part_index]}"
+		else
+			PART_IDS[$id]=""
 		fi
 	done
 
