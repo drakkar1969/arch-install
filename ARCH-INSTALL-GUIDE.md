@@ -305,7 +305,7 @@ pacman -S archlinux-keyring
 Install the base packages:
 
 ```bash
-pacstrap -K /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
+pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
 ```
 
 ### 2. Generate Fstab File
