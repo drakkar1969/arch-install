@@ -222,13 +222,17 @@ format_partitions()
 
 		[[ -n ${PART_IDS[swap]} ]] && echo -e "   + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
 
-		echo ""
+		if [[ -n ${PART_IDS[ESP]} ]]; then
+			echo ""
 
-		print_warning "Format the ESP partition only if Windows is not already installed"
+			print_warning "Format the ESP partition only if Windows is not already installed"
+		fi
 
-		echo ""
+		if [[ -n ${PART_IDS[home]} ]]; then
+			echo ""
 
-		print_warning "Format the Home partition only if it is empty"
+			print_warning "Format the Home partition only if it is empty"
+		fi
 
 		echo ""
 
