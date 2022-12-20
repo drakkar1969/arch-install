@@ -93,7 +93,7 @@ print_partition_structure()
 	echo -e "-- ${GREEN}Current partition structure${RESET}"
 	echo -e "---------------------------------------------------------------------------"
 	echo ""
-	lsblk --paths --output NAME,SIZE,PARTLABEL,MOUNTPOINTS
+	lsblk --paths --output NAME,SIZE,PARTLABEL,FSTYPE,MOUNTPOINTS
 	echo ""
 	echo -e "---------------------------------------------------------------------------"
 }
