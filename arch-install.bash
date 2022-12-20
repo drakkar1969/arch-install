@@ -173,12 +173,14 @@ create_partitions()
 {
 	print_submenu_heading "CREATE PARTITIONS"
 
+	# Get disk names
 	local disk_names=()
 
 	readarray -t disk_names < <(lsblk -lnp -o NAME,TYPE | grep -i "disk")
 
 	disk_names=(${disk_names[@]/ disk/})
 
+	# Display disk menu
 	echo -e "Select disk:\n"
 
 	for i in "${!disk_names[@]}"; do
@@ -225,20 +227,22 @@ format_partitions()
 {
 	print_submenu_heading "FORMAT PARTITIONS"
 
+	# Get partition names
 	local part_names=()
 
 	readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
 
 	part_names=(${part_names[@]/ part/})
 
+	# Display partition menu
 	echo -e "Select partitions:\n"
 
 	partition_menu ${part_names[@]}
 
+	# Get menu selection
 	for id in {ESP,root,swap,home}; do
 		echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
 
-		# Get menu selection
 		local part_index=-1
 
 		until (( $part_index >= 0 && $part_index < ${#part_names[@]} ))
@@ -332,21 +336,23 @@ mount_partitions()
 	print_submenu_heading "MOUNT PARTITIONS"
 
 	if [[ -z ${PART_IDS[ESP]} ]] || [[ -z ${PART_IDS[root]} ]] || [[ -z ${PART_IDS[home]} ]]; then
+		# Get partition names
 		local part_names=()
 
 		readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
 
 		part_names=(${part_names[@]/ part/})
 
+		# Display partition menu
 		echo -e "Select partitions:\n"
 
 		partition_menu ${part_names[@]}
 
+		# Get menu selection
 		for id in {ESP,root,home}; do
 			if [[ -z ${PART_IDS[$id]} ]]; then
 				echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
 
-				# Get menu selection
 				local part_index=-1
 
 				until (( $part_index >= 0 && $part_index < ${#part_names[@]} ))
