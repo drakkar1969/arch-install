@@ -268,9 +268,9 @@ format_partitions()
 
 		[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
 
-		[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
-
 		[[ -n ${PART_IDS[swap]} ]] && echo -e "   + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
+
+		[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
 
 		if [[ -n ${PART_IDS[ESP]} ]]; then
 			echo ""
