@@ -211,51 +211,59 @@ format_partitions()
 		fi
 	done
 
-	echo -e "\n\nThe following partitions will be formatted:"
-	echo ""
-	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
+	if [[ -n ${PART_IDS[ESP]} ]] || [[ -n ${PART_IDS[root]} ]] || [[ -n ${PART_IDS[swap]} ]] || [[ -n ${PART_IDS[home]} ]]; then
+		echo -e "\n\nThe following partitions will be formatted:"
+		echo ""
+		[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
 
-	[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
+		[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
 
-	[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
+		[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
 
-	[[ -n ${PART_IDS[swap]} ]] && echo -e "   + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
+		[[ -n ${PART_IDS[swap]} ]] && echo -e "   + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
 
-	echo ""
+		echo ""
 
-	print_warning "Format the ESP partition only if Windows is not already installed"
+		print_warning "Format the ESP partition only if Windows is not already installed"
 
-	echo ""
+		echo ""
 
-	print_warning "Format the Home partition only if it is empty"
+		print_warning "Format the Home partition only if it is empty"
 
-	echo ""
+		echo ""
 
-	print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
+		print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
 
-	if get_user_confirm; then
-		if [[ -n ${PART_IDS[ESP]} ]]; then
-			print_progress_text "Formating ESP partition"
-			mkfs.fat -F32 -n "ESP" ${PART_IDS[ESP]}
+		if get_user_confirm; then
+			if [[ -n ${PART_IDS[ESP]} ]]; then
+				print_progress_text "Formating ESP partition"
+				mkfs.fat -F32 -n "ESP" ${PART_IDS[ESP]}
+			fi
+
+			if [[ -n ${PART_IDS[root]} ]]; then
+				print_progress_text "Formating root partition"
+				mkfs.ext4 -L "Root" ${PART_IDS[root]}
+			fi
+
+			if [[ -n ${PART_IDS[home]} ]]; then
+				print_progress_text "Formating home partition"
+				mkfs.ext4 -L "Home" ${PART_IDS[home]}
+			fi
+
+			if [[ -n ${PART_IDS[swap]} ]]; then
+				print_progress_text "Activating swap partition"
+				mkswap ${PART_IDS[swap]}
+				swapon ${PART_IDS[swap]}
+			fi
+
+			MAINCHECKLIST[$1]=1
+
+			get_any_key
 		fi
+	else
+		echo -e "\n"
 
-		if [[ -n ${PART_IDS[root]} ]]; then
-			print_progress_text "Formating root partition"
-			mkfs.ext4 -L "Root" ${PART_IDS[root]}
-		fi
-
-		if [[ -n ${PART_IDS[home]} ]]; then
-			print_progress_text "Formating home partition"
-			mkfs.ext4 -L "Home" ${PART_IDS[home]}
-		fi
-
-		if [[ -n ${PART_IDS[swap]} ]]; then
-			print_progress_text "Activating swap partition"
-			mkswap ${PART_IDS[swap]}
-			swapon ${PART_IDS[swap]}
-		fi
-
-		MAINCHECKLIST[$1]=1
+		print_warning "No partitions selected for formatting"
 
 		get_any_key
 	fi
@@ -309,32 +317,38 @@ mount_partitions()
 		echo -e "\n"
 	fi
 
-	echo -e "The following partitions will be mounted:"
-	echo ""
-	[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
+	if [[ -n ${PART_IDS[ESP]} ]] || [[ -n ${PART_IDS[root]} ]] || [[ -n ${PART_IDS[home]} ]]; then
+		echo -e "The following partitions will be mounted:"
+		echo ""
+		[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
 
-	[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
+		[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
 
-	[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_info ${PART_IDS[home]}) will be mounted to ${GREEN}/mnt/home${RESET}"
+		[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_info ${PART_IDS[home]}) will be mounted to ${GREEN}/mnt/home${RESET}"
 
-	if get_user_confirm; then
-		print_progress_text "Mounting partitions"
-		[[ -n ${PART_IDS[root]} ]] && mount ${PART_IDS[root]} /mnt
+		if get_user_confirm; then
+			print_progress_text "Mounting partitions"
+			[[ -n ${PART_IDS[root]} ]] && mount ${PART_IDS[root]} /mnt
 
-		if [[ -n ${PART_IDS[ESP]} ]]; then
-			mkdir -p /mnt/boot
-			mount ${PART_IDS[ESP]} /mnt/boot
+			if [[ -n ${PART_IDS[ESP]} ]]; then
+				mkdir -p /mnt/boot
+				mount ${PART_IDS[ESP]} /mnt/boot
+			fi
+
+			if [[ -n ${PART_IDS[home]} ]]; then
+				mkdir -p /mnt/home
+				mount ${PART_IDS[home]} /mnt/home
+			fi
+
+			print_progress_text "Verifying partition structure"
+			print_partition_structure
+
+			MAINCHECKLIST[$1]=1
+
+			get_any_key
 		fi
-
-		if [[ -n ${PART_IDS[home]} ]]; then
-			mkdir -p /mnt/home
-			mount ${PART_IDS[home]} /mnt/home
-		fi
-
-		print_progress_text "Verifying partition structure"
-		print_partition_structure
-
-		MAINCHECKLIST[$1]=1
+	else
+		print_warning "No partitions selected for mounting"
 
 		get_any_key
 	fi
