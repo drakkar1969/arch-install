@@ -169,6 +169,56 @@ system_clock()
 	fi
 }
 
+create_partitions()
+{
+	print_submenu_heading "CREATE PARTITIONS"
+
+	local disk_names=()
+
+	readarray -t disk_names < <(lsblk -lnp -o NAME,TYPE | grep -i "disk")
+
+	disk_names=(${disk_names[@]/ disk/})
+
+	for i in "${!disk_names[@]}"; do
+		local disk_size=$(lsblk --output SIZE --raw --noheadings --nodeps ${disk_names[$i]})
+
+		printf "   [%d] %s [size: %b]\n" $(($i+1)) "${disk_names[$i]}" "${GREEN}$disk_size${RESET}"
+	done
+	unset i
+
+	echo -e -n "\n   => Select disk to partition: "
+
+	# Get menu selection
+	local disk_index=-1
+
+	until (( $disk_index >= 0 && $disk_index < ${#disk_names[@]} ))
+	do
+		local opt
+
+		read -r -s -n 1 opt
+
+		if [[ "$opt" =~ ^[[:digit:]]+$ ]]; then
+			disk_index=$(($opt-1))
+		fi
+	done
+
+	echo -e "\n\nDisk ${GREEN}${disk_names[$disk_index]}${RESET} will be partitioned."
+
+	echo ""
+
+	print_warning "This will erase all data on the disk, make sure you have backed up data before proceeding"
+
+	if get_user_confirm; then
+		echo ""
+
+		gdisk ${disk_names[$disk_index]}
+
+		MAINCHECKLIST[$1]=1
+
+		get_any_key
+	fi
+}
+
 format_partitions()
 {
 	print_submenu_heading "FORMAT PARTITIONS"
@@ -446,6 +496,7 @@ main_menu()
 {
 	MAINITEMS=("Check UEFI Mode|check_uefimode"
 				"Update System Clock|system_clock"
+				"Create Partitions|create_partitions"
 				"Format Partitions|format_partitions"
 				"Mount Partitions|mount_partitions"
 				"Install Base Packages|install_base"
