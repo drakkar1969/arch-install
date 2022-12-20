@@ -179,6 +179,8 @@ create_partitions()
 
 	disk_names=(${disk_names[@]/ disk/})
 
+	echo -e "Select disk:\n"
+
 	for i in "${!disk_names[@]}"; do
 		local disk_size=$(lsblk --output SIZE --raw --noheadings --nodeps ${disk_names[$i]})
 
@@ -228,6 +230,8 @@ format_partitions()
 	readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
 
 	part_names=(${part_names[@]/ part/})
+
+	echo -e "Select partitions:\n"
 
 	partition_menu ${part_names[@]}
 
@@ -333,6 +337,8 @@ mount_partitions()
 		readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
 
 		part_names=(${part_names[@]/ part/})
+
+		echo -e "Select partitions:\n"
 
 		partition_menu ${part_names[@]}
 
