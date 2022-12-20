@@ -384,15 +384,9 @@ mount_partitions()
 			print_progress_text "Mounting partitions"
 			[[ -n ${PART_IDS[root]} ]] && mount ${PART_IDS[root]} /mnt
 
-			if [[ -n ${PART_IDS[ESP]} ]]; then
-				mkdir -p /mnt/boot
-				mount ${PART_IDS[ESP]} /mnt/boot
-			fi
+			[[ -n ${PART_IDS[ESP]} ]] && mount --mkdir ${PART_IDS[ESP]} /mnt/boot
 
-			if [[ -n ${PART_IDS[home]} ]]; then
-				mkdir -p /mnt/home
-				mount ${PART_IDS[home]} /mnt/home
-			fi
+			[[ -n ${PART_IDS[home]} ]] && mount --mkdir ${PART_IDS[home]} /mnt/home
 
 			print_progress_text "Verifying partition structure"
 			print_partition_structure

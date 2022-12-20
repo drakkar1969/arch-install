@@ -278,15 +278,13 @@ mount /dev/nvme0n1p5 /mnt
 Mount the `ESP` partition:
 
 ```bash
-mkdir -p /mnt/boot
-mount /dev/nvme0n1p1 /mnt/boot
+mount --mkdir /dev/nvme0n1p1 /mnt/boot
 ```
 
 Mount the `home` partition:
 
 ```bash
-mkdir -p /mnt/home
-mount /dev/nvme0n1p7 /mnt/home
+mount --mkdir /dev/nvme0n1p7 /mnt/home
 ```
 
 Use the `lsblk` command to verify partitions are correctly mounted.
