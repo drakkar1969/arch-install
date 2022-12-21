@@ -258,6 +258,12 @@ format_partitions()
 				break
 			fi
 
+			# Capture and exclude arrow keys
+			if [[ "$opt" == "$(printf '\u1b')" ]]; then
+				read -r -s -n 2 temp
+				unset temp
+			fi
+
 			if [[ "${opt,,}" =~ ^[[:lower:]]+$ ]]; then
 				part_index=$(printf '%d' "'${opt,,}")
 				part_index=$(($part_index-97))
@@ -367,6 +373,12 @@ mount_partitions()
 					if [[ "${opt,,}" == "n" ]]; then
 						part_index=-1
 						break
+					fi
+
+					# Capture and exclude arrow keys
+					if [[ "$opt" == "$(printf '\u1b')" ]]; then
+						read -r -s -n 2 temp
+						unset temp
 					fi
 
 					if [[ "${opt,,}" =~ ^[[:lower:]]+$ ]]; then
@@ -557,6 +569,12 @@ main_menu()
 				echo -e "   ${GREEN}reboot${RESET}"
 				echo ""
 				exit 0
+			fi
+
+			# Capture and exclude arrow keys
+			if [[ "$main_choice" == "$(printf '\u1b')" ]]; then
+				read -r -s -n 2 temp
+				unset temp
 			fi
 
 			# Get selection index

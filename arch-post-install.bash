@@ -470,6 +470,12 @@ post_menu()
 				exit 0
 			fi
 
+			# Capture and exclude arrow keys
+			if [[ "$post_choice" == "$(printf '\u1b')" ]]; then
+				read -r -s -n 2 temp
+				unset temp
+			fi
+
 			# Get selection index
 			if [[ "${post_choice^^}" =~ ^[[:upper:]]+$ ]]; then
 				# Get ascii code from character (A->65, etc.)
