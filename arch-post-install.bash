@@ -368,10 +368,28 @@ install_gnome()
 		pacman -S networkmanager
 
 		print_progress_text "Installing GNOME"
+
+		# Get array of packages to ignore from string
+		local ignore_pkgs=()
+		IFS=',' read -r -a ignore_pkgs <<< "$gnome_ignore"
+
+		# Get array with full list of GNOME packages
+		local gnome_pkgs=()
+		while read -r; do gnome_pkgs+=("$REPLY"); done < <(pacman -Sgq gnome)
+
+		# Remove packages to ignore from array
+		for i in ${!gnome_pkgs[@]}; do
+			for excl in "${ignore_pkgs[@]}"; do
+				[[ "${gnome_pkgs[$i]}" == "$excl" ]] && unset 'gnome_pkgs[$i]'
+			done
+		done
+		unset i excl
+
+		# Install remaining GNOME packages
 		echo -e "If prompted to select provider(s), select default options"
 		echo ""
 
-		[[ -n $gnome_ignore ]] && pacman -S gnome --ignore $gnome_ignore || pacman -S gnome
+		pacman -S "${gnome_pkgs[@]}"
 
 		print_progress_text "Installing GNOME Extras"
 		pacman -S gnome-tweaks dconf-editor
