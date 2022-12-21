@@ -258,7 +258,7 @@ format_partitions()
 				break
 			fi
 
-			if [[ "$opt" =~ ^[a-zA-Z]+$ ]]; then
+			if [[ "${opt,,}" =~ ^[[:lower:]]+$ ]]; then
 				part_index=$(printf '%d' "'${opt,,}")
 				part_index=$(($part_index-97))
 			fi
@@ -369,7 +369,7 @@ mount_partitions()
 						break
 					fi
 
-					if [[ "$opt" =~ ^[a-zA-Z]+$ ]]; then
+					if [[ "${opt,,}" =~ ^[[:lower:]]+$ ]]; then
 						part_index=$(printf '%d' "'${opt,,}")
 						part_index=$(($part_index-97))
 					fi
@@ -560,7 +560,7 @@ main_menu()
 			fi
 
 			# Get selection index
-			if [[ "$main_choice" =~ ^[a-zA-Z]+$ ]]; then
+			if [[ "${main_choice^^}" =~ ^[[:upper:]]+$ ]]; then
 				# Get ascii code from character (A->65, etc.)
 				main_index=$(LC_CTYPE=C printf '%d' "'${main_choice^^}")
 				main_index=$(($main_index-65))
