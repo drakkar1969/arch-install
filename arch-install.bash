@@ -277,7 +277,7 @@ format_partitions()
 		fi
 	done
 
-	if [[ -n ${PART_IDS[ESP]} ]] || [[ -n ${PART_IDS[root]} ]] || [[ -n ${PART_IDS[swap]} ]] || [[ -n ${PART_IDS[home]} ]]; then
+	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[swap]} || -n ${PART_IDS[home]} ]]; then
 		echo -e "\n\nThe following partitions will be formatted:"
 		echo ""
 		[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
@@ -343,7 +343,7 @@ mount_partitions()
 {
 	print_submenu_heading "MOUNT PARTITIONS"
 
-	if [[ -z ${PART_IDS[ESP]} ]] || [[ -z ${PART_IDS[root]} ]] || [[ -z ${PART_IDS[home]} ]]; then
+	if [[ -z ${PART_IDS[ESP]} || -z ${PART_IDS[root]} || -z ${PART_IDS[home]} ]]; then
 		# Get partition names
 		local part_names=()
 
@@ -398,7 +398,7 @@ mount_partitions()
 		echo -e "\n"
 	fi
 
-	if [[ -n ${PART_IDS[ESP]} ]] || [[ -n ${PART_IDS[root]} ]] || [[ -n ${PART_IDS[home]} ]]; then
+	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[home]} ]]; then
 		echo -e "The following partitions will be mounted:"
 		echo ""
 		[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
