@@ -103,10 +103,11 @@ partition_menu()
 	part_names="$1"
 
 	for i in "${!part_names[@]}"; do
+		local part_index=$(printf "\\$(printf '%03o' "$(($i+97))")")
 		local part_type=$(lsblk --output PARTLABEL --noheadings ${part_names[$i]})
 		local part_size=$(lsblk --output SIZE --raw --noheadings ${part_names[$i]})
 
-		printf "   [%d] %s [type: %b; size: %b]\n" $(($i+1)) "${part_names[$i]}" "${GREEN}$part_type${RESET}" "${GREEN}$part_size${RESET}"
+		printf "   [%s] %s [type: %b; size: %b]\n" $part_index "${part_names[$i]}" "${GREEN}$part_type${RESET}" "${GREEN}$part_size${RESET}"
 	done
 	unset i
 }
@@ -257,8 +258,9 @@ format_partitions()
 				break
 			fi
 
-			if [[ "$opt" =~ ^[[:digit:]]+$ ]]; then
-				part_index=$(($opt-1))
+			if [[ "$opt" =~ ^[a-zA-Z]+$ ]]; then
+				part_index=$(printf '%d' "'${opt,,}")
+				part_index=$(($part_index-97))
 			fi
 		done
 
@@ -367,8 +369,9 @@ mount_partitions()
 						break
 					fi
 
-					if [[ "$opt" =~ ^[[:digit:]]+$ ]]; then
-						part_index=$(($opt-1))
+					if [[ "$opt" =~ ^[a-zA-Z]+$ ]]; then
+						part_index=$(printf '%d' "'${opt,,}")
+						part_index=$(($part_index-97))
 					fi
 				done
 
