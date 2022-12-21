@@ -176,7 +176,7 @@ create_partitions()
 	# Get disk names
 	local disk_names=()
 
-	readarray -t disk_names < <(lsblk -lnp -o NAME,TYPE | grep -i "disk")
+	readarray -t disk_names < <(lsblk --list --noheadings --paths --output NAME,TYPE | grep -i "disk")
 
 	disk_names=(${disk_names[@]/ disk/})
 
@@ -230,7 +230,7 @@ format_partitions()
 	# Get partition names
 	local part_names=()
 
-	readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
+	readarray -t part_names < <(lsblk --list --noheadings --paths --output NAME,TYPE | grep -i "part")
 
 	part_names=(${part_names[@]/ part/})
 
@@ -339,7 +339,7 @@ mount_partitions()
 		# Get partition names
 		local part_names=()
 
-		readarray -t part_names < <(lsblk -lnp -o NAME,TYPE | grep -i "part")
+		readarray -t part_names < <(lsblk --list --noheadings --paths --output NAME,TYPE | grep -i "part")
 
 		part_names=(${part_names[@]/ part/})
 
