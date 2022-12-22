@@ -375,15 +375,13 @@ install_gnome()
 
 		# Get array with full list of GNOME packages
 		local gnome_pkgs=()
-		while read -r; do gnome_pkgs+=("$REPLY"); done < <(pacman -Sgq gnome)
+		IFS=$'\n' read -d "" -r -a gnome_pkgs < <(pacman -Sgq gnome)
 
 		# Remove packages to ignore from array
-		for i in ${!gnome_pkgs[@]}; do
-			for excl in "${ignore_pkgs[@]}"; do
-				[[ "${gnome_pkgs[$i]}" == "$excl" ]] && unset 'gnome_pkgs[$i]'
-			done
+		for pkg in "${ignore_pkgs[@]}"; do
+			gnome_pkgs=(${gnome_pkgs[@]//$pkg})
 		done
-		unset i excl
+		unset pkg
 
 		# Install remaining GNOME packages
 		echo -e "If prompted to select provider(s), select default options"
