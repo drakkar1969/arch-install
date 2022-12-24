@@ -113,19 +113,6 @@ set_timezone()
 		print_progress_text "Creating symlink for timezone"
 		ln -sf /usr/share/zoneinfo/$time_zone /etc/localtime
 
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
-sync_hwclock()
-{
-	print_submenu_heading "SYNC HARDWARE CLOCK"
-
-	echo -e "Sync hardware clock."
-
-	if get_user_confirm; then
 		print_progress_text "Setting hardware clock to UTC"
 		hwclock --systohc --utc
 
@@ -480,7 +467,6 @@ post_menu()
 {
 	POSTITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
 				"Configure Timezone|set_timezone"
-				"Sync Hardware Clock|sync_hwclock"
 				"Configure Locale|set_locale"
 				"Configure Hostname|set_hostname"
 				"Configure pacman|config_pacman"
