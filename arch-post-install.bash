@@ -434,7 +434,7 @@ fix_suspend()
 	echo -e "Enable various tweaks to fix suspend/resume."
 
 	if get_user_confirm; then
-		print_progress_text "Fixing suspend resume"
+		print_progress_text "Fixing suspend/resume"
 
 		# Add i915 kernel parameters for suspend/resume
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
