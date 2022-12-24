@@ -91,14 +91,18 @@ partition_menu()
 {
 	part_names="$1"
 
+	echo -e "----------------------------------------------------------------------\n"
+
 	for i in "${!part_names[@]}"; do
 		local part_index=$(printf "\\$(printf '%03o' "$(($i+97))")")
 		local part_type=$(lsblk --output PARTLABEL --noheadings ${part_names[$i]})
 		local part_size=$(lsblk --output SIZE --raw --noheadings ${part_names[$i]})
 
-		printf "   [%s] %s [type: %b; size: %b]\n" $part_index "${part_names[$i]}" "${GREEN}$part_type${RESET}" "${GREEN}$part_size${RESET}"
+		printf "  [%s] %s [type: %b; size: %b]\n" $part_index "${part_names[$i]}" "${GREEN}$part_type${RESET}" "${GREEN}$part_size${RESET}"
 	done
 	unset i
+
+	echo -e "\n----------------------------------------------------------------------"
 }
 
 get_partition_type()
@@ -171,16 +175,18 @@ create_partitions()
 	disk_names=(${disk_names[@]/ disk/})
 
 	# Display disk menu
-	echo -e "Select disk:\n"
+	echo -e "----------------------------------------------------------------------\n"
 
 	for i in "${!disk_names[@]}"; do
 		local disk_size=$(lsblk --output SIZE --raw --noheadings --nodeps ${disk_names[$i]})
 
-		printf "   [%d] %s [size: %b]\n" $(($i+1)) "${disk_names[$i]}" "${GREEN}$disk_size${RESET}"
+		printf "  [%d] %s [size: %b]\n" $(($i+1)) "${disk_names[$i]}" "${GREEN}$disk_size${RESET}"
 	done
 	unset i
 
-	echo -e -n "\n   => Select disk to partition: "
+	echo -e "\n----------------------------------------------------------------------"
+
+	echo -e -n "\n => Select disk to partition: "
 
 	# Get menu selection
 	local disk_index=-1
@@ -225,13 +231,11 @@ format_partitions()
 	part_names=(${part_names[@]/ part/})
 
 	# Display partition menu
-	echo -e "Select partitions:\n"
-
 	partition_menu ${part_names[@]}
 
 	# Get menu selection
 	for id in {ESP,root,swap,home}; do
-		echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
+		echo -e -n "\n => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
 
 		local part_index=-1
 
@@ -269,13 +273,13 @@ format_partitions()
 	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[swap]} || -n ${PART_IDS[home]} ]]; then
 		echo -e "\n\nThe following partitions will be formatted:"
 		echo ""
-		[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
+		[[ -n ${PART_IDS[ESP]} ]] && echo -e "  + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
 
-		[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
+		[[ -n ${PART_IDS[root]} ]] && echo -e "  + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
 
-		[[ -n ${PART_IDS[swap]} ]] && echo -e "   + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
+		[[ -n ${PART_IDS[swap]} ]] && echo -e "  + ${GREEN}Swap${RESET} partition $(get_partition_type ${PART_IDS[swap]}) will be activated as ${GREEN}SWAP${RESET} partition."
 
-		[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
+		[[ -n ${PART_IDS[home]} ]] && echo -e "  + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
 
 		if [[ -n ${PART_IDS[ESP]} ]]; then
 			echo ""
@@ -341,14 +345,12 @@ mount_partitions()
 		part_names=(${part_names[@]/ part/})
 
 		# Display partition menu
-		echo -e "Select partitions:\n"
-
 		partition_menu ${part_names[@]}
 
 		# Get menu selection
 		for id in {ESP,root,home}; do
 			if [[ -z ${PART_IDS[$id]} ]]; then
-				echo -e -n "\n   => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
+				echo -e -n "\n => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
 
 				local part_index=-1
 
@@ -390,11 +392,11 @@ mount_partitions()
 	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[home]} ]]; then
 		echo -e "The following partitions will be mounted:"
 		echo ""
-		[[ -n ${PART_IDS[ESP]} ]] && echo -e "   + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
+		[[ -n ${PART_IDS[ESP]} ]] && echo -e "  + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
 
-		[[ -n ${PART_IDS[root]} ]] && echo -e "   + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
+		[[ -n ${PART_IDS[root]} ]] && echo -e "  + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
 
-		[[ -n ${PART_IDS[home]} ]] && echo -e "   + ${GREEN}Home${RESET} partition $(get_partition_info ${PART_IDS[home]}) will be mounted to ${GREEN}/mnt/home${RESET}"
+		[[ -n ${PART_IDS[home]} ]] && echo -e "  + ${GREEN}Home${RESET} partition $(get_partition_info ${PART_IDS[home]}) will be mounted to ${GREEN}/mnt/home${RESET}"
 
 		if get_user_confirm; then
 			print_progress_text "Mounting partitions"
@@ -481,11 +483,11 @@ unmount_partitions()
 
 	echo -e "The following partitions will be unmounted:"
 	echo ""
-	[[ -n $root_mnt ]] && echo -e "   + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
+	[[ -n $root_mnt ]] && echo -e "  + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
 
-	[[ -n $boot_mnt ]] && echo -e "   + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
+	[[ -n $boot_mnt ]] && echo -e "  + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
 
-	[[ -n $home_mnt ]] && echo -e "   + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
+	[[ -n $home_mnt ]] && echo -e "  + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
 
 	echo ""
 
@@ -555,7 +557,7 @@ main_menu()
 				clear
 				echo -e "Restart to boot into GNOME:"
 				echo ""
-				echo -e "   ${GREEN}reboot${RESET}"
+				echo -e "  ${GREEN}reboot${RESET}"
 				echo ""
 				exit 0
 			fi
