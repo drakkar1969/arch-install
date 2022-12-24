@@ -427,6 +427,55 @@ install_codecs()
 	fi
 }
 
+fix_suspend()
+{
+	print_submenu_heading "FIX SUSPEND/RESUME"
+
+	echo -e "Enable various tweaks to fix suspend/resume."
+
+	if get_user_confirm; then
+		print_progress_text "Fixing suspend resume"
+
+		# Add i915 kernel parameters for suspend/resume
+		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
+	
+		local i915_params=("i915.enable_dc=0" "intel_idle.max_cstate=2")
+
+		for param in "${i915_params[@]}"; do
+			if [[ $kernel_params != *"$param"* ]]; then kernel_params+=" $param"; fi
+		done
+		unset param
+
+		cp -n /etc/default/grub{,.orig}
+
+		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
+
+		grub-mkconfig -o /boot/grub/grub.cfg
+
+		# Disable sleep on lid close
+		mkdir -p /etc/systemd/logind.conf.d
+
+		cat > /etc/systemd/logind.conf.d/suspend-lid-close.conf <<-LIDSUSPEND
+			HandleLidSwitch=ignore
+			HandleLidSwitchExternalPower=ignore
+			HandleLidSwitchDocked=ignore
+		LIDSUSPEND
+
+		mkdir -p /etc/xdg/autostart
+
+		cat > /etc/xdg/autostart/ignore-lid-switch-tweak.desktop <<-INHIBITLID
+			[Desktop Entry]
+			Type=Application
+			Name=ignore-lid-switch-tweak
+			Exec=/usr/lib/gnome-tweak-tool-lid-inhibitor
+		INHIBITLID
+
+		POSTCHECKLIST[$1]=1
+
+		get_any_key
+	fi
+}
+
 post_menu()
 {
 	POSTITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
@@ -442,7 +491,8 @@ post_menu()
 				"Install Display Drivers|display_drivers"
 				"Install PipeWire|install_pipewire"
 				"Install GNOME Desktop Environment|install_gnome"
-				"Install Multimedia Codecs|install_codecs")
+				"Install Multimedia Codecs|install_codecs"
+				"Fix Suspend/Resume|fix_suspend")
 	POSTCHECKLIST=("${POSTITEMS[@]/*/0}")
 
 	# Post install menu loop
