@@ -528,18 +528,6 @@ _Optionally_ install the Intel VA-API driver for hardware video acceleration:
 pacman -S intel-media-driver libva-utils
 ```
 
-Enable early KMS start for the Intel driver:
-
-```bash
-sed -i "/^MODULES=/ c MODULES=(i915)" /etc/mkinitcpio.conf
-```
-
-Then re-generate the initramfs:
-
-```bash
-mkinitcpio -P
-```
-
 #### b. nVidia (proprietary drivers)
 
 Install the nVidia video drivers:

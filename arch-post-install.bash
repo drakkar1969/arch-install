@@ -312,11 +312,6 @@ display_drivers()
 		pacman -S --needed --asdeps mesa
 		pacman -S intel-media-driver libva-utils
 
-		print_progress_text "Enabling Intel early KMS"
-		cp -n /etc/mkinitcpio.conf{,.orig}
-		sed -i "/^MODULES=/ c MODULES=(i915)" /etc/mkinitcpio.conf
-		mkinitcpio -P
-
 		POSTCHECKLIST[$1]=1
 
 		get_any_key
