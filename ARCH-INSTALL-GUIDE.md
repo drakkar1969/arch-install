@@ -591,7 +591,7 @@ pacman -S --asdeps power-profiles-daemon fwupd system-config-printer
 Install GNOME extras:
 
 ```bash
-pacman -S gnome-tweaks dconf-editor
+pacman -S gnome-tweaks dconf-editor simple-scan
 ```
 
 Enable Wayland screen sharing:
