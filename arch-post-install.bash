@@ -268,11 +268,14 @@ install_bootloader()
 
 	if get_user_confirm; then
 		print_progress_text "Installing GRUB bootloader"
-		pacman -S grub efibootmgr
+		pacman -S grub efibootmgr os-prober
 		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
 		print_progress_text "Installing microcode package"
 		pacman -S intel-ucode
+
+		print_progress_text "Enabling OS Prober"
+		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 
 		print_progress_text "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
