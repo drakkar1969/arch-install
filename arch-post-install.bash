@@ -431,7 +431,7 @@ fix_suspend()
 		# Add i915 kernel parameters for suspend/resume
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 	
-		local i915_params=("i915.enable_dc=0" "intel_idle.max_cstate=2")
+		local i915_params=("ahci.mobile_lpm_policy=1")
 
 		for param in "${i915_params[@]}"; do
 			if [[ $kernel_params != *"$param"* ]]; then kernel_params+=" $param"; fi
