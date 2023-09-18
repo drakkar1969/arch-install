@@ -385,7 +385,7 @@ install_gnome()
 		pacman -S --asdeps system-config-printer
 
 		print_progress_text "Installing GNOME Extras"
-		pacman -S gnome-tweaks file-roller dconf-editor simple-scan
+		pacman -S gnome-tweaks file-roller dconf-editor
 
 		print_progress_text "Enabling Wayland Screen Sharing"
 		pacman -S --asdeps --needed xdg-desktop-portal-gnome
