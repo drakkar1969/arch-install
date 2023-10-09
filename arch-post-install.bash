@@ -428,22 +428,6 @@ fix_suspend()
 	if get_user_confirm; then
 		print_progress_text "Fixing suspend/resume"
 
-		# Add i915 kernel parameters for suspend/resume
-		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
-	
-		local i915_params=("ahci.mobile_lpm_policy=1")
-
-		for param in "${i915_params[@]}"; do
-			if [[ $kernel_params != *"$param"* ]]; then kernel_params+=" $param"; fi
-		done
-		unset param
-
-		cp -n /etc/default/grub{,.orig}
-
-		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
-
-		grub-mkconfig -o /boot/grub/grub.cfg
-
 		# Disable sleep on lid close
 		mkdir -p /etc/systemd/logind.conf.d
 
