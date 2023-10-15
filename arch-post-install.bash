@@ -378,7 +378,7 @@ install_gnome()
 		print_progress_text "Installing Optional Power Profiles"
 		pacman -S --asdeps power-profiles-daemon
 
-		print_progress_text "Installing Optional Firmaware Support"
+		print_progress_text "Installing Optional Firmware Support"
 		pacman -S --asdeps fwupd
 
 		print_progress_text "Installing Optional Print Configuration"
