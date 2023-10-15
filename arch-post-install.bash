@@ -374,7 +374,7 @@ install_gnome()
 
 		pacman -S "${gnome_pkgs[@]}"
 
-		# Install optional GNOME dependencies
+		# Install optional GNOME control center dependencies
 		print_progress_text "Installing Optional Power Profiles"
 		pacman -S --asdeps power-profiles-daemon
 
@@ -384,6 +384,7 @@ install_gnome()
 		print_progress_text "Installing Optional Print Configuration"
 		pacman -S --asdeps system-config-printer
 
+		# Install GNOME extras
 		print_progress_text "Installing GNOME Extras"
 		pacman -S gnome-tweaks file-roller dconf-editor
 
