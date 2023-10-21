@@ -277,6 +277,17 @@ install_bootloader()
 		print_progress_text "Enabling OS Prober"
 		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 
+		print_progress_text "Fixing Suspend Issue"
+		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
+
+		local suspend_param="button.lid_init_state=open"
+
+		if [[ $kernel_params != *"$suspend_param"* ]]; then kernel_params+=" $suspend_param"; fi
+
+		cp -n /etc/default/grub{,.orig}
+
+		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
+
 		print_progress_text "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -416,39 +427,6 @@ install_codecs()
 	fi
 }
 
-fix_suspend()
-{
-	print_submenu_heading "FIX SUSPEND/RESUME"
-
-	echo -e "Enable various tweaks to fix suspend/resume."
-
-	if get_user_confirm; then
-		print_progress_text "Fixing suspend/resume"
-
-		# Disable sleep on lid close
-		mkdir -p /etc/systemd/logind.conf.d
-
-		cat > /etc/systemd/logind.conf.d/suspend-lid-close.conf <<-LIDSUSPEND
-			HandleLidSwitch=ignore
-			HandleLidSwitchExternalPower=ignore
-			HandleLidSwitchDocked=ignore
-		LIDSUSPEND
-
-		mkdir -p /etc/xdg/autostart
-
-		cat > /etc/xdg/autostart/ignore-lid-switch-tweak.desktop <<-INHIBITLID
-			[Desktop Entry]
-			Type=Application
-			Name=ignore-lid-switch-tweak
-			Exec=/usr/lib/gnome-tweak-tool-lid-inhibitor
-		INHIBITLID
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
 post_menu()
 {
 	POSTITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
@@ -463,8 +441,7 @@ post_menu()
 				"Install Display Drivers|display_drivers"
 				"Install PipeWire|install_pipewire"
 				"Install GNOME Desktop Environment|install_gnome"
-				"Install Multimedia Codecs|install_codecs"
-				"Fix Suspend/Resume|fix_suspend")
+				"Install Multimedia Codecs|install_codecs")
 	POSTCHECKLIST=("${POSTITEMS[@]/*/0}")
 
 	# Post install menu loop
