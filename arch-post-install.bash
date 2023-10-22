@@ -288,8 +288,6 @@ install_bootloader()
 
 		if [[ $kernel_params != *"$suspend_param"* ]]; then kernel_params+=" $suspend_param"; fi
 
-		cp -n /etc/default/grub{,.orig}
-
 		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
 		# Add custom GRUB entries
