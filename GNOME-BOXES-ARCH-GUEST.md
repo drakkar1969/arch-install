@@ -2,11 +2,15 @@
 
 ### 1. Virtual Machine Settings
 
-Create a virtual machine in GNOME Boxes with default values (2 GiB of memory and 21.5 GB of disk space), and enable UEFI boot:
+Create a new virtual machine in GNOME Boxes:
 
 ![](images/boxes-new.png)
 
-Install Arch Linux.
+Select 2 GiB of memory and 20 GiB of disk space. Ensure the UEFI firmware option is selected:
+
+![](images/boxes-settings.png)
+
+Install Arch Linux in the new virtual machine.
 
 ### 2. Install Guest Tools
 
