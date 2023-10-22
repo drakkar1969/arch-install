@@ -429,6 +429,34 @@ install_gnome()
 	fi
 }
 
+enable_bluetooth()
+{
+	print_submenu_heading "ENABLE BLUETOOTH"
+
+	echo -e "Install and enable Bluetooth."
+
+	if get_user_confirm; then
+		print_progress_text "Installing Bluetooth packages"
+		pacman -S --needed bluez bluez-utils bluez-tools
+
+		print_progress_text "Enabling power status reporting"
+		mkdir -p /etc/systemd/system/bluetooth.service.d
+
+		cat > /etc/systemd/system/bluetooth.service.d/10-experimental.conf <<-BLUETOOTH_POWER
+			[Service]
+			ExecStart=
+			ExecStart=/usr/lib/bluetooth/bluetoothd -E
+		BLUETOOTH_POWER
+
+		print_progress_text "Enabling Bluetooth service"
+		systemctl enable bluetooth.service
+
+		POSTCHECKLIST[$1]=1
+
+		get_any_key
+	fi
+}
+
 install_codecs()
 {
 	print_submenu_heading "INSTALL MULTIMEDIA CODECS"
@@ -459,6 +487,7 @@ post_menu()
 				"Install Display Drivers|display_drivers"
 				"Install PipeWire|install_pipewire"
 				"Install GNOME Desktop Environment|install_gnome"
+				"Enable Bluetooth|enable_bluetooth"
 				"Install Multimedia Codecs|install_codecs")
 	POSTCHECKLIST=("${POSTITEMS[@]/*/0}")
 
