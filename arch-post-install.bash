@@ -267,16 +267,20 @@ install_bootloader()
 	echo -e "Install the GRUB bootloader."
 
 	if get_user_confirm; then
+		# Install GRUB
 		print_progress_text "Installing GRUB bootloader"
 		pacman -S grub efibootmgr os-prober
 		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
+		# Install microcode
 		print_progress_text "Installing microcode package"
 		pacman -S intel-ucode
 
+		# Enable OS prober
 		print_progress_text "Enabling OS Prober"
 		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 
+		# Fix suspend issue
 		print_progress_text "Fixing Suspend Issue"
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 
@@ -288,6 +292,20 @@ install_bootloader()
 
 		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
+		# Add custom GRUB entries
+		cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
+			menuentry 'System shutdown' --class shutdown {
+			    echo 'System shutting down...'
+			    halt
+			}
+
+			menuentry 'System restart' --class restart {
+			    echo 'System rebooting...'
+			    reboot
+			}
+		CUSTOM_GRUB
+
+		# Generate GRUB config file
 		print_progress_text "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
 
