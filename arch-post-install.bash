@@ -274,6 +274,8 @@ install_bootloader()
 
 		# Install microcode
 		print_progress_text "Installing microcode package"
+
+		rm -f /boot/intel-ucode.img
 		pacman -S intel-ucode
 
 		# Enable OS prober
