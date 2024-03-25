@@ -204,7 +204,10 @@ config_pacman()
 			s/#ParallelDownloads/ParallelDownloads/
 		PACMAN_CONF
 
-		print_file_contents "/etc/pacman.conf"
+		print_progress_text "Disabling makepkg debug builds"
+		sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
+			/^OPTIONS=/ s/ debug/ !debug/
+		MAKEPKG_CONF
 
 		POSTCHECKLIST[$1]=1
 
