@@ -428,13 +428,13 @@ install_gnome()
 
 		# Install optional GNOME control center dependencies
 		print_progress_text "Installing Optional Power Profiles"
-		pacman -S --asdeps power-profiles-daemon
+		pacman -S power-profiles-daemon
 
 		print_progress_text "Installing Optional Firmware Support"
-		pacman -S --asdeps fwupd
+		pacman -S fwupd
 
 		print_progress_text "Installing Optional Print Configuration"
-		pacman -S --asdeps system-config-printer
+		pacman -S system-config-printer
 
 		# Install GNOME extras
 		print_progress_text "Installing GNOME Extras"
