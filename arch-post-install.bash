@@ -315,23 +315,6 @@ install_bootloader()
 		print_progress_text "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
 
-		# Add GRUB update hook
-		print_progress_text "Adding pacman GRUB update hook"
-		mkdir -p /etc/pacman.d/hooks
-
-		cat > /etc/pacman.d/hooks/99-grub-update.hook <<-GRUB_HOOK
-			[Trigger]
-			Operation=Install
-			Operation=Upgrade
-			Type=Package
-			Target=grub
-
-			[Action]
-			Description=Updating GRUB configuration...
-			When=PostTransaction
-			Exec=/usr/bin/bash -c "grub-install --target=x86_64-efi --efi-directory=/boot --removable; grub-mkconfig -o /boot/grub/grub.cfg"
-		GRUB_HOOK
-
 		POSTCHECKLIST[$1]=1
 
 		get_any_key
