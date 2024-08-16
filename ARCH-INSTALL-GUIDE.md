@@ -237,7 +237,7 @@ Number  Start (sector)    End (sector)  Size       Code  Name
    4        84969472        85583871   300.0 MiB   2700  Windows RE
    5        85583872       169469951   40.0 GiB    8300  Linux filesystem
    6       169469952       203024383   16.0 GiB    8200  Linux swap
-   7       203024384      2000408575   857.1 GiB   8300  Linux filesystem
+   7       203024384      2000408575   837.1 GiB   8300  Linux filesystem
 ```
 
 If everything is correct, use the `w` command to save partitions, and then `q` to exit `gdisk`.
