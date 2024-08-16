@@ -201,6 +201,15 @@ Use the `n` command repeatedly to create new partitions with the following param
 Partition no.|First sector  |Last Sector|Hex code|Comment
 -------------|--------------|-----------|--------|---------------------
 1            |default (2048)|+512M      |EF00    |ESP
+2            |default       |+40G       |8300    |Root
+3            |default       |+16G       |8200    |Swap
+4            |default       |default    |8300    |Home
+
+If dual booting with Windows, use the following parameters:
+
+Partition no.|First sector  |Last Sector|Hex code|Comment
+-------------|--------------|-----------|--------|---------------------
+1            |default (2048)|+512M      |EF00    |ESP
 2            |default       |+16M       |0C01    |Microsoft reserved
 3            |default       |+40G       |0700    |Windows
 4            |default       |+300M      |2700    |Windows Recovery (RE)
