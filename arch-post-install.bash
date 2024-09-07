@@ -223,6 +223,7 @@ root_password()
 	echo -e "Set the password for the root user."
 
 	if get_user_confirm; then
+		print_progress_text "Setting password for root user"
 		passwd
 
 		POSTCHECKLIST[$1]=1
