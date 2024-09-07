@@ -4,7 +4,7 @@
 
 ## A. Bootable USB
 
-This section assumes that `/dev/sdb` is the USB drive. You can use the `lsblk` command to check this.
+This section assumes that `/dev/sda` is the USB drive. You can use the `lsblk` command to check this.
 
 __Warning: this will destroy all data on the USB drive__.
 
@@ -14,14 +14,14 @@ Unmount any mounted partitions on the USB drive:
 sudo umount -R /path/to/mount
 ```
 
-Replace `/path/to/mount` with the directory name(s) where USB partitions are mounted. Mount points can be found with the command `mount | grep sdb`.
+Replace `/path/to/mount` with the directory name(s) where USB partitions are mounted. Mount points can be found with the command `mount | grep sda`.
 
 ### 1. Create and Format Partitions
 
 Run `parted` to partition the USB drive:
 
 ```bash
-sudo parted /dev/sdb
+sudo parted /dev/sda
 ```
 
 Create a partition table (GPT):
@@ -53,13 +53,13 @@ Verify partitions and exit `parted`:
 Format the `boot` partition:
 
 ```bash
-sudo mkfs.fat -F32 /dev/sdb1
+sudo mkfs.fat -F32 /dev/sda1
 ```
 
 Format the data partition:
 
 ```bash
-sudo mkfs.ext4 -L "USBData" /dev/sdb2
+sudo mkfs.ext4 -L "USBData" /dev/sda2
 ```
 
 ### 2. Copy Arch Linux ISO
@@ -68,7 +68,7 @@ Mount the `boot` partition:
 
 ```bash
 sudo mkdir -p /mnt/usb
-sudo mount /dev/sdb1 /mnt/usb
+sudo mount /dev/sda1 /mnt/usb
 ```
 
 Extract the Arch Linux ISO to the `boot` partition:
@@ -89,7 +89,7 @@ sudo rm -Rf /mnt/usb
 Change the label of the `boot` partition to ensure booting:
 
 ```bash
-sudo fatlabel /dev/sdb1 ARCH_202207
+sudo fatlabel /dev/sda1 ARCH_202207
 ```
 
 Replace `ARCH_202207` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
@@ -169,8 +169,6 @@ This section assumes that `/dev/nvme0n1` is the primary SSD.
 You can use the `lsblk` command to check this.
 
 __Warning: this will destroy all data on the disk__.
-
-The following partition structure assumes Arch Linux/Windows dual booting.
 
 #### a. Create Partitions
 
@@ -387,10 +385,12 @@ locale-gen
 Create locale configuration file:
 
 ```bash
-echo LANG=$LOCALE_US > /etc/locale.conf
-echo LC_MEASUREMENT=$LOCALE_IE >> /etc/locale.conf
-echo LC_PAPER=$LOCALE_IE >> /etc/locale.conf
-echo LC_TIME=$LOCALE_IE >> /etc/locale.conf
+cat > /etc/locale.conf <<-LOCALECONF
+  LANG=$locale_US
+  LC_MEASUREMENT=$locale_IE
+  LC_PAPER=$locale_IE
+  LC_TIME=$locale_IE
+LOCALECONF
 ```
 
 ### 5. Configure Hostname
@@ -405,9 +405,11 @@ echo $PCNAME > /etc/hostname
 Create the `hosts` file:
 
 ```bash
-echo "127.0.0.1       localhost" > /etc/hosts
-echo "::1             localhost" >> /etc/hosts
-echo "127.0.1.1       ${PCNAME}.localdomain       ${PCNAME}" >> /etc/hosts
+cat > /etc/hosts <<-HOSTSFILE
+  127.0.0.1       localhost
+  ::1             localhost
+  127.0.1.1       ${pc_name}.localdomain      ${pc_name}
+HOSTSFILE
 ```
 
 ### 6. Configure Pacman
@@ -415,11 +417,22 @@ echo "127.0.1.1       ${PCNAME}.localdomain       ${PCNAME}" >> /etc/hosts
 Enable color output and parallel downloads in pacman:
 
 ```bash
-sed -i 's/#Color/Color/' /etc/pacman.conf
-sed -i 's/#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
+  s/#Color/Color/
+  s/#ParallelDownloads/ParallelDownloads/
+PACMAN_CONF
 ```
 
-### 7. Enable Multilib Repository
+Configure ZST compression for packages:
+
+```bash
+sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
+  /^OPTIONS=/ s/ debug/ !debug/
+  /^COMPRESSZST=/ c COMPRESSZST=(zstd -c -T0 -)
+MAKEPKG_CONF
+```
+
+### 7. Enable Multilib Repository (Optional)
 
 Enable the `multilib` repository:
 
@@ -489,6 +502,12 @@ Install the `microcode` package (Intel CPUs):
 
 ```bash
 pacman -S intel-ucode
+```
+
+Enable 'os-prober' if installed:
+
+```bash
+sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 ```
 
 Generate the `grub.cfg` file (this will also enable automatic `microcode` updates):
@@ -584,14 +603,7 @@ pacman -S --asdeps power-profiles-daemon fwupd system-config-printer
 Install GNOME extras:
 
 ```bash
-pacman -S gnome-tweaks dconf-editor simple-scan
-```
-
-Enable Wayland screen sharing:
-
-```bash
-pacman -S --asdeps --needed xdg-desktop-portal-gnome
-pacman -S --needed xdg-desktop-portal
+pacman -S gnome-tweaks file-roller dconf-editor
 ```
 
 Enable the `gdm` (GNOME Display Manager) login screen:
@@ -606,7 +618,33 @@ Enable the Network Manager service:
 systemctl enable NetworkManager.service
 ```
 
-### 4. Install Multimedia Codecs
+### 4. Enable Bluetooth
+
+Install Bluetooth packages:
+
+```bash
+pacman -S --needed bluez bluez-utils bluez-tools
+```
+
+Enable power status reporting:
+
+```bash
+mkdir -p /etc/systemd/system/bluetooth.service.d
+
+cat > /etc/systemd/system/bluetooth.service.d/10-experimental.conf <<-BLUETOOTH_POWER
+  [Service]
+  ExecStart=
+  ExecStart=/usr/lib/bluetooth/bluetoothd -E
+BLUETOOTH_POWER
+```
+
+Enable the Bluetooth service:
+
+```bash
+systemctl enable bluetooth.service
+```
+
+### 5. Install Multimedia Codecs
 
 Install needed codecs:
 
@@ -620,7 +658,7 @@ _Optionally_ install the VA-API plugin for hardware video acceleration:
 pacman -S --needed gstreamer-vaapi
 ```
 
-### 5. Reboot
+### 6. Reboot
 
 Exit the `chroot` environment:
 
