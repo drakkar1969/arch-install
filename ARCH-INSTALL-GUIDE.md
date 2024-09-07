@@ -510,6 +510,23 @@ Enable 'os-prober' if installed:
 sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 ```
 
+_Optionally_ add custom GRUB entries (shutdown and restart):
+
+```bash
+cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
+	menuentry 'System shutdown' --class shutdown {
+	    echo 'System shutting down...'
+	    halt
+	}
+
+	menuentry 'System restart' --class restart {
+	    echo 'System rebooting...'
+	    reboot
+	}
+CUSTOM_GRUB
+
+```
+
 Generate the `grub.cfg` file (this will also enable automatic `microcode` updates):
 
 ```bash
