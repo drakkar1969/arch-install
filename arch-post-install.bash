@@ -321,24 +321,6 @@ install_bootloader()
 	fi
 }
 
-install_xorg()
-{
-	print_submenu_heading "INSTALL XORG GRAPHICAL ENVIRONMENT"
-
-	echo -e "Install Xorg graphical environment."
-
-	if get_user_confirm; then
-		print_progress_text "Installing Xorg"
-		echo -e "If prompted to select provider(s), select default options"
-		echo ""
- 		pacman -S --asdeps xorg-server
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
-	fi
-}
-
 display_drivers()
 {
 	print_submenu_heading "INSTALL DISPLAY DRIVERS"
@@ -489,7 +471,6 @@ post_menu()
 				"Configure Root Password|root_password"
 				"Add New User with Sudo Privileges|add_sudouser"
 				"Install Boot Loader|install_bootloader"
-				"Install Xorg Graphical Environment|install_xorg"
 				"Install Display Drivers|display_drivers"
 				"Install PipeWire|install_pipewire"
 				"Install GNOME Desktop Environment|install_gnome"

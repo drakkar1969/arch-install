@@ -501,23 +501,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 ## E. Desktop Environment
 
-### 1. Install Xorg Graphical Environment
-
-Install Xorg:
-
-```bash
-pacman -S --asdeps xorg-server
-```
-
-_Optionally_ install X widgets for testing:
-
-```bash
-pacman -S xorg-xinit xorg-twm xterm
-```
-
-To test the Xorg environment, use the `startx` command; to exit the graphical environment type `exit`.
-
-### 2. Install Video Drivers
+### 1. Install Video Drivers
 
 > Note: not required for VirtualBox/GNOME Boxes installation
 
@@ -573,7 +557,7 @@ Install the open source Nouveau driver for nVidia:
 pacman -S xf86-video-nouveau
 ```
 
-### 3. Install PipeWire
+### 2. Install PipeWire
 
 Install PipeWire packages as dependencies:
 
@@ -581,7 +565,7 @@ Install PipeWire packages as dependencies:
 pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire rtkit
 ```
 
-### 4. Install GNOME
+### 3. Install GNOME
 
 Install Network Manager and GNOME package group (press `ENTER` to select all packages when prompted):
 
@@ -622,7 +606,7 @@ Enable the Network Manager service:
 systemctl enable NetworkManager.service
 ```
 
-### 5. Install Multimedia Codecs
+### 4. Install Multimedia Codecs
 
 Install needed codecs:
 
@@ -636,7 +620,7 @@ _Optionally_ install the VA-API plugin for hardware video acceleration:
 pacman -S --needed gstreamer-vaapi
 ```
 
-### 6. Reboot
+### 5. Reboot
 
 Exit the `chroot` environment:
 
