@@ -287,13 +287,18 @@ install_bootloader()
 		print_progress_text "Enabling OS Prober"
 		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 
-		# Fix suspend issue
-		print_progress_text "Fixing Suspend Issue"
+		# Fix suspend issue / disable watchdogs
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 
+		print_progress_text "Fixing Suspend Issue"
 		local suspend_param="button.lid_init_state=open"
 
 		if [[ $kernel_params != *"$suspend_param"* ]]; then kernel_params+=" $suspend_param"; fi
+
+		print_progress_text "Disabling Watchdogs"
+		local watchdog_param="modprobe.blacklist=iTCO_wdt"
+
+		if [[ $kernel_params != *"$watchdog_param"* ]]; then kernel_params+=" $watchdog_param"; fi
 
 		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
