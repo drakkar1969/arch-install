@@ -298,6 +298,7 @@ install_bootloader()
 		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
 		# Add custom GRUB entries
+		print_progress_text "Adding custom GRUB entries"
 		if ! grep -i -q "menuentry" /etc/grub.d/40_custom; then
 			cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
 				menuentry 'System shutdown' --class shutdown {
