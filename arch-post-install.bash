@@ -274,7 +274,7 @@ install_bootloader()
 	if get_user_confirm; then
 		# Install GRUB
 		print_progress_text "Installing GRUB bootloader"
-		pacman -S grub efibootmgr os-prober
+		pacman -S grub efibootmgr
 		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
 		# Install microcode
@@ -282,10 +282,6 @@ install_bootloader()
 
 		rm -f /boot/intel-ucode.img
 		pacman -S intel-ucode
-
-		# Enable OS prober
-		print_progress_text "Enabling OS Prober"
-		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 
 		# Fix suspend issue / disable watchdogs
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
