@@ -440,7 +440,7 @@ sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
 PACMAN_CONF
 ```
 
-Configure ZST compression for packages:
+Disable debug builds and configure ZST compression for packages:
 
 ```bash
 sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
@@ -521,7 +521,7 @@ Install the `microcode` package (Intel CPUs):
 pacman -S intel-ucode
 ```
 
-Enable 'os-prober' if installed:
+Enable `os-prober` if installed:
 
 ```bash
 sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
@@ -541,7 +541,6 @@ cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
 	    reboot
 	}
 CUSTOM_GRUB
-
 ```
 
 Generate the `grub.cfg` file (this will also enable automatic `microcode` updates):
