@@ -333,17 +333,20 @@ arch-chroot /mnt
 
 ## D. System Configuration
 
-### 1. Set Keyboard layout
+### 1. Console Settings
 
 > Note: this step is only required for non-US keyboards
 
-Make the keyboard layout permanent:
+Make the keyboard layout and console font permanent:
 
 ```bash
-echo KEYMAP=it > /etc/vconsole.conf
+cat > /etc/vconsole.conf <<-VCONSOLE_CONF
+  KEYMAP=it
+  FONT=ter-118b
+VCONSOLE_CONF
 ```
 
-Replace `it` with your keymap.
+Replace `it` with your keymap and `ter-188b` with your preferred console font.
 
 ### 2. Configure Timezone
 

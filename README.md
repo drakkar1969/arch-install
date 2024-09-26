@@ -8,10 +8,24 @@ Set the keyboard layout, if different from US keyboard:
 loadkeys it
 ```
 
- Replace `it`  with your keyboard layout. Available layouts can be listed with:
+Replace `it` with your keyboard layout. Available layouts can be listed with:
 
 ```bash
 ls /usr/share/kbd/keymaps/**/*.map.gz
+```
+
+### Set Console Font
+
+Set the console font:
+
+```bash
+setfont ter-118b
+```
+
+Replace `ter-118b` with your font name. Available fonts can be listed with:
+
+```bash
+ls /usr/share/kbd/consolefonts
 ```
 
 ### Connect to Wifi

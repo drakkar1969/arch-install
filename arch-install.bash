@@ -432,7 +432,7 @@ install_base()
 		pacman -S archlinux-keyring
 
 		print_progress_text "Installing base packages"
-		pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages
+		pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages terminus-font
 
 		MAINCHECKLIST[$1]=1
 

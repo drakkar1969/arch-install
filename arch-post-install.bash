@@ -77,20 +77,29 @@ get_user_confirm()
 #===========================================================================================================
 # INSTALLATION FUNCTIONS
 #===========================================================================================================
-set_kbpermanent()
+set_consolepermanent()
 {
-	print_submenu_heading "MAKE KEYBOARD LAYOUT PERMANENT"
+	print_submenu_heading "MAKE CONSOLE SETTINGS PERMANENT"
 
 	local kb_code
+	local console_font
 
 	read -e -p "Enter keyboard layout: " -i "it" kb_code
 	echo ""
 
+	read -e -p "Enter console font: " -i "ter-118b" console_font
+	echo ""
+
 	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
+	echo -e "Make console font ${GREEN}${console_font}${RESET} permanent."
 
 	if get_user_confirm; then
 		print_progress_text "Setting keyboard layout"
-		echo KEYMAP=$kb_code > /etc/vconsole.conf
+
+		cat > /etc/vconsole.conf <<-VCONSOLE_CONF
+			KEYMAP=$kb_code
+			FONT=$console_font
+		VCONSOLE_CONF
 
 		POSTCHECKLIST[$1]=1
 
@@ -466,7 +475,7 @@ install_codecs()
 
 post_menu()
 {
-	POSTITEMS=("Make Keyboard Layout Permanent|set_kbpermanent"
+	POSTITEMS=("Make Console Settings Permanent|set_consolepermanent"
 				"Configure Timezone|set_timezone"
 				"Configure Locale|set_locale"
 				"Configure Hostname|set_hostname"
