@@ -94,7 +94,7 @@ set_consolepermanent()
 	echo -e "Make console font ${GREEN}${console_font}${RESET} permanent."
 
 	if get_user_confirm; then
-		print_progress_text "Setting keyboard layout"
+		print_progress_text "Saving console settings"
 
 		cat > /etc/vconsole.conf <<-VCONSOLE_CONF
 			KEYMAP=$kb_code
@@ -205,6 +205,7 @@ config_pacman()
 	print_submenu_heading "CONFIGURE PACMAN"
 
 	echo -e "Enable color output and parallel downloads in ${GREEN}/etc/pacman.conf${RESET}."
+	echo -e "Disable debug packages and configure ZSTD compression in ${GREEN}/etc/makepkg.conf${RESET}."
 
 	if get_user_confirm; then
 		print_progress_text "Configuring pacman"
