@@ -60,3 +60,11 @@ After completing installation, restart to boot into GNOME:
 ```shell
 reboot
 ```
+
+## Installation Guide
+
+The installation guide can be found here: [Arch Linux Installation Guide](ARCH-INSTALL-GUIDE.md).
+
+## Bootable USB
+
+See the [Bootable USB Guide](BOOTABLE-USB-GUIDE.md) for how to create a bootable USB from the Arch Linux ISO.
