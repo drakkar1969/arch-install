@@ -116,7 +116,21 @@ Available layouts can be listed with:
 ls /usr/share/kbd/keymaps/**/*.map.gz
 ```
 
-### 2. Check UEFI Mode
+### 2. Set Console Font
+
+Set the console font:
+
+```bash
+setfont ter-118b
+```
+
+Replace `ter-118b` with your font name. Available fonts can be listed with:
+
+```bash
+ls /usr/share/kbd/consolefonts
+```
+
+### 3. Check UEFI Mode
 
 To verify that UEFI boot mode is enabled, list the `efivars` directory:
 
@@ -126,7 +140,7 @@ ls /sys/firmware/efi/efivars
 
 If the directory does not exist, the system may be in MBR/BIOS mode.
 
-### 3. Enable Internet Connection
+### 4. Enable Internet Connection
 
 > Note: not required for VirtualBox/GNOME Boxes installation
 
@@ -152,7 +166,7 @@ To test the internet connection:
 ping -c 3 www.google.com
 ```
 
-### 4. Update System Clock
+### 5. Update System Clock
 
 Ensure the system clock is accurate:
 
@@ -162,7 +176,7 @@ timedatectl set-ntp true
 
 To check the status, use `timedatectl` without parameters.
 
-### 5. Partition Disks
+### 6. Partition Disks
 
 This section assumes that `/dev/nvme0n1` is the primary SSD.
 
