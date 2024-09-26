@@ -1,6 +1,6 @@
 # Bootable USB Guide (UEFI)
 
-This section assumes that `/dev/sda` is the USB drive. You can use the `lsblk` command to check this.
+This guide assumes that `/dev/sda` is the USB drive. You can use the `lsblk` command to check this.
 
 __Warning: this will destroy all data on the USB drive__.
 
