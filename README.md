@@ -63,7 +63,7 @@ reboot
 
 ## Installation Guide
 
-The installation guide can be found here: [Arch Linux Installation Guide](ARCH-INSTALL-GUIDE.md).
+The step-by-step manual installation guide can be found here: [Arch Linux Installation Guide](ARCH-INSTALL-GUIDE.md).
 
 ## Bootable USB
 
