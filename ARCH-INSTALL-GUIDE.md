@@ -471,8 +471,6 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 > Note: not required for VirtualBox/GNOME Boxes installation
 
-#### a. Intel
-
 Install the Mesa OpenGL driver:
 
 ```bash
@@ -483,42 +481,6 @@ _Optionally_ install the Intel VA-API driver for hardware video acceleration:
 
 ```bash
 pacman -S intel-media-driver libva-utils
-```
-
-#### b. nVidia (proprietary drivers)
-
-Install the nVidia video drivers:
-
-```bash
-pacman -S nvidia nvidia-prime
-```
-
-Enable the DRM kernel mode setting, to ensure that the Wayland session is available in GNOME:
-
-```bash
-KERNEL_PARAMS=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
-KERNEL_PARAMS+=" nvidia-drm.modeset=1"
-sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$KERNEL_PARAMS\"" /etc/default/grub
-```
-
-And re-generate the `grub.cfg` file:
-
-```bash
-grub-mkconfig -o /boot/grub/grub.cfg
-```
-
-#### c. Nouveau (open-source nVidia drivers)
-
-Install the Mesa OpenGL driver:
-
-```bash
-pacman -S --needed --asdeps mesa
-```
-
-Install the open source Nouveau driver for nVidia:
-
-```bash
-pacman -S xf86-video-nouveau
 ```
 
 ### 2. Install PipeWire
