@@ -1,102 +1,6 @@
 # Arch Linux Installation Guide (UEFI)
 
----
-
-## A. Bootable USB
-
-This section assumes that `/dev/sda` is the USB drive. You can use the `lsblk` command to check this.
-
-__Warning: this will destroy all data on the USB drive__.
-
-Unmount any mounted partitions on the USB drive:
-
-```bash
-sudo umount -R /path/to/mount
-```
-
-Replace `/path/to/mount` with the directory name(s) where USB partitions are mounted. Mount points can be found with the command `mount | grep sda`.
-
-### 1. Create and Format Partitions
-
-Run `parted` to partition the USB drive:
-
-```bash
-sudo parted /dev/sda
-```
-
-Create a partition table (GPT):
-
-```bash
-(parted) mklabel gpt
-```
-
-Create a `boot` partition of type `ESP` (EFI system partition) and set `boot` flag:
-
-```bash
-(parted) mkpart ESP fat32 1MiB 4GiB
-(parted) set 1 boot on
-```
-
-Create a data partition in the remaining space:
-
-```bash
-(parted) mkpart data ext4 4GiB 100%
-```
-
-Verify partitions and exit `parted`:
-
-```bash
-(parted) print
-(parted) quit
-```
-
-Format the `boot` partition:
-
-```bash
-sudo mkfs.fat -F32 /dev/sda1
-```
-
-Format the data partition:
-
-```bash
-sudo mkfs.ext4 -L "USBData" /dev/sda2
-```
-
-### 2. Copy Arch Linux ISO
-
-Mount the `boot` partition:
-
-```bash
-sudo mkdir -p /mnt/usb
-sudo mount /dev/sda1 /mnt/usb
-```
-
-Extract the Arch Linux ISO to the `boot` partition:
-
-```bash
-sudo bsdtar -x --exclude=syslinux/ -f archlinux-2022.07.01-x86_64.iso -C /mnt/usb
-```
-
-Replace `archlinux-2022.07.01-x86_64.iso` with the path to the Arch Linux ISO.
-
-Unmount the `boot` partition:
-
-```bash
-sudo umount -R /mnt/usb
-sudo rm -Rf /mnt/usb
-```
-
-Change the label of the `boot` partition to ensure booting:
-
-```bash
-sudo fatlabel /dev/sda1 ARCH_202207
-```
-
-Replace `ARCH_202207` with the correct version of the Arch Linux ISO, in format `ARCH_YYYYMM`.
-
----
-
-## B. Pre-Installation
+## A. Pre-Installation
 
 ### 1. Set Keyboard Layout
 
@@ -262,7 +166,7 @@ Format the `ESP` partition (**do this only if Windows is not already installed**
 mkfs.fat -F32 -n "ESP" /dev/nvme0n1p1
 ```
 
-Format the Windows data and recovery partitions (**do this only if Windows is not already installed**):
+_Optionally_, if dual booting, format the Windows data and recovery partitions (**do this only if Windows is not already installed**):
 
 ```bash
 mkfs.ntfs -f /dev/nvme0n1p3
@@ -272,29 +176,37 @@ mkfs.ntfs -f /dev/nvme0n1p4
 Activate the `swap` partition:
 
 ```bash
-mkswap /dev/nvme0n1p6
-swapon /dev/nvme0n1p6
+mkswap /dev/nvme0n1p3
+swapon /dev/nvme0n1p3
 ```
+
+> Note: if dual booting, use `/dev/nvme0n1p6` instead
 
 Format the `root` partition:
 
 ```bash
-mkfs.ext4 -L "Root" /dev/nvme0n1p5
+mkfs.ext4 -L "Root" /dev/nvme0n1p2
 ```
+
+> Note: if dual booting, use `/dev/nvme0n1p5` instead
 
 Format the `home` partition (**do this only if the `home` partition is empty**):
 
 ```bash
-mkfs.ext4 -L "Home" /dev/nvme0n1p7
+mkfs.ext4 -L "Home" /dev/nvme0n1p4
 ```
+
+> Note: if dual booting, use `/dev/nvme0n1p7` instead
 
 #### c. Mount Partitions
 
 Mount the `root` partition:
 
 ```bash
-mount /dev/nvme0n1p5 /mnt
+mount /dev/nvme0n1p2 /mnt
 ```
+
+> Note: if dual booting, use `/dev/nvme0n1p5` instead
 
 Mount the `ESP` partition:
 
@@ -305,14 +217,16 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 Mount the `home` partition:
 
 ```bash
-mount --mkdir /dev/nvme0n1p7 /mnt/home
+mount --mkdir /dev/nvme0n1p4 /mnt/home
 ```
+
+> Note: if dual booting, use `/dev/nvme0n1p7` instead
 
 Use the `lsblk` command to verify partitions are correctly mounted.
 
 ---
 
-## C. Installation
+## B. Installation
 
 ### 1. Install Base Packages
 
@@ -345,11 +259,9 @@ arch-chroot /mnt
 
 ---
 
-## D. System Configuration
+## C. System Configuration
 
 ### 1. Console Settings
-
-> Note: this step is only required for non-US keyboards
 
 Make the keyboard layout and console font permanent:
 
@@ -361,6 +273,8 @@ VCONSOLE_CONF
 ```
 
 Replace `it` with your keymap and `ter-188b` with your preferred console font.
+
+> Note: the `KEYMAP=...` line is only required for non-US keyboards
 
 ### 2. Configure Timezone
 
@@ -551,7 +465,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 ---
 
-## E. Desktop Environment
+## D. Desktop Environment
 
 ### 1. Install Video Drivers
 
