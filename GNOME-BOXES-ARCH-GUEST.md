@@ -30,6 +30,6 @@ Ensure that the virtual machine is running in GNOME Boxes. Open the virtual mach
 
 ![](images/boxes-addshare.png)
 
-In the guest system, the shared folder can be found in Files in Other Locations, under `Spice client folder`.
+In the guest system, the shared folder can be found in Files in Network, under `Spice client folder`.
 
 > Note: when copying files from the host to the guest system, executable permissions for script files will be removed (and need to be manually re-added)
