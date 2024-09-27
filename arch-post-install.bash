@@ -1,64 +1,70 @@
 #!/bin/bash
 
-#===========================================================================================================
+#=======================================================================================
 # GLOBAL VARIABLES
-#===========================================================================================================
+#=======================================================================================
 YELLOW='\033[1;33m'
 GREEN='\033[1;32m'
 RESET='\033[0m'
+BOLD='\033[1;37m'
 
-#===========================================================================================================
+#=======================================================================================
 # HELPER FUNCTIONS
-#===========================================================================================================
-print_menu_item()
+#=======================================================================================
+echo_line()
 {
-	local index=$1
-	local status=$2
-	local itemname=$3
-
-	local checkmark="${GREEN}OK${RESET}"
-
-	[[ $status -eq 0 ]] && checkmark="  "
-
-	echo -e "\n $index. [ $checkmark ] $itemname"
+	echo "---------------------------------------------------------------------------"
 }
 
-print_submenu_heading()
+echo_header()
 {
-	clear
-
-	echo -e ":: ${GREEN}$1${RESET}\n"
+	echo_line
+	echo -e "--  ${GREEN}ARCH LINUX POST-INSTALLATION${RESET}"
+	echo_line
+	echo
 }
 
-print_progress_text()
+echo_keymap_start()
 {
-	echo ""
-	echo -e "${GREEN}==>${RESET} $1"
-	echo ""
+	echo
+	echo_line
+
+	if [[ $1 == true ]]; then
+		echo -e "--  ${YELLOW}X${RESET} Execute    ${YELLOW}M${RESET} Main Menu"
+	else
+		echo -e "--  ${YELLOW}X${RESET} Execute    ${YELLOW}S${RESET} Skip    ${YELLOW}M${RESET} Main Menu"
+	fi
+
+	echo_line
+	echo
 }
 
-print_warning()
+echo_keymap_end()
 {
-	echo -e "${YELLOW}WARNING:${RESET} $1"
+	echo
+	echo_line
+
+	if [[ $1 == true ]]; then
+		echo -e "--  ${YELLOW}R${RESET} Repeat    ${YELLOW}M${RESET} Main Menu"
+	else
+		echo -e "--  ${YELLOW}R${RESET} Repeat    ${YELLOW}N${RESET} Next    ${YELLOW}M${RESET} Main Menu"
+	fi
+
+	echo_line
 }
 
-print_file_contents()
+echo_progress_heading()
 {
-	echo ""
-	echo -e "---------------------------------------------------------------------------"
+	echo
+	echo_line
 	echo -e "-- ${GREEN}$1${RESET}"
-	echo -e "---------------------------------------------------------------------------"
-	echo ""
-	cat $1
-	echo ""
-	echo -e "---------------------------------------------------------------------------"
-	echo ""
+	echo_line
+	echo
 }
 
-get_any_key()
+echo_file_contents()
 {
-	echo ""
-	read -s -e -n 1 -p "Press any key to continue ..."
+	cat "$1"
 }
 
 get_user_confirm()
@@ -66,87 +72,74 @@ get_user_confirm()
 	local ret_val=1
 	local yn_choice="n"
 
-	echo ""
+	echo -e "${BOLD}"
 	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
+	echo -e -n "${RESET}"
 
 	[[ "${yn_choice,,}" == "y" ]] && ret_val=0
 
 	return $ret_val
 }
 
-#===========================================================================================================
+#=======================================================================================
 # INSTALLATION FUNCTIONS
-#===========================================================================================================
+#=======================================================================================
 set_consolepermanent()
 {
-	print_submenu_heading "MAKE CONSOLE SETTINGS PERMANENT"
-
 	local kb_code
 	local console_font
 
 	read -e -p "Enter keyboard layout: " -i "it" kb_code
-	echo ""
+	echo
 
 	read -e -p "Enter console font: " -i "ter-118b" console_font
-	echo ""
+	echo
 
 	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
 	echo -e "Make console font ${GREEN}${console_font}${RESET} permanent."
 
 	if get_user_confirm; then
-		print_progress_text "Saving console settings"
+		echo_progress_heading "Saving console settings"
 
 		cat > /etc/vconsole.conf <<-VCONSOLE_CONF
 			KEYMAP=$kb_code
 			FONT=$console_font
 		VCONSOLE_CONF
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 set_timezone()
 {
-	print_submenu_heading "CONFIGURE TIMEZONE"
-
 	local time_zone
 
 	read -e -p "Enter timezone: " -i "Europe/Rome" time_zone
-	echo ""
+	echo
 
 	echo -e "Set the timezone to ${GREEN}${time_zone}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Creating symlink for timezone"
+		echo_progress_heading "Creating symlink for timezone"
 		ln -sf /usr/share/zoneinfo/$time_zone /etc/localtime
 
-		print_progress_text "Setting hardware clock to UTC"
+		echo_progress_heading "Setting hardware clock to UTC"
 		hwclock --systohc --utc
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 set_locale()
 {
-	print_submenu_heading "CONFIGURE LOCALE"
-
 	local locale_US
 	local locale_IE
 
 	read -e -p "Enter language locale: " -i "en_US" locale_US
-	echo ""
+	echo
 	read -e -p "Enter format locale: " -i "en_IE" locale_IE
-	echo ""
+	echo
 
 	echo -e "Set the language to ${GREEN}${locale_US}${RESET} and the format locale to ${GREEN}${locale_IE}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Setting language and format locales"
+		echo_progress_heading "Setting language and format locales"
 		locale_US="$locale_US.UTF-8"
 		locale_IE="$locale_IE.UTF-8"
 
@@ -162,27 +155,22 @@ set_locale()
 			LC_TIME=$locale_IE
 		LOCALECONF
 
-		print_file_contents "/etc/locale.conf"
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
+		echo_progress_heading "Verifying file: /etc/locale.conf"
+		echo_file_contents "/etc/locale.conf"
 	fi
 }
 
 set_hostname()
 {
-	print_submenu_heading "CONFIGURE HOSTNAME"
-
 	local pc_name
 
 	read -e -p "Enter hostname: " -i "SamsungBook2" pc_name
-	echo ""
+	echo
 
 	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Setting hostname"
+		echo_progress_heading "Setting hostname"
 		echo $pc_name > /etc/hostname
 
 		cat > /etc/hosts <<-HOSTSFILE
@@ -191,104 +179,83 @@ set_hostname()
 			127.0.1.1       ${pc_name}.localdomain      ${pc_name}
 		HOSTSFILE
 
-		print_file_contents "/etc/hostname"
-		print_file_contents "/etc/hosts"
+		echo_progress_heading "Verifying file: /etc/hostname"
+		echo_file_contents "/etc/hostname"
 
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
+		echo_progress_heading "Verifying file: etc/hosts"
+		echo_file_contents "/etc/hosts"
 	fi
 }
 
 config_pacman()
 {
-	print_submenu_heading "CONFIGURE PACMAN"
-
 	echo -e "Enable color output and parallel downloads in ${GREEN}/etc/pacman.conf${RESET}."
 	echo -e "Disable debug packages and configure ZSTD compression in ${GREEN}/etc/makepkg.conf${RESET}."
 
 	if get_user_confirm; then
-		print_progress_text "Configuring pacman"
+		echo_progress_heading "Configuring pacman"
 		sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
 			s/#Color/Color/
 			s/#ParallelDownloads/ParallelDownloads/
 		PACMAN_CONF
 
-		print_progress_text "Configuring makepkg"
+		echo_progress_heading "Configuring makepkg"
 		sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
 			/^OPTIONS=/ s/ debug/ !debug/
 			/^COMPRESSZST=/ c COMPRESSZST=(zstd -c -T0 -)
 		MAKEPKG_CONF
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 root_password()
 {
-	print_submenu_heading "CONFIGURE ROOT PASSWORD"
-
-	echo -e "Set the password for the root user."
+	echo "Set the password for the root user."
 
 	if get_user_confirm; then
-		print_progress_text "Setting password for root user"
+		echo_progress_heading "Setting password for root user"
 		passwd
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 add_sudouser()
 {
-	print_submenu_heading "ADD NEW USER WITH SUDO PRIVILEGES"
-
 	local new_user
 	local user_desc
 
 	read -e -p "Enter user name: " -i "drakkar" new_user
-	echo ""
+	echo
 	read -e -p "Enter user description: " -i "draKKar" user_desc
-	echo ""
+	echo
 
 	echo -e "Create new user ${GREEN}${new_user}${RESET} with sudo privileges."
 
 	if get_user_confirm; then
-		print_progress_text "Creating new user"
+		echo_progress_heading "Creating new user"
 		useradd -m -G wheel -c $user_desc -s /bin/bash $new_user
 
-		print_progress_text "Setting password for user"
+		echo_progress_heading "Setting password for user"
 		passwd $new_user
 
-		print_progress_text "Enabling sudo privileges for user"
+		echo_progress_heading "Enabling sudo privileges for user"
 		bash -c 'echo "%wheel ALL=(ALL) ALL" | (EDITOR="tee -a" visudo -f /etc/sudoers.d/99_wheel)'
 
-		print_progress_text "Verifying user identity"
+		echo_progress_heading "Verifying user identity"
 		id $new_user
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 install_bootloader()
 {
-	print_submenu_heading "INSTALL BOOT LOADER"
-
-	echo -e "Install the GRUB bootloader."
+	echo "Install the GRUB bootloader."
 
 	if get_user_confirm; then
 		# Install GRUB
-		print_progress_text "Installing GRUB bootloader"
+		echo_progress_heading "Installing GRUB bootloader"
 		pacman -S grub efibootmgr
 		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
 		# Install microcode
-		print_progress_text "Installing microcode package"
+		echo_progress_heading "Installing microcode package"
 
 		rm -f /boot/intel-ucode.img
 		pacman -S intel-ucode
@@ -296,12 +263,12 @@ install_bootloader()
 		# Fix suspend issue / disable watchdogs
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 
-		print_progress_text "Fixing Suspend Issue"
+		echo_progress_heading "Fixing Suspend Issue"
 		local suspend_param="button.lid_init_state=open"
 
 		if [[ $kernel_params != *"$suspend_param"* ]]; then kernel_params+=" $suspend_param"; fi
 
-		print_progress_text "Disabling Watchdogs"
+		echo_progress_heading "Disabling Watchdogs"
 		local watchdog_param="modprobe.blacklist=iTCO_wdt"
 
 		if [[ $kernel_params != *"$watchdog_param"* ]]; then kernel_params+=" $watchdog_param"; fi
@@ -309,7 +276,7 @@ install_bootloader()
 		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
 		# Add custom GRUB entries
-		print_progress_text "Adding custom GRUB entries"
+		echo_progress_heading "Adding custom GRUB entries"
 		if ! grep -i -q "menuentry" /etc/grub.d/40_custom; then
 			cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
 				menuentry 'System shutdown' --class shutdown {
@@ -325,64 +292,46 @@ install_bootloader()
 		fi
 
 		# Generate GRUB config file
-		print_progress_text "Generating GRUB config file"
+		echo_progress_heading "Generating GRUB config file"
 		grub-mkconfig -o /boot/grub/grub.cfg
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 display_drivers()
 {
-	print_submenu_heading "INSTALL DISPLAY DRIVERS"
-
-	echo -e "Install Mesa OpenGL and Intel VA-API (hardware accel) drivers."
+	echo "Install Mesa OpenGL and Intel VA-API (hardware accel) drivers."
 
 	if get_user_confirm; then
-		print_progress_text "Installing Intel display drivers"
+		echo_progress_heading "Installing Intel display drivers"
 		pacman -S --needed --asdeps mesa
 		pacman -S intel-media-driver libva-utils
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 install_pipewire()
 {
-	print_submenu_heading "INSTALL PIPEWIRE"
-
-	echo -e "Install the PipeWire multimedia framework."
+	echo "Install the PipeWire multimedia framework."
 
 	if get_user_confirm; then
-		print_progress_text "Installing PipeWire"
+		echo_progress_heading "Installing PipeWire"
 		pacman -S --asdeps pipewire pipewire-pulse wireplumber gst-plugin-pipewire rtkit
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 install_gnome()
 {
-	print_submenu_heading "INSTALL GNOME DESKTOP ENVIRONMENT"
-
 	local gnome_ignore
 
 	read -e -p "Enter GNOME packages to ignore: " -i "epiphany,gnome-characters,gnome-clocks,gnome-contacts,gnome-logs,gnome-maps,gnome-music,gnome-software,gnome-tour,orca,rygel,totem" gnome_ignore
-	echo ""
+	echo
 
-	echo -e "Install the GNOME desktop environment."
+	echo "Install the GNOME desktop environment."
 
 	if get_user_confirm; then
-		print_progress_text "Installing Network Manager"
+		echo_progress_heading "Installing Network Manager"
 		pacman -S networkmanager
 
-		print_progress_text "Installing GNOME"
+		echo_progress_heading "Installing GNOME"
 
 		# Get array of packages to ignore from string
 		local ignore_pkgs=()
@@ -399,48 +348,36 @@ install_gnome()
 		unset pkg
 
 		# Install remaining GNOME packages
-		echo -e "If prompted to select provider(s), select default options"
-		echo ""
+		echo "If prompted to select provider(s), select default options"
+		echo
 
 		pacman -S "${gnome_pkgs[@]}"
 
 		# Install optional GNOME control center dependencies
-		print_progress_text "Installing Optional Power Profiles"
-		pacman -S power-profiles-daemon
-
-		print_progress_text "Installing Optional Firmware Support"
-		pacman -S fwupd
-
-		print_progress_text "Installing Optional Print Configuration"
-		pacman -S system-config-printer
+		echo_progress_heading "Installing Optional GNOME Control Center Dependencies"
+		pacman -S power-profiles-daemon fwupd system-config-printer
 
 		# Install GNOME extras
-		print_progress_text "Installing GNOME Extras"
+		echo_progress_heading "Installing GNOME Extras"
 		pacman -S gnome-tweaks file-roller dconf-editor
 
-		print_progress_text "Enabling GDM service"
+		echo_progress_heading "Enabling GDM service"
 		systemctl enable gdm.service
 
-		print_progress_text "Enabling Network Manager service"
+		echo_progress_heading "Enabling Network Manager service"
 		systemctl enable NetworkManager.service
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 enable_bluetooth()
 {
-	print_submenu_heading "ENABLE BLUETOOTH"
-
-	echo -e "Install and enable Bluetooth."
+	echo "Install and enable Bluetooth."
 
 	if get_user_confirm; then
-		print_progress_text "Installing Bluetooth packages"
+		echo_progress_heading "Installing Bluetooth packages"
 		pacman -S --needed bluez bluez-utils bluez-tools
 
-		print_progress_text "Enabling power status reporting"
+		echo_progress_heading "Enabling power status reporting"
 		mkdir -p /etc/systemd/system/bluetooth.service.d
 
 		cat > /etc/systemd/system/bluetooth.service.d/10-experimental.conf <<-BLUETOOTH_POWER
@@ -449,34 +386,27 @@ enable_bluetooth()
 			ExecStart=/usr/lib/bluetooth/bluetoothd -E
 		BLUETOOTH_POWER
 
-		print_progress_text "Enabling Bluetooth service"
+		echo_progress_heading "Enabling Bluetooth service"
 		systemctl enable bluetooth.service
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 install_codecs()
 {
-	print_submenu_heading "INSTALL MULTIMEDIA CODECS"
-
-	echo -e "Install multimedia codecs."
+	echo "Install multimedia codecs."
 
 	if get_user_confirm; then
-		print_progress_text "Installing codecs"
+		echo_progress_heading "Installing codecs"
 		pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gstreamer-vaapi
-
-		POSTCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
-post_menu()
+#=======================================================================================
+# MAIN FUNCTION
+#=======================================================================================
+main()
 {
-	POSTITEMS=("Make Console Settings Permanent|set_consolepermanent"
+	MENU_ITEMS=("Make Console Settings Permanent|set_consolepermanent"
 				"Configure Timezone|set_timezone"
 				"Configure Locale|set_locale"
 				"Configure Hostname|set_hostname"
@@ -489,68 +419,84 @@ post_menu()
 				"Install GNOME Desktop Environment|install_gnome"
 				"Enable Bluetooth|enable_bluetooth"
 				"Install Multimedia Codecs|install_codecs")
-	POSTCHECKLIST=("${POSTITEMS[@]/*/0}")
 
-	# Post install menu loop
-	while true; do
+	local menu_index=1
+	local quit=0
+
+	while (( $quit == 0 )); do
 		clear
+		echo_header
 
-		# Print header
-		echo -e "-------------------------------------------------------------------------------"
-		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} INSTALL MENU ${RESET}>>${GREEN} POST INSTALL${RESET}"
-		echo -e "-------------------------------------------------------------------------------"
+		local item_name=$(echo ${MENU_ITEMS[$menu_index-1]} | cut -f1 -d'|')
 
-		# Print menu items
-		for i in ${!POSTITEMS[@]}; do
-			# Get character from ascii code (0->A,etc.)
-			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
+		echo -e "  ${BOLD}STEP ${menu_index} / ${#MENU_ITEMS[@]}: ${item_name}${RESET}"
 
-			local item_text=$(echo "${POSTITEMS[$i]}" | cut -f1 -d'|')
+		if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+			echo_keymap_start false
+		else
+			echo_keymap_start true
+		fi
 
-			print_menu_item $item_index ${POSTCHECKLIST[$i]} "$item_text"
-		done
-		unset i
+		while true; do
+			local start_choice
 
-		# Print footer
-		echo ""
-		echo -e "-------------------------------------------------------------------------------"
-		echo ""
-		echo -e -n " => Select option or (r)eturn to main menu: "
-
-		# Get menu selection
-		local post_index=-1
-
-		until (( $post_index >= 0 && $post_index < ${#POSTITEMS[@]} ))
-		do
-			local post_choice
-
-			read -r -s -n 1 post_choice
+			read -r -s -n 1 start_choice
 
 			# Return to main menu
-			if [[ "${post_choice,,}" == "r" ]]; then
-				clear
-				exit 0
+			if [[ "${start_choice,,}" == "m" ]]; then
+				quit=1
+				break
 			fi
 
-			# Capture and exclude arrow keys
-			if [[ "$post_choice" == "$(printf '\u1b')" ]]; then
-				read -r -s -n 2 temp
-				unset temp
+			# Skip and go to next step
+			if [[ "${start_choice,,}" == "s" ]]; then
+				if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+					menu_index=$(($menu_index+1))
+					break
+				fi
 			fi
 
-			# Get selection index
-			if [[ "${post_choice^^}" =~ ^[[:upper:]]+$ ]]; then
-				# Get ascii code from character (A->65, etc.)
-				post_index=$(printf '%d' "'${post_choice^^}")
-				post_index=$(($post_index-65))
+			# Execute current step
+			if [[ "${start_choice,,}" == "x" ]]; then
+				local item_func=$(echo ${MENU_ITEMS[$menu_index-1]} | cut -f2 -d'|')
+
+				${item_func}
+
+				if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+					echo_keymap_end false
+				else
+					echo_keymap_end true
+				fi
+
+				while true; do
+					local end_choice
+
+					read -r -s -n 1 end_choice
+
+					# Return to main menu
+					if [[ "${end_choice,,}" == "m" ]]; then
+						quit=1
+						break
+					fi
+
+					# Repeat step
+					if [[ "${end_choice,,}" == "r" ]]; then
+						break
+					fi
+
+					# Go to next step
+					if [[ "${end_choice,,}" == "n" ]]; then
+						if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+							menu_index=$(($menu_index+1))
+							break
+						fi
+					fi
+				done
+
+				break
 			fi
 		done
-
-		# Execute function
-		local item_func=$(echo "${POSTITEMS[$post_index]}" | cut -f2 -d'|')
-
-		${item_func} $post_index
 	done
 }
 
-post_menu
+main

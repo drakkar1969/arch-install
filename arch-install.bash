@@ -1,97 +1,83 @@
 #!/bin/bash
 
-#===========================================================================================================
+#=======================================================================================
 # GLOBAL VARIABLES
-#===========================================================================================================
+#=======================================================================================
 YELLOW='\033[1;33m'
 GREEN='\033[1;32m'
 RESET='\033[0m'
+BOLD='\033[1;37m'
 
 declare -A PART_IDS=([ESP]="" [root]="" [home]="" [swap]="")
 
-#===========================================================================================================
+#=======================================================================================
 # HELPER FUNCTIONS
-#===========================================================================================================
-print_menu_item()
+#=======================================================================================
+echo_line()
 {
-	local index=$1
-	local status=$2
-	local itemname=$3
-
-	local checkmark="${GREEN}OK${RESET}"
-
-	[[ $status -eq 0 ]] && checkmark="  "
-
-	echo -e "\n $index. [ $checkmark ] $itemname"
+	echo "---------------------------------------------------------------------------"
 }
 
-print_submenu_heading()
+echo_header()
 {
-	clear
-
-	echo -e ":: ${GREEN}$1${RESET}\n"
+	echo_line
+	echo -e "--  ${GREEN}ARCH LINUX INSTALLATION${RESET}"
+	echo_line
+	echo
 }
 
-print_progress_text()
+echo_keymap_start()
 {
-	echo ""
-	echo -e "${GREEN}==>${RESET} $1"
-	echo ""
+	echo
+	echo_line
+
+	if [[ $1 == true ]]; then
+		echo -e "--  ${YELLOW}X${RESET} Execute    ${YELLOW}Q${RESET} Quit"
+	else
+		echo -e "--  ${YELLOW}X${RESET} Execute    ${YELLOW}S${RESET} Skip    ${YELLOW}Q${RESET} Quit"
+	fi
+
+	echo_line
 }
 
-print_warning()
+echo_keymap_end()
+{
+	echo
+	echo_line
+
+	if [[ $1 == true ]]; then
+		echo -e "--  ${YELLOW}R${RESET} Repeat    ${YELLOW}Q${RESET} Quit"
+	else
+		echo -e "--  ${YELLOW}R${RESET} Repeat    ${YELLOW}N${RESET} Next    ${YELLOW}Q${RESET} Quit"
+	fi
+
+	echo_line
+}
+
+echo_progress_heading()
+{
+	echo
+	echo_line
+	echo -e "-- ${GREEN}$1${RESET}"
+	echo_line
+	echo
+}
+
+echo_warning()
 {
 	echo -e "${YELLOW}WARNING:${RESET} $1"
 }
 
-print_file_contents()
+echo_file_contents()
 {
-	echo ""
-	echo -e "---------------------------------------------------------------------------"
-	echo -e "-- ${GREEN}$1${RESET}"
-	echo -e "---------------------------------------------------------------------------"
-	echo ""
-	cat $1
-	echo ""
-	echo -e "---------------------------------------------------------------------------"
-	echo ""
+	cat "$1"
 }
 
-get_any_key()
-{
-	echo ""
-	read -s -e -n 1 -p "Press any key to continue ..."
-}
-
-get_user_confirm()
-{
-	local ret_val=1
-	local yn_choice="n"
-
-	echo ""
-	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
-
-	[[ "${yn_choice,,}" == "y" ]] && ret_val=0
-
-	return $ret_val
-}
-
-print_partition_structure()
-{
-	echo -e "---------------------------------------------------------------------------"
-	echo -e "-- ${GREEN}Current partition structure${RESET}"
-	echo -e "---------------------------------------------------------------------------"
-	echo ""
-	lsblk --paths --output NAME,SIZE,PARTLABEL,FSTYPE,MOUNTPOINTS
-	echo ""
-	echo -e "---------------------------------------------------------------------------"
-}
-
-partition_menu()
+echo_partition_menu()
 {
 	part_names="$1"
 
-	echo -e "----------------------------------------------------------------------\n"
+	echo
 
 	for i in "${!part_names[@]}"; do
 		local part_index=$(printf "\\$(printf '%03o' "$(($i+97))")")
@@ -101,8 +87,11 @@ partition_menu()
 		printf "  [%s] %s [type: %b; size: %b]\n" $part_index "${part_names[$i]}" "${GREEN}$part_type${RESET}" "${GREEN}$part_size${RESET}"
 	done
 	unset i
+}
 
-	echo -e "\n----------------------------------------------------------------------"
+echo_partition_structure()
+{
+	lsblk --paths --output NAME,SIZE,PARTLABEL,FSTYPE,MOUNTPOINTS
 }
 
 get_partition_type()
@@ -129,43 +118,47 @@ get_partition_info()
 	echo -e "${GREEN}$part_id${RESET} [type: ${GREEN}$part_fs${RESET}; size: ${GREEN}$part_size${RESET}]"
 }
 
-#===========================================================================================================
+get_user_confirm()
+{
+	local ret_val=1
+	local yn_choice="n"
+
+	echo -e "${BOLD}"
+	read -s -e -n 1 -p "Are you sure you want to continue [y/N]: " yn_choice
+	echo -e -n "${RESET}"
+
+	[[ "${yn_choice,,}" == "y" ]] && ret_val=0
+
+	return $ret_val
+}
+
+#=======================================================================================
 # INSTALLATION FUNCTIONS
-#===========================================================================================================
+#=======================================================================================
 check_uefimode()
 {
-	print_submenu_heading "CHECK UEFI MODE"
-
-	print_progress_text "Listing EFI variables"
+	echo_progress_heading "Listing EFI variables"
 	ls /sys/firmware/efi/efivars
-
-	MAINCHECKLIST[$1]=1
-
-	get_any_key
 }
 
 system_clock()
 {
-	print_submenu_heading "UPDATE SYSTEM CLOCK"
-
-	echo -e "Enable clock synchronization over network."
+	echo
+	echo "Enable clock synchronization over network."
 
 	if get_user_confirm; then
-		print_progress_text "Enabling clock synchronization over network"
+		echo_progress_heading "Enabling clock synchronization over network"
 		timedatectl set-ntp true
 
-		print_progress_text "Checking time and date status"
+		echo_progress_heading "Checking time and date status"
 		timedatectl
-
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 create_partitions()
 {
-	print_submenu_heading "CREATE PARTITIONS"
+	echo
+	echo "Select disk to partition:"
 
 	# Get disk names
 	local disk_names=()
@@ -175,7 +168,7 @@ create_partitions()
 	disk_names=(${disk_names[@]/ disk/})
 
 	# Display disk menu
-	echo -e "----------------------------------------------------------------------\n"
+	echo
 
 	for i in "${!disk_names[@]}"; do
 		local disk_size=$(lsblk --output SIZE --raw --noheadings --nodeps ${disk_names[$i]})
@@ -184,9 +177,8 @@ create_partitions()
 	done
 	unset i
 
-	echo -e "\n----------------------------------------------------------------------"
-
-	echo -e -n "\n => Select disk to partition: "
+	echo
+	echo -n "=> Enter selection: "
 
 	# Get menu selection
 	local disk_index=-1
@@ -204,24 +196,21 @@ create_partitions()
 
 	echo -e "\n\nDisk ${GREEN}${disk_names[$disk_index]}${RESET} will be partitioned."
 
-	echo ""
+	echo
 
-	print_warning "This will erase all data on the disk, make sure you have backed up data before proceeding"
+	echo_warning "This will erase all data on the disk, make sure you have backed up data before proceeding"
 
 	if get_user_confirm; then
-		echo ""
+		echo_progress_heading "Partitioning disk"
 
 		gdisk ${disk_names[$disk_index]}
-
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 format_partitions()
 {
-	print_submenu_heading "FORMAT PARTITIONS"
+	echo
+	echo "Available partitions:"
 
 	# Get partition names
 	local part_names=()
@@ -231,11 +220,11 @@ format_partitions()
 	part_names=(${part_names[@]/ part/})
 
 	# Display partition menu
-	partition_menu ${part_names[@]}
+	echo_partition_menu ${part_names[@]}
 
 	# Get menu selection
 	for id in {ESP,root,swap,home}; do
-		echo -e -n "\n => Select ${GREEN}$id${RESET} partition or (n)one to skip: "
+		echo -e -n "\n=> Select ${GREEN}$id${RESET} partition or (n)one to skip: "
 
 		local part_index=-1
 
@@ -272,7 +261,7 @@ format_partitions()
 
 	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[swap]} || -n ${PART_IDS[home]} ]]; then
 		echo -e "\n\nThe following partitions will be formatted:"
-		echo ""
+		echo
 		[[ -n ${PART_IDS[ESP]} ]] && echo -e "  + ${GREEN}ESP${RESET} partition $(get_partition_type ${PART_IDS[ESP]}) will be formated with file system ${GREEN}FAT32${RESET}."
 
 		[[ -n ${PART_IDS[root]} ]] && echo -e "  + ${GREEN}Root${RESET} partition $(get_partition_type ${PART_IDS[root]}) will formated with file system ${GREEN}EXT4${RESET}."
@@ -282,61 +271,57 @@ format_partitions()
 		[[ -n ${PART_IDS[home]} ]] && echo -e "  + ${GREEN}Home${RESET} partition $(get_partition_type ${PART_IDS[home]}) will be formated with file system ${GREEN}EXT4${RESET}."
 
 		if [[ -n ${PART_IDS[ESP]} ]]; then
-			echo ""
+			echo
 
-			print_warning "Format the ESP partition only if Windows is not already installed"
+			echo_warning "Format the ESP partition only if Windows is not already installed"
 		fi
 
 		if [[ -n ${PART_IDS[home]} ]]; then
-			echo ""
+			echo
 
-			print_warning "Format the Home partition only if it is empty"
+			echo_warning "Format the Home partition only if it is empty"
 		fi
 
-		echo ""
+		echo
 
-		print_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
+		echo_warning "This will erase all data on partitions, make sure you have backed up data before proceeding"
 
 		if get_user_confirm; then
 			if [[ -n ${PART_IDS[ESP]} ]]; then
-				print_progress_text "Formating ESP partition"
+				echo_progress_heading "Formating ESP partition"
 				mkfs.fat -F32 -n "ESP" ${PART_IDS[ESP]}
 			fi
 
 			if [[ -n ${PART_IDS[root]} ]]; then
-				print_progress_text "Formating root partition"
+				echo_progress_heading "Formating root partition"
 				mkfs.ext4 -L "Root" ${PART_IDS[root]}
 			fi
 
 			if [[ -n ${PART_IDS[home]} ]]; then
-				print_progress_text "Formating home partition"
+				echo_progress_heading "Formating home partition"
 				mkfs.ext4 -L "Home" ${PART_IDS[home]}
 			fi
 
 			if [[ -n ${PART_IDS[swap]} ]]; then
-				print_progress_text "Activating swap partition"
+				echo_progress_heading "Activating swap partition"
 				mkswap ${PART_IDS[swap]}
 				swapon ${PART_IDS[swap]}
 			fi
-
-			MAINCHECKLIST[$1]=1
-
-			get_any_key
 		fi
 	else
 		echo -e "\n"
 
-		print_warning "No partitions selected for formatting"
-
-		get_any_key
+		echo_warning "No partitions selected for formatting"
 	fi
 }
 
 mount_partitions()
 {
-	print_submenu_heading "MOUNT PARTITIONS"
+	echo
 
 	if [[ -z ${PART_IDS[ESP]} || -z ${PART_IDS[root]} || -z ${PART_IDS[home]} ]]; then
+		echo "Available partitions:"
+
 		# Get partition names
 		local part_names=()
 
@@ -345,7 +330,7 @@ mount_partitions()
 		part_names=(${part_names[@]/ part/})
 
 		# Display partition menu
-		partition_menu ${part_names[@]}
+		echo_partition_menu ${part_names[@]}
 
 		# Get menu selection
 		for id in {ESP,root,home}; do
@@ -390,8 +375,8 @@ mount_partitions()
 	fi
 
 	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[home]} ]]; then
-		echo -e "The following partitions will be mounted:"
-		echo ""
+		echo "The following partitions will be mounted:"
+		echo
 		[[ -n ${PART_IDS[ESP]} ]] && echo -e "  + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
 
 		[[ -n ${PART_IDS[root]} ]] && echo -e "  + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
@@ -399,63 +384,49 @@ mount_partitions()
 		[[ -n ${PART_IDS[home]} ]] && echo -e "  + ${GREEN}Home${RESET} partition $(get_partition_info ${PART_IDS[home]}) will be mounted to ${GREEN}/mnt/home${RESET}"
 
 		if get_user_confirm; then
-			print_progress_text "Mounting partitions"
+			echo_progress_heading "Mounting partitions"
 			[[ -n ${PART_IDS[root]} ]] && mount ${PART_IDS[root]} /mnt
 
 			[[ -n ${PART_IDS[ESP]} ]] && mount --mkdir ${PART_IDS[ESP]} /mnt/boot
 
 			[[ -n ${PART_IDS[home]} ]] && mount --mkdir ${PART_IDS[home]} /mnt/home
 
-			print_progress_text "Verifying partition structure"
-			print_partition_structure
-
-			MAINCHECKLIST[$1]=1
-
-			get_any_key
+			echo_progress_heading "Verifying partition structure"
+			echo_partition_structure
 		fi
 	else
-		print_warning "No partitions selected for mounting"
-
-		get_any_key
+		echo_warning "No partitions selected for mounting"
 	fi
 }
 
 install_base()
 {
-	print_submenu_heading "INSTALL BASE PACKAGES"
-
-	echo -e "Install base packages."
+	echo
+	echo "Install base packages."
 
 	if get_user_confirm; then
-		print_progress_text "Updating Arch Linux keyring"
+		echo_progress_heading "Updating Arch Linux keyring"
 		pacman -Syy
 		pacman -S archlinux-keyring
 
-		print_progress_text "Installing base packages"
+		echo_progress_heading "Installing base packages"
 		pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages terminus-font
-
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
 generate_fstab()
 {
-	print_submenu_heading "GENERATE FSTAB FILE"
-
-	echo -e "Generate new fstab file."
+	echo
+	echo "Generate new fstab file."
 
 	if get_user_confirm; then
-		print_progress_text "Generating fstab file"
+		echo_progress_heading "Generating fstab file"
 		genfstab -U /mnt >> /mnt/etc/fstab
 
-		print_file_contents "/mnt/etc/fstab"
-		print_warning "In case of errors, do not run the command a second time, edit the fstab file manually"
+		echo_progress_heading "Verifying file: /mnt/etc/fstab"
+		echo_file_contents "/mnt/etc/fstab"
 
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
+		echo_warning "In case of errors, do not run the command a second time, edit the fstab file manually"
 	fi
 }
 
@@ -468,119 +439,157 @@ run_postinstall()
 
 	# Chroot and run post install script
 	arch-chroot /mnt /bin/bash arch-post-install.bash
-
-	MAINCHECKLIST[$1]=1
 }
 
 unmount_partitions()
 {
-	print_submenu_heading "UNMOUNT PARTITIONS"
+	echo
 
 	local mount_points=$(mount)
 	local root_mnt=$(echo "$mount_points" | grep -i "/mnt ")
 	local boot_mnt=$(echo "$mount_points" | grep -i "/mnt/boot ")
 	local home_mnt=$(echo "$mount_points" | grep -i "/mnt/home ")
 
-	echo -e "The following partitions will be unmounted:"
-	echo ""
+	echo "The following partitions will be unmounted:"
+	echo
 	[[ -n $root_mnt ]] && echo -e "  + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
 
 	[[ -n $boot_mnt ]] && echo -e "  + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
 
 	[[ -n $home_mnt ]] && echo -e "  + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
 
-	echo ""
+	echo
 
-	print_warning "Proceed only if all installation steps have been completed"
+	echo_warning "Proceed only if all installation steps have been completed"
 
 	if get_user_confirm; then
-		print_progress_text "Unmounting partitions"
+		echo_progress_heading "Unmounting partitions"
 
 		[[ -n $root_mnt ]] && umount -R /mnt
-
-		MAINCHECKLIST[$1]=1
-
-		get_any_key
 	fi
 }
 
-main_menu()
+#=======================================================================================
+# MAIN FUNCTION
+#=======================================================================================
+main()
 {
-	MAINITEMS=("Check UEFI Mode|check_uefimode"
-				"Update System Clock|system_clock"
-				"Create Partitions|create_partitions"
-				"Format Partitions|format_partitions"
-				"Mount Partitions|mount_partitions"
-				"Install Base Packages|install_base"
-				"Generate Fstab File|generate_fstab"
-				"Run Post Install Script >>|run_postinstall"
-				"Unmount Partitions|unmount_partitions")
-	MAINCHECKLIST=("${MAINITEMS[@]/*/0}")
+	MENU_ITEMS=("Check UEFI Mode|check_uefimode|"
+				"Update System Clock|system_clock|"
+				"Create Partitions|create_partitions|"
+				"Format Partitions|format_partitions|"
+				"Mount Partitions|mount_partitions|"
+				"Install Base Packages|install_base|"
+				"Generate Fstab File|generate_fstab|"
+				"Run Post Install Script|run_postinstall|sub"
+				"Unmount Partitions|unmount_partitions|")
 
-	# Main menu loop
-	while true; do
+	local menu_index=1
+	local quit=0
+
+	while (( $quit == 0 )); do
 		clear
+		echo_header
 
-		# Print header
-		echo -e "-------------------------------------------------------------------------------"
-		echo -e "-- ${GREEN} ARCH LINUX ${RESET}::${GREEN} INSTALL MENU${RESET}"
-		echo -e "-------------------------------------------------------------------------------"
+		local item_name=$(echo ${MENU_ITEMS[$menu_index-1]} | cut -f1 -d'|')
 
-		# Print menu items
-		for i in ${!MAINITEMS[@]}; do
-			# Get character from ascii code (0->A,etc.)
-			local item_index=$(printf "\\$(printf '%03o' "$(($i+65))")")
+		echo -e "  ${BOLD}STEP ${menu_index} / ${#MENU_ITEMS[@]}: ${item_name}${RESET}"
 
-			local item_text=$(echo "${MAINITEMS[$i]}" | cut -f1 -d'|')
+		if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+			echo_keymap_start false
+		else
+			echo_keymap_start true
+		fi
 
-			print_menu_item $item_index ${MAINCHECKLIST[$i]} "$item_text"
+		while true; do
+			local start_choice
+
+			read -r -s -n 1 start_choice
+
+			# Quit installation
+			if [[ "${start_choice,,}" == "q" ]]; then
+				quit=1
+				break
+			fi
+
+			# Skip and go to next step
+			if [[ "${start_choice,,}" == "s" ]]; then
+				if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+					menu_index=$(($menu_index+1))
+					break
+				fi
+			fi
+
+			# Execute current step
+			if [[ "${start_choice,,}" == "x" ]]; then
+				local item_func=$(echo ${MENU_ITEMS[$menu_index-1]} | cut -f2 -d'|')
+
+				${item_func}
+
+				local is_sub=$(echo ${MENU_ITEMS[$menu_index-1]} | cut -f3 -d'|')
+
+				if [[ -n $is_sub ]]; then
+					clear
+					echo_header
+
+					local item_name=$(echo ${MENU_ITEMS[$menu_index-1]} | cut -f1 -d'|')
+
+					echo -e "  ${BOLD}STEP ${menu_index} / ${#MENU_ITEMS[@]}: ${item_name}${RESET}"
+
+					if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+						echo_keymap_start false
+					else
+						echo_keymap_start true
+					fi
+
+					echo
+					echo -e "  ${BOLD}Post installation script has finished${RESET}"
+				fi
+
+				if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+					echo_keymap_end false
+				else
+					echo_keymap_end true
+				fi
+
+				while true; do
+					local end_choice
+
+					read -r -s -n 1 end_choice
+
+					# Quit installation
+					if [[ "${end_choice,,}" == "q" ]]; then
+						quit=1
+						break
+					fi
+
+					# Repeat step
+					if [[ "${end_choice,,}" == "r" ]]; then
+						break
+					fi
+
+					# Go to next step
+					if [[ "${end_choice,,}" == "n" ]]; then
+						if (( $menu_index <= $((${#MENU_ITEMS[@]}-1)) )); then
+							menu_index=$(($menu_index+1))
+							break
+						fi
+					fi
+				done
+
+				break
+			fi
 		done
-		unset i
-
-		# Print footer
-		echo ""
-		echo -e "-------------------------------------------------------------------------------"
-		echo ""
-		echo -e -n " => Select option or (q)uit: "
-
-		# Get menu selection
-		local main_index=-1
-
-		until (( $main_index >= 0 && $main_index < ${#MAINITEMS[@]} ))
-		do
-			local main_choice
-
-			read -r -s -n 1 main_choice
-
-			# Exit main menu
-			if [[ "${main_choice,,}" == "q" ]]; then
-				clear
-				echo -e "Restart to boot into GNOME:"
-				echo ""
-				echo -e "  ${GREEN}reboot${RESET}"
-				echo ""
-				exit 0
-			fi
-
-			# Capture and exclude arrow keys
-			if [[ "$main_choice" == "$(printf '\u1b')" ]]; then
-				read -r -s -n 2 temp
-				unset temp
-			fi
-
-			# Get selection index
-			if [[ "${main_choice^^}" =~ ^[[:upper:]]+$ ]]; then
-				# Get ascii code from character (A->65, etc.)
-				main_index=$(LC_CTYPE=C printf '%d' "'${main_choice^^}")
-				main_index=$(($main_index-65))
-			fi
-		done
-
-		# Execute function
-		local item_func=$(echo "${MAINITEMS[$main_index]}" | cut -f2 -d'|')
-
-		${item_func} $main_index
 	done
+
+	clear
+
+	echo -e "${BOLD}Installation script has finished${RESET}"
+	echo
+	echo "Restart the system to boot into GNOME:"
+	echo
+	echo -e "${GREEN}  reboot${RESET}"
+	echo
 }
 
-main_menu
+main
