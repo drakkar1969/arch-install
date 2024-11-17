@@ -542,7 +542,7 @@ systemctl enable NetworkManager.service
 Install Bluetooth packages:
 
 ```bash
-pacman -S --needed bluez bluez-utils bluez-tools
+pacman -S --needed bluez bluez-utils
 ```
 
 Enable power status reporting:

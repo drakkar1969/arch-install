@@ -375,7 +375,7 @@ enable_bluetooth()
 
 	if get_user_confirm; then
 		echo_progress_heading "Installing Bluetooth packages"
-		pacman -S --needed bluez bluez-utils bluez-tools
+		pacman -S --needed bluez bluez-utils
 
 		echo_progress_heading "Enabling power status reporting"
 		mkdir -p /etc/systemd/system/bluetooth.service.d
