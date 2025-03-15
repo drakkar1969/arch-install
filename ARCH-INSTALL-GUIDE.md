@@ -503,16 +503,10 @@ pacman -S networkmanager gnome --ignore epiphany,gnome-characters,gnome-clocks,g
 
 If prompted to select provider(s), select default options.
 
-Install optional GNOME dependencies:
+Install optional power profiles daemon:
 
 ```bash
-pacman -S --asdeps power-profiles-daemon fwupd system-config-printer
-```
-
-Install GNOME extras:
-
-```bash
-pacman -S gnome-tweaks file-roller dconf-editor
+pacman -S --asdeps power-profiles-daemon
 ```
 
 Enable the `gdm` (GNOME Display Manager) login screen:
