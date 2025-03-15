@@ -339,9 +339,9 @@ install_gnome()
 
 		pacman -S "${gnome_pkgs[@]}"
 
-		# Install optional GNOME control center dependencies
-		echo_progress_heading "Installing Optional GNOME Control Center Dependencies"
-		pacman -S power-profiles-daemon fwupd
+		# Install optional power profiles daemon
+		echo_progress_heading "Installing Optional Power Profiles Daemon"
+		pacman -S power-profiles-daemon
 
 		echo_progress_heading "Enabling GDM service"
 		systemctl enable gdm.service
