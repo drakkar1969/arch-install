@@ -343,10 +343,6 @@ install_gnome()
 		echo_progress_heading "Installing Optional GNOME Control Center Dependencies"
 		pacman -S power-profiles-daemon fwupd
 
-		# Install GNOME extras
-		echo_progress_heading "Installing GNOME Extras"
-		pacman -S gnome-tweaks file-roller dconf-editor
-
 		echo_progress_heading "Enabling GDM service"
 		systemctl enable gdm.service
 
