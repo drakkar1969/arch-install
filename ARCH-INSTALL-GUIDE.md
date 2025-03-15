@@ -329,7 +329,7 @@ LOCALECONF
 Create the `hostname` file:
 
 ```bash
-PCNAME="SamsungBook2"
+PCNAME="LG-GRAM"
 echo $PCNAME > /etc/hostname
 ```
 

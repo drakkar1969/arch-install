@@ -164,7 +164,7 @@ set_hostname()
 {
 	local pc_name
 
-	read -e -p "Enter hostname: " -i "SamsungBook2" pc_name
+	read -e -p "Enter hostname: " -i "LG-GRAM" pc_name
 	echo
 
 	echo -e "Set the hostname to ${GREEN}${pc_name}${RESET}."
