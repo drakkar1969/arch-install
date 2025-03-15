@@ -441,12 +441,12 @@ Enable `os-prober` if installed:
 sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 ```
 
-Fix suspend issues and disable watchdogs by adding the `button.lid_init_state=open` and `modprobe.blacklist=iTCO_wdt` kernel parameters in GRUB's configuration:
+Disable watchdogs by adding the `modprobe.blacklist=iTCO_wdt` kernel parameter in GRUB's configuration:
 
 ```bash
 kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 
-params="button.lid_init_state=open modprobe.blacklist=iTCO_wdt"
+params="modprobe.blacklist=iTCO_wdt"
 
 if [[ $kernel_params != *"$params"* ]]; then kernel_params+=" $params"; fi
 

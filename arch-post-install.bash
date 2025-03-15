@@ -260,15 +260,10 @@ install_bootloader()
 		rm -f /boot/intel-ucode.img
 		pacman -S intel-ucode
 
-		# Fix suspend issue / disable watchdogs
+		# Disable watchdogs
+		echo_progress_heading "Disabling Watchdogs"
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
 
-		echo_progress_heading "Fixing Suspend Issue"
-		local suspend_param="button.lid_init_state=open"
-
-		if [[ $kernel_params != *"$suspend_param"* ]]; then kernel_params+=" $suspend_param"; fi
-
-		echo_progress_heading "Disabling Watchdogs"
 		local watchdog_param="modprobe.blacklist=iTCO_wdt"
 
 		if [[ $kernel_params != *"$watchdog_param"* ]]; then kernel_params+=" $watchdog_param"; fi
