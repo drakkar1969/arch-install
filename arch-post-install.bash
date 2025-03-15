@@ -355,7 +355,7 @@ install_gnome()
 
 		# Install optional GNOME control center dependencies
 		echo_progress_heading "Installing Optional GNOME Control Center Dependencies"
-		pacman -S power-profiles-daemon fwupd system-config-printer
+		pacman -S power-profiles-daemon fwupd
 
 		# Install GNOME extras
 		echo_progress_heading "Installing GNOME Extras"
