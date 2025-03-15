@@ -110,9 +110,11 @@ Found valid GPT with protective MBR; using GPT.
 Command (? for help):
 ```
 
+**i. Installing Arch Linux only (no dual boot)**
+
 Delete any existing partitions using the `d` command.
 
-Use the `n` command repeatedly to create new partitions with the following parameters:
+Use the `n` command repeatedly to create the Arch Linux partitions with the following parameters:
 
 Partition no.|First sector  |Last Sector|Hex code|Comment
 -------------|--------------|-----------|--------|---------------------
@@ -121,7 +123,23 @@ Partition no.|First sector  |Last Sector|Hex code|Comment
 3            |default       |+16G       |8200    |Swap
 4            |default       |default    |8300    |Home
 
-If dual booting with Windows, use the following parameters:
+**ii. Installing Arch Linux alongside an existing Windows install (dual boot)**
+
+Add new Arch Linux partitions with `n` command, using the following parameters:
+
+Partition no.|First sector  |Last Sector|Hex code|Comment
+-------------|--------------|-----------|--------|---------------------
+default      |default       |+40G       |8300    |Root
+default      |default       |+16G       |8200    |Swap
+default      |default       |default    |8300    |Home
+
+**Do not create a new ESP partition.**
+
+**iii. Installing both Arch Linux and Windows from scratch (dual boot)**
+
+Delete any existing partitions using the `d` command.
+
+Use the `n` command repeatedly to create the Arch Linux/Windows partitions with the following parameters:
 
 Partition no.|First sector  |Last Sector|Hex code|Comment
 -------------|--------------|-----------|--------|---------------------
@@ -133,13 +151,13 @@ Partition no.|First sector  |Last Sector|Hex code|Comment
 6            |default       |+16G       |8200    |Swap
 7            |default       |default    |8300    |Home
 
-Use the `p` command to check the partition structure:
+When done partitioning, use the `p` command to check the partition structure, for example:
 
 ```
 Disk /dev/nvme0n1: 2000409264 sectors, 953.9 GiB
-Model: SAMSUNG MZVLQ1T0HBLB-00B                
+Model: ESO01TBHLCJ-EL1-2AK                     
 Sector size (logical/physical): 512/512 bytes
-Disk identifier (GUID): A8683D17-4FEE-4E97-9C13-9A8E2160F60E
+Disk identifier (GUID): A9FCE571-4748-4B2C-A67B-B3E619E6DF85
 Partition table holds up to 128 entries
 Main partition table begins at sector 2 and ends at sector 33
 First usable sector is 34, last usable sector is 2000409230
@@ -147,16 +165,18 @@ Partitions will be aligned on 2048-sector boundaries
 Total free space is 2669 sectors (1.3 MiB)
 
 Number  Start (sector)    End (sector)  Size       Code  Name
-   1            2048         1050623   512.0 MiB   EF00  EFI system partition
-   2         1050624         1083391   16.0 MiB    0C01  Microsoft reserved
-   3         1083392        84969471   40.0 GiB    0700  Microsoft basic data
-   4        84969472        85583871   300.0 MiB   2700  Windows RE
-   5        85583872       169469951   40.0 GiB    8300  Linux filesystem
-   6       169469952       203024383   16.0 GiB    8200  Linux swap
-   7       203024384      2000408575   837.1 GiB   8300  Linux filesystem
+   1            2048          534527   260.0 MiB   EF00  EFI system partition
+   2          534528          567295   16.0 MiB    0C01  Microsoft reserved ...
+   3          567296       134785023   64.0 GiB    0700  Basic data partition
+   4      1956368384      1958465535   1024.0 MiB  2700  Basic data partition
+   5      1958465536      1998311423   19.0 GiB    2700  Basic data partition
+   6      1998311424      2000408575   1024.0 MiB  FFFF  EFI system partition
+   7       134785024       218671103   40.0 GiB    8300  Linux filesystem
+   8       218671104       252225535   16.0 GiB    8200  Linux swap
+   9       252225536      1956368383   812.6 GiB   8300  Linux filesystem
 ```
 
-If everything is correct, use the `w` command to save partitions, and then `q` to exit `gdisk`.
+If everything is correct, use the `w` command to save partitions and exit `gdisk`.
 
 #### b. Format Partitions
 
