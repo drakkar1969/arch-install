@@ -173,17 +173,8 @@ set_hostname()
 		echo_progress_heading "Setting hostname"
 		echo $pc_name > /etc/hostname
 
-		cat > /etc/hosts <<-HOSTSFILE
-			127.0.0.1       localhost
-			::1             localhost
-			127.0.1.1       ${pc_name}.localdomain      ${pc_name}
-		HOSTSFILE
-
 		echo_progress_heading "Verifying file: /etc/hostname"
 		echo_file_contents "/etc/hostname"
-
-		echo_progress_heading "Verifying file: etc/hosts"
-		echo_file_contents "/etc/hosts"
 	fi
 }
 

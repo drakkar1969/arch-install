@@ -333,16 +333,6 @@ PCNAME="LG-GRAM"
 echo $PCNAME > /etc/hostname
 ```
 
-Create the `hosts` file:
-
-```bash
-cat > /etc/hosts <<-HOSTSFILE
-  127.0.0.1       localhost
-  ::1             localhost
-  127.0.1.1       ${pc_name}.localdomain      ${pc_name}
-HOSTSFILE
-```
-
 ### 6. Configure Pacman
 
 Enable color output and parallel downloads in pacman:
