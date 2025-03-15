@@ -25,10 +25,10 @@ ls /usr/share/kbd/keymaps/**/*.map.gz
 Set the console font:
 
 ```bash
-setfont ter-118b
+setfont ter-128b
 ```
 
-Replace `ter-118b` with your font name. Available fonts can be listed with:
+Replace `ter-128b` with your font name. Available fonts can be listed with:
 
 ```bash
 ls /usr/share/kbd/consolefonts
@@ -268,7 +268,7 @@ Make the keyboard layout and console font permanent:
 ```bash
 cat > /etc/vconsole.conf <<-VCONSOLE_CONF
   KEYMAP=it
-  FONT=ter-118b
+  FONT=ter-128b
 VCONSOLE_CONF
 ```
 

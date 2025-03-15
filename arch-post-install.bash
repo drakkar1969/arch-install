@@ -92,7 +92,7 @@ set_consolepermanent()
 	read -e -p "Enter keyboard layout: " -i "it" kb_code
 	echo
 
-	read -e -p "Enter console font: " -i "ter-118b" console_font
+	read -e -p "Enter console font: " -i "ter-128b" console_font
 	echo
 
 	echo -e "Make keyboard layout ${GREEN}${kb_code}${RESET} permanent."
