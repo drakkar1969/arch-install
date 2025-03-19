@@ -11,7 +11,7 @@ loadkeys it
 Replace `it` with your keyboard layout. Available layouts can be listed with:
 
 ```bash
-ls /usr/share/kbd/keymaps/**/*.map.gz
+localectl list-keymaps
 ```
 
 ### Set Console Font

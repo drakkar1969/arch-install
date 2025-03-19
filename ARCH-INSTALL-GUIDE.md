@@ -17,7 +17,7 @@ Replace `it` with your actual keymap.
 Available layouts can be listed with:
 
 ```bash
-ls /usr/share/kbd/keymaps/**/*.map.gz
+localectl list-keymaps
 ```
 
 ### 2. Set Console Font
@@ -39,10 +39,10 @@ ls /usr/share/kbd/consolefonts
 To verify that UEFI boot mode is enabled, list the `efivars` directory:
 
 ```bash
-ls /sys/firmware/efi/efivars
+cat /sys/firmware/efi/fw_platform_size
 ```
 
-If the directory does not exist, the system may be in MBR/BIOS mode.
+If the command does not return `64`, the system may be in MBR/BIOS mode.
 
 ### 4. Enable Internet Connection
 

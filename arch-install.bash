@@ -137,8 +137,8 @@ get_user_confirm()
 #=======================================================================================
 check_uefimode()
 {
-	echo_progress_heading "Listing EFI variables"
-	ls /sys/firmware/efi/efivars
+	echo_progress_heading "Verifying UEFI boot mode"
+	cat /sys/firmware/efi/fw_platform_size
 }
 
 system_clock()
