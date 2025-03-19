@@ -292,7 +292,7 @@ cat > /etc/vconsole.conf <<-VCONSOLE_CONF
 VCONSOLE_CONF
 ```
 
-Replace `it` with your keymap and `ter-188b` with your preferred console font.
+Replace `it` with your keymap and `ter-128b` with your preferred console font.
 
 > Note: the `KEYMAP=...` line is only required for non-US keyboards
 
