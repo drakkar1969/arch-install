@@ -80,15 +80,11 @@ timedatectl set-ntp true
 
 To check the status, use `timedatectl` without parameters.
 
-### 6. Partition Disks
+### 6. Create Partitions
 
 This section assumes that `/dev/nvme0n1` is the primary SSD.
 
 You can use the `lsblk` command to check this.
-
-__Warning: this will destroy all data on the disk__.
-
-#### a. Create Partitions
 
 Run `gdisk` to partition the primary SSD:
 
@@ -110,7 +106,7 @@ Found valid GPT with protective MBR; using GPT.
 Command (? for help):
 ```
 
-**i. Installing Arch Linux only (no dual boot)**
+#### a. Installing Arch Linux only (no dual boot)
 
 Delete any existing partitions using the `d` command.
 
@@ -123,7 +119,7 @@ Partition no.|First sector  |Last Sector|Hex code|Comment
 3            |default       |+16G       |8200    |Swap
 4            |default       |default    |8300    |Home
 
-**ii. Installing Arch Linux alongside an existing Windows install (dual boot)**
+#### b. Installing Arch Linux alongside an existing Windows install (dual boot)
 
 Add new Arch Linux partitions with `n` command, using the following parameters:
 
@@ -133,9 +129,9 @@ default      |default       |+40G       |8300    |Root
 default      |default       |+16G       |8200    |Swap
 default      |default       |default    |8300    |Home
 
-**Do not create a new ESP partition.**
+**Do not create a new ESP partition, do not delete/modify existing Windows partitions.**
 
-**iii. Installing both Arch Linux and Windows from scratch (dual boot)**
+#### c. Installing both Arch Linux and Windows from scratch (dual boot)
 
 Delete any existing partitions using the `d` command.
 
@@ -178,19 +174,14 @@ Number  Start (sector)    End (sector)  Size       Code  Name
 
 If everything is correct, use the `w` command to save partitions and exit `gdisk`.
 
-#### b. Format Partitions
+### 7. Format Partitions
 
-Format the `ESP` partition (**do this only if Windows is not already installed**):
+#### a. Installing Arch Linux only (no dual boot)
+
+Format the `ESP` partition:
 
 ```bash
 mkfs.fat -F32 -n "ESP" /dev/nvme0n1p1
-```
-
-_Optionally_, if dual booting, format the Windows data and recovery partitions (**do this only if Windows is not already installed**):
-
-```bash
-mkfs.ntfs -f /dev/nvme0n1p3
-mkfs.ntfs -f /dev/nvme0n1p4
 ```
 
 Activate the `swap` partition:
@@ -200,15 +191,11 @@ mkswap /dev/nvme0n1p3
 swapon /dev/nvme0n1p3
 ```
 
-> Note: if dual booting, use `/dev/nvme0n1p6` instead
-
 Format the `root` partition:
 
 ```bash
 mkfs.ext4 -L "Root" /dev/nvme0n1p2
 ```
-
-> Note: if dual booting, use `/dev/nvme0n1p5` instead
 
 Format the `home` partition (**do this only if the `home` partition is empty**):
 
@@ -216,17 +203,74 @@ Format the `home` partition (**do this only if the `home` partition is empty**):
 mkfs.ext4 -L "Home" /dev/nvme0n1p4
 ```
 
-> Note: if dual booting, use `/dev/nvme0n1p7` instead
+#### b. Installing Arch Linux alongside an existing Windows install (dual boot)
 
-#### c. Mount Partitions
+> Check partition IDs using the `lsblk` command
+
+Activate the `swap` partition:
+
+```bash
+mkswap /dev/nvme0n1p3
+swapon /dev/nvme0n1p3
+```
+
+Format the `root` partition:
+
+```bash
+mkfs.ext4 -L "Root" /dev/nvme0n1p2
+```
+
+Format the `home` partition (**do this only if the `home` partition is empty**):
+
+```bash
+mkfs.ext4 -L "Home" /dev/nvme0n1p4
+```
+
+**Do not format the ESP partition or existing Windows partitions.**
+
+#### c. Installing both Arch Linux and Windows from scratch (dual boot)
+
+Format the `ESP` partition:
+
+```bash
+mkfs.fat -F32 -n "ESP" /dev/nvme0n1p1
+```
+
+Format the Windows data and recovery partitions (**do this only if Windows is not already installed**):
+
+```bash
+mkfs.ntfs -f /dev/nvme0n1p3
+mkfs.ntfs -f /dev/nvme0n1p4
+```
+
+Activate the `swap` partition:
+
+```bash
+mkswap /dev/nvme0n1p6
+swapon /dev/nvme0n1p6
+```
+
+Format the `root` partition:
+
+```bash
+mkfs.ext4 -L "Root" /dev/nvme0n1p5
+```
+
+Format the `home` partition (**do this only if the `home` partition is empty**):
+
+```bash
+mkfs.ext4 -L "Home" /dev/nvme0n1p7
+```
+
+### 8. Mount Partitions
+
+> Check partition IDs using the `lsblk` command
 
 Mount the `root` partition:
 
 ```bash
 mount /dev/nvme0n1p2 /mnt
 ```
-
-> Note: if dual booting, use `/dev/nvme0n1p5` instead
 
 Mount the `ESP` partition:
 
@@ -239,8 +283,6 @@ Mount the `home` partition:
 ```bash
 mount --mkdir /dev/nvme0n1p4 /mnt/home
 ```
-
-> Note: if dual booting, use `/dev/nvme0n1p7` instead
 
 Use the `lsblk` command to verify partitions are correctly mounted.
 
