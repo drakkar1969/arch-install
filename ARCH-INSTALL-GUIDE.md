@@ -620,7 +620,7 @@ pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad g
 _Optionally_ install the VA-API plugin for hardware video acceleration:
 
 ```bash
-pacman -S --needed gstreamer-vaapi
+pacman -S --needed gst-plugin-va
 ```
 
 ### 6. Reboot
