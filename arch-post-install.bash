@@ -300,7 +300,7 @@ install_pipewire()
 
 	if get_user_confirm; then
 		echo_progress_heading "Installing PipeWire"
-		pacman -S --asdeps pipewire pipewire-pulse wireplumber gst-plugin-pipewire rtkit
+		pacman -S --asdeps pipewire pipewire-pulse pipewire-jack wireplumber gst-plugin-pipewire rtkit
 	fi
 }
 
