@@ -552,7 +552,7 @@ pacman -S intel-media-driver libva-utils
 Install PipeWire packages as dependencies:
 
 ```bash
-pacman -S --asdeps pipewire pipewire-pulse pipewire-alsa wireplumber gst-plugin-pipewire rtkit
+pacman -S --asdeps pipewire pipewire-pulse pipewire-jack wireplumber gst-plugin-pipewire rtkit
 ```
 
 ### 3. Install GNOME
@@ -614,7 +614,7 @@ systemctl enable bluetooth.service
 Install needed codecs:
 
 ```bash
-pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly
+pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gst-plugin-va
 ```
 
 _Optionally_ install the VA-API plugin for hardware video acceleration:
