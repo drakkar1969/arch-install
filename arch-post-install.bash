@@ -379,7 +379,7 @@ install_codecs()
 
 	if get_user_confirm; then
 		echo_progress_heading "Installing codecs"
-		pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gst-plugin-va
+		pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gst-plugin-pipewire gst-plugin-va
 	fi
 }
 
