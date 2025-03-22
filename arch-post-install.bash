@@ -245,6 +245,13 @@ install_bootloader()
 		pacman -S grub efibootmgr
 		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
+		# Install OS prober
+		echo_progress_heading "Installing OS prober"
+
+		pacman -S --asdeps os-prober
+
+		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+
 		# Install microcode
 		echo_progress_heading "Installing microcode package"
 
