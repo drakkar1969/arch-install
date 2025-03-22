@@ -268,15 +268,25 @@ install_bootloader()
 
 		sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 
-		# Add custom GRUB entries
-		echo_progress_heading "Adding custom GRUB entries"
-		if ! grep -i -q "menuentry" /etc/grub.d/40_custom; then
+		# Add LG recovery GRUB entry
+		echo_progress_heading "Adding LG recovery GRUB entry"
+		if ! grep -i -q "recovery" /etc/grub.d/40_custom; then
+			cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
+				menuentry 'LG Recovery' --class recovery {
+				    search --fs-uuid --no-floppy --set=root B862-AEA4
+				    chainloader (${root})/EFI/LG/Boot/bootmgfw.efi
+				}
+			CUSTOM_GRUB
+		fi
+
+		# Add shutdown/restart GRUB entries
+		echo_progress_heading "Adding shutdown and restart GRUB entries"
+		if ! grep -i -q "shutdown" /etc/grub.d/40_custom; then
 			cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
 				menuentry 'System shutdown' --class shutdown {
 				    echo 'System shutting down...'
 				    halt
 				}
-
 				menuentry 'System restart' --class restart {
 				    echo 'System rebooting...'
 				    reboot
