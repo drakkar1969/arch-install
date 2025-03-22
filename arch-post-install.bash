@@ -305,8 +305,10 @@ display_drivers()
 	echo "Install Mesa OpenGL and Intel VA-API (hardware accel) drivers."
 
 	if get_user_confirm; then
-		echo_progress_heading "Installing Intel display drivers"
+		echo_progress_heading "Installing Intel display driver"
 		pacman -S --needed --asdeps mesa
+
+		echo_progress_heading "Installing Intel hardware acceleration driver"
 		pacman -S intel-media-driver libva-utils
 	fi
 }
