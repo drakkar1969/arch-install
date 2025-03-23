@@ -469,28 +469,28 @@ Install `grub` and `efibootmgr`:
 pacman -S grub efibootmgr
 ```
 
-_Optionally_ install `os-prober` (only needed to detect other operating systems in a dual boot scenario):
-
-```bash
-pacman -S os-prober
-```
-
 Install the `grub` boot loader:
 
 ```bash
 grub-install --target=x86_64-efi --efi-directory=/boot --removable
 ```
 
-Install the `microcode` package (Intel CPUs):
+_Optionally_ install `os-prober` (only needed to detect other operating systems in a dual boot scenario):
 
 ```bash
-pacman -S intel-ucode
+pacman -S os-prober
 ```
 
 Enable `os-prober` if installed:
 
 ```bash
 sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+```
+
+Install the `microcode` package (Intel CPUs):
+
+```bash
+pacman -S intel-ucode
 ```
 
 Disable watchdogs by adding the `modprobe.blacklist=iTCO_wdt` kernel parameter in GRUB's configuration:
@@ -505,6 +505,17 @@ if [[ $kernel_params != *"$params"* ]]; then kernel_params+=" $params"; fi
 sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/ c GRUB_CMDLINE_LINUX_DEFAULT=\"$kernel_params\"" /etc/default/grub
 ```
 
+_Optionally_ add GRUB entry for LG recovery:
+
+```bash
+cat >> /etc/grub.d/40_custom <<-RECOVERY_GRUB
+	menuentry 'LG Recovery' --class recovery {
+	    search --fs-uuid --no-floppy --set=root B862-AEA4
+	    chainloader (${root})/EFI/LG/Boot/bootmgfw.efi
+	}
+RECOVERY_GRUB
+```
+
 _Optionally_ add custom GRUB entries (shutdown and restart):
 
 ```bash
@@ -513,7 +524,6 @@ cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
 	    echo 'System shutting down...'
 	    halt
 	}
-
 	menuentry 'System restart' --class restart {
 	    echo 'System rebooting...'
 	    reboot

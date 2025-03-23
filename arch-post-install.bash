@@ -271,12 +271,12 @@ install_bootloader()
 		# Add LG recovery GRUB entry
 		echo_progress_heading "Adding LG recovery GRUB entry"
 		if ! grep -i -q "recovery" /etc/grub.d/40_custom; then
-			cat >> /etc/grub.d/40_custom <<-CUSTOM_GRUB
+			cat >> /etc/grub.d/40_custom <<-RECOVERY_GRUB
 				menuentry 'LG Recovery' --class recovery {
 				    search --fs-uuid --no-floppy --set=root B862-AEA4
 				    chainloader (${root})/EFI/LG/Boot/bootmgfw.efi
 				}
-			CUSTOM_GRUB
+			RECOVERY_GRUB
 		fi
 
 		# Add shutdown/restart GRUB entries
