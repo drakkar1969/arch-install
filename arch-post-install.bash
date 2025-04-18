@@ -302,7 +302,7 @@ install_bootloader()
 
 display_drivers()
 {
-	echo "Install Mesa OpenGL and Intel VA-API (hardware accel) drivers."
+	echo "Install Mesa OpenGL, Intel VA-API (hardware accel) and Vulkan drivers."
 
 	if get_user_confirm; then
 		echo_progress_heading "Installing Intel display driver"
@@ -310,6 +310,10 @@ display_drivers()
 
 		echo_progress_heading "Installing Intel hardware acceleration driver"
 		pacman -S intel-media-driver libva-utils
+
+		echo_progress_heading "Installing Intel Vulkan drivers"
+		pacman -S --asdeps vulkan-intel
+		pacman -S vulkan-icd-loader
 	fi
 }
 
