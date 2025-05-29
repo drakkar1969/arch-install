@@ -243,6 +243,7 @@ install_bootloader()
 		# Install GRUB
 		echo_progress_heading "Installing GRUB bootloader"
 		pacman -S grub efibootmgr
+		pacman -S --asdeps dosfstools
 		grub-install --target=x86_64-efi --efi-directory=/boot --removable
 
 		# Install OS prober
