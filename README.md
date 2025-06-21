@@ -63,7 +63,11 @@ reboot
 
 ## Installation Guide
 
-The step-by-step manual installation guide can be found here: [Arch Linux Installation Guide](ARCH-INSTALL-GUIDE.md).
+For step-by-step manual installation, see the [Arch Linux Installation Guide](ARCH-INSTALL-GUIDE.md).
+
+## Virtual Machines
+
+See the [GNOME Boxes](GNOME-BOXES-ARCH-GUEST.md) and [VirtualBox](VIRTUALBOX-ARCH-GUEST.md) guides to install Arch Linux as the guest system in a virtual machine.
 
 ## Bootable USB
 
