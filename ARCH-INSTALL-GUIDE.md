@@ -275,7 +275,7 @@ mount /dev/nvme0n1p2 /mnt
 Mount the `ESP` partition:
 
 ```bash
-mount --mkdir /dev/nvme0n1p1 /mnt/boot
+mount --mkdir /dev/nvme0n1p1 /mnt/efi
 ```
 
 Mount the `home` partition:
@@ -472,7 +472,7 @@ pacman -S grub efibootmgr
 Install the `grub` boot loader:
 
 ```bash
-grub-install --target=x86_64-efi --efi-directory=/boot --removable
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 ```
 
 _Optionally_ install `os-prober` (only needed to detect other operating systems in a dual boot scenario):

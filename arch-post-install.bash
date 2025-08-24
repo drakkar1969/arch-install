@@ -244,7 +244,7 @@ install_bootloader()
 		echo_progress_heading "Installing GRUB bootloader"
 		pacman -S grub efibootmgr
 		pacman -S --asdeps dosfstools
-		grub-install --target=x86_64-efi --efi-directory=/boot --removable
+		grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 
 		# Install OS prober
 		echo_progress_heading "Installing OS prober"
@@ -256,7 +256,6 @@ install_bootloader()
 		# Install microcode
 		echo_progress_heading "Installing microcode package"
 
-		rm -f /boot/intel-ucode.img
 		pacman -S intel-ucode
 
 		# Disable watchdogs

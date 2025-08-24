@@ -377,7 +377,7 @@ mount_partitions()
 	if [[ -n ${PART_IDS[ESP]} || -n ${PART_IDS[root]} || -n ${PART_IDS[home]} ]]; then
 		echo "The following partitions will be mounted:"
 		echo
-		[[ -n ${PART_IDS[ESP]} ]] && echo -e "  + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/boot${RESET}"
+		[[ -n ${PART_IDS[ESP]} ]] && echo -e "  + ${GREEN}ESP${RESET} partition $(get_partition_info ${PART_IDS[ESP]}) will be mounted to ${GREEN}/mnt/efi${RESET}"
 
 		[[ -n ${PART_IDS[root]} ]] && echo -e "  + ${GREEN}Root${RESET} partition $(get_partition_info ${PART_IDS[root]}) will be mounted to ${GREEN}/mnt${RESET}"
 
@@ -387,7 +387,7 @@ mount_partitions()
 			echo_progress_heading "Mounting partitions"
 			[[ -n ${PART_IDS[root]} ]] && mount ${PART_IDS[root]} /mnt
 
-			[[ -n ${PART_IDS[ESP]} ]] && mount --mkdir ${PART_IDS[ESP]} /mnt/boot
+			[[ -n ${PART_IDS[ESP]} ]] && mount --mkdir ${PART_IDS[ESP]} /mnt/efi
 
 			[[ -n ${PART_IDS[home]} ]] && mount --mkdir ${PART_IDS[home]} /mnt/home
 
@@ -447,14 +447,14 @@ unmount_partitions()
 
 	local mount_points=$(mount)
 	local root_mnt=$(echo "$mount_points" | grep -i "/mnt ")
-	local boot_mnt=$(echo "$mount_points" | grep -i "/mnt/boot ")
+	local efi_mnt=$(echo "$mount_points" | grep -i "/mnt/efi ")
 	local home_mnt=$(echo "$mount_points" | grep -i "/mnt/home ")
 
 	echo "The following partitions will be unmounted:"
 	echo
 	[[ -n $root_mnt ]] && echo -e "  + ${GREEN}$(echo $root_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $root_mnt | cut -d' ' -f3)${RESET}"
 
-	[[ -n $boot_mnt ]] && echo -e "  + ${GREEN}$(echo $boot_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $boot_mnt | cut -d' ' -f3)${RESET}"
+	[[ -n $efi_mnt ]] && echo -e "  + ${GREEN}$(echo $efi_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $efi_mnt | cut -d' ' -f3)${RESET}"
 
 	[[ -n $home_mnt ]] && echo -e "  + ${GREEN}$(echo $home_mnt | cut -d' ' -f1)${RESET} on ${GREEN}$(echo $home_mnt | cut -d' ' -f3)${RESET}"
 
