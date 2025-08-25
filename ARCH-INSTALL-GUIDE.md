@@ -478,7 +478,7 @@ grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 _Optionally_ install `os-prober` (only needed to detect other operating systems in a dual boot scenario):
 
 ```bash
-pacman -S os-prober
+pacman -S --asdeps os-prober
 ```
 
 Enable `os-prober` if installed:
@@ -557,6 +557,13 @@ _Optionally_ install the Intel VA-API driver for hardware video acceleration:
 pacman -S intel-media-driver libva-utils
 ```
 
+_Optionally_ install the Intel Vulkan drivers:
+
+```bash
+pacman -S --asdeps vulkan-intel
+pacman -S vulkan-icd-loader
+```
+
 ### 2. Install PipeWire
 
 Install PipeWire packages as dependencies:
@@ -578,7 +585,7 @@ If prompted to select provider(s), select default options.
 Install optional power profiles daemon:
 
 ```bash
-pacman -S --asdeps power-profiles-daemon
+pacman -S power-profiles-daemon
 ```
 
 Enable the `gdm` (GNOME Display Manager) login screen:
@@ -624,7 +631,7 @@ systemctl enable bluetooth.service
 Install needed codecs:
 
 ```bash
-pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly gst-plugin-va
+pacman -S --needed libmad gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly
 ```
 
 _Optionally_ install the VA-API plugin for hardware video acceleration:
