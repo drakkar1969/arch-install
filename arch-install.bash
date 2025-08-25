@@ -138,7 +138,14 @@ get_user_confirm()
 check_uefimode()
 {
 	echo_progress_heading "Verifying UEFI boot mode"
-	cat /sys/firmware/efi/fw_platform_size
+
+	local uefi=$(cat /sys/firmware/efi/fw_platform_size)
+
+	if [[ "$uefi" == "64" ]]; then
+		echo "OK: UEFI Boot Mode (64-bit)"
+	else
+		echo "ERROR: Unsupported Boot Mode"
+	fi
 }
 
 system_clock()
