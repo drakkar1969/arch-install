@@ -569,7 +569,7 @@ pacman -S vulkan-icd-loader
 Install PipeWire packages as dependencies:
 
 ```bash
-pacman -S --asdeps pipewire pipewire-pulse pipewire-jack wireplumber gst-plugin-pipewire rtkit
+pacman -S --asdeps pipewire pipewire-pulse pipewire-jack wireplumber gst-plugin-pipewire
 ```
 
 ### 3. Install GNOME
