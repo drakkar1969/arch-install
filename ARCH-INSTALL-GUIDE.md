@@ -406,10 +406,11 @@ sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
 PACMAN_CONF
 ```
 
-Disable debug builds for packages:
+Enable parallel compilation and disable debug builds for packages:
 
 ```bash
 sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
+  /^#MAKEFLAGS=/ c MAKEFLAGS="-j$(nproc)"
   /^OPTIONS=/ s/ debug/ !debug/
 MAKEPKG_CONF
 ```
