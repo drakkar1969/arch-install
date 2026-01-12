@@ -406,12 +406,11 @@ sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
 PACMAN_CONF
 ```
 
-Disable debug builds and configure ZST compression for packages:
+Disable debug builds for packages:
 
 ```bash
 sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
   /^OPTIONS=/ s/ debug/ !debug/
-  /^COMPRESSZST=/ c COMPRESSZST=(zstd -c -T0 -)
 MAKEPKG_CONF
 ```
 

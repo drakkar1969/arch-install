@@ -181,7 +181,7 @@ set_hostname()
 config_pacman()
 {
 	echo -e "Enable color output and parallel downloads in ${GREEN}/etc/pacman.conf${RESET}."
-	echo -e "Enable parallel compilation, disable debug packages and configure ZSTD compression in ${GREEN}/etc/makepkg.conf${RESET}."
+	echo -e "Enable parallel compilation and disable debug packages in ${GREEN}/etc/makepkg.conf${RESET}."
 
 	if get_user_confirm; then
 		echo_progress_heading "Configuring pacman"
@@ -194,7 +194,6 @@ config_pacman()
 		sed -i -f - /etc/makepkg.conf <<-MAKEPKG_CONF
 			/^#MAKEFLAGS=/ c MAKEFLAGS="-j$(nproc)"
 			/^OPTIONS=/ s/ debug/ !debug/
-			/^COMPRESSZST=/ c COMPRESSZST=(zstd -c -T0 -)
 		MAKEPKG_CONF
 	fi
 }
