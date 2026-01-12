@@ -180,14 +180,13 @@ set_hostname()
 
 config_pacman()
 {
-	echo -e "Enable color output and parallel downloads in ${GREEN}/etc/pacman.conf${RESET}."
+	echo -e "Enable color output in ${GREEN}/etc/pacman.conf${RESET}."
 	echo -e "Enable parallel compilation and disable debug packages in ${GREEN}/etc/makepkg.conf${RESET}."
 
 	if get_user_confirm; then
 		echo_progress_heading "Configuring pacman"
 		sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
 			s/#Color/Color/
-			s/#ParallelDownloads/ParallelDownloads/
 		PACMAN_CONF
 
 		echo_progress_heading "Configuring makepkg"

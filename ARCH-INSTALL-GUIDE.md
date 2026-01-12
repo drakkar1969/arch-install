@@ -397,12 +397,11 @@ echo $PCNAME > /etc/hostname
 
 ### 6. Configure Pacman
 
-Enable color output and parallel downloads in pacman:
+Enable color output in pacman:
 
 ```bash
 sed -i -f - /etc/pacman.conf <<-PACMAN_CONF
   s/#Color/Color/
-  s/#ParallelDownloads/ParallelDownloads/
 PACMAN_CONF
 ```
 
