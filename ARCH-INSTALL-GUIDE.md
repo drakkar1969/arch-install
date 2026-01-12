@@ -571,7 +571,7 @@ pacman -S --asdeps pipewire pipewire-pulse pipewire-jack wireplumber gst-plugin-
 Install Network Manager and GNOME package group (press `ENTER` to select all packages when prompted):
 
 ```bash
-pacman -S networkmanager gnome --ignore decibels,epiphany,gnome-calendar,gnome-characters,gnome-clocks,gnome-connections,gnome-contacts,gnome-logs,gnome-maps,gnome-music,gnome-software,gnome-tour,orca,totem
+pacman -S networkmanager gnome --ignore decibels,epiphany,gnome-calendar,gnome-characters,gnome-clocks,gnome-connections,gnome-contacts,gnome-logs,gnome-maps,gnome-music,gnome-software,gnome-tour,orca
 ```
 
 If prompted to select provider(s), select default options.
