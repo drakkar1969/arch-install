@@ -302,7 +302,7 @@ pacman -S archlinux-keyring
 Install the base packages:
 
 ```bash
-pacstrap /mnt base base-devel linux linux-firmware sof-firmware nano man-db man-pages terminus-font
+pacstrap /mnt base base-devel linux linux-firmware sof-firmware intel-ucode nano man-db man-pages terminus-font
 ```
 
 ### 2. Generate Fstab File
@@ -485,12 +485,6 @@ Enable `os-prober` if installed:
 
 ```bash
 sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
-```
-
-Install the `microcode` package (Intel CPUs):
-
-```bash
-pacman -S intel-ucode
 ```
 
 Disable watchdogs by adding the `modprobe.blacklist=iTCO_wdt` kernel parameter in GRUB's configuration:

@@ -254,11 +254,6 @@ install_bootloader()
 
 		sed -i '/^#GRUB_DISABLE_OS_PROBER/ c GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 
-		# Install microcode
-		echo_progress_heading "Installing microcode package"
-
-		pacman -S intel-ucode
-
 		# Disable watchdogs
 		echo_progress_heading "Disabling Watchdogs"
 		local kernel_params=$(cat /etc/default/grub | grep 'GRUB_CMDLINE_LINUX_DEFAULT=' | cut -f2 -d'"')
